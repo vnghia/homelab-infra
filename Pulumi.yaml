@@ -22,6 +22,9 @@ config:
         traefik:
           name: traefik
           tag: "v3.0.0-beta3"
+        dozzle:
+          name: amir20/dozzle
+          tag: "v4.10.19"
       volume:
         local:
           - tailscale-state
