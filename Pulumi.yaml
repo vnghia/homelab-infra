@@ -16,6 +16,9 @@ config:
         tailscale:
           name: tailscale/tailscale
           tag: "v1.44.0"
+        workaround:
+          name: busybox
+          tag: "1.35-uclibc"
       volume:
         local:
           - tailscale-state
