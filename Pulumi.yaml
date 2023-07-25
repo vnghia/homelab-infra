@@ -4,3 +4,8 @@ runtime:
   options:
     virtualenv: venv
 description: Infra for hosting service
+config:
+  docker:
+    value:
+      env:
+        TZ: Etc/UTC
