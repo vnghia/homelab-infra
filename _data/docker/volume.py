@@ -3,11 +3,12 @@ from pulumi import ComponentResource, ResourceOptions
 
 from _common import docker_config, get_logical_name
 from _data.docker.label import DOCKER_VOLUME_LABELS
+from _data.resource import child_opts
 
 
 class DockerVolume(ComponentResource):
     def __init__(self) -> None:
-        super().__init__("data:docker:Volume", "volume")
+        super().__init__("data:docker:Volume", "volume", None, child_opts)
         self.__child_opts = ResourceOptions(parent=self)
 
         self.__volumes: dict[str, docker.Volume] = {}
