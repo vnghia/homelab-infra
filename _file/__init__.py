@@ -1,3 +1,3 @@
-from _file.file.file import File, TomlFile
+from _file.file.file import File, Template
 
-__all__ = ["File", "TomlFile"]
+__all__ = ["File", "Template"]
