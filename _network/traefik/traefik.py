@@ -9,6 +9,7 @@ from _file import Template
 from _network.dns import cloudflare_dns
 from _network.resource import child_opts
 from _network.tailscale import tailscale_device
+from _network.traefik.config.dynamic_config import TraefikDynamicConfig
 
 
 class TraefikProxy(ComponentResource):
@@ -19,6 +20,9 @@ class TraefikProxy(ComponentResource):
 
         self.__build_static_config()
         self.__build_container()
+        self.__build_dynamic_config()
+
+        self.dynamic_config = self.__dynamic_config.dynamic_config
 
         self.register_outputs({"static_config": self.__static_config["content"]})
 
@@ -61,6 +65,9 @@ class TraefikProxy(ComponentResource):
             wait=True,
             labels={"static-config-sha256": self.__static_config["sha256"]},
         )
+
+    def __build_dynamic_config(self):
+        self.__dynamic_config = TraefikDynamicConfig(self.__child_opts)
 
 
 traefik_proxy = TraefikProxy()
