@@ -3,6 +3,7 @@ pulumi-command<1.0.0
 pulumi-docker>=4.0.0,<5.0.0
 pulumi-tailscale<1.0.0
 pulumi-random>=4.0.0,<5.0.0
+pulumi-cloudflare>=5.0.0,<6.0.0
 
 deepmerge>=1.0.0,<2.0.0
 docker[ssh]>=6.0.0,<7.0.0

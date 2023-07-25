@@ -12,3 +12,4 @@ def __build_config(key: str) -> dict:
 docker_config = __build_config("docker")
 server_config = __build_config("server")
 tailscale_config = __build_config("tailscale")
+dns_config = __build_config("dns")
