@@ -1,0 +1,9 @@
+import deepmerge
+import pulumi
+
+
+def __build_config(key: str) -> dict:
+    return deepmerge.always_merger.merge(
+        pulumi.Config().get_object(key, {}),
+        pulumi.Config().get_object("stack-{}".format(key), {}),
+    )
