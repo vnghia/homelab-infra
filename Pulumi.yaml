@@ -5,7 +5,26 @@ runtime:
     virtualenv: venv
 description: Infra for hosting service
 config:
+  server:
+    value:
+      platform: amd64
   docker:
     value:
       env:
         TZ: Etc/UTC
+      image:
+        tailscale:
+          name: tailscale/tailscale
+          tag: "v1.44.0"
+      volume:
+        local:
+          - tailscale-state
+  tailscale:
+    value:
+      state:
+        volume: tailscale-state
+        dir: /var/lib/tailscale/
+      port:
+        internal: 444
+        external: 443
+      socket: /var/run/tailscale/tailscaled.sock
