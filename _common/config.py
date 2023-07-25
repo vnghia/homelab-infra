@@ -7,3 +7,6 @@ def __build_config(key: str) -> dict:
         pulumi.Config().get_object(key, {}),
         pulumi.Config().get_object("stack-{}".format(key), {}),
     )
+
+
+docker_config = __build_config("docker")
