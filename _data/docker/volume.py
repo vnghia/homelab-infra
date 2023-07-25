@@ -14,6 +14,7 @@ class DockerVolume(ComponentResource):
         self.__volumes: dict[str, docker.Volume] = {}
 
         self.__build_local_volume()
+        self.__build_bind_volume()
 
         self.volume_map = {k: v.name for k, v in self.__volumes.items()}
         self.register_outputs({"volume_map": self.volume_map})
@@ -27,6 +28,23 @@ class DockerVolume(ComponentResource):
                 get_logical_name(name),
                 opts=self.__child_opts,
                 driver="local",
+                labels=DOCKER_VOLUME_LABELS,
+            )
+
+    def __build_bind_volume(self):
+        volume_config = docker_config.get("volume", {})
+        bind_volume_config = volume_config.get("bind", {})
+
+        for name, path in bind_volume_config.items():
+            self.__volumes[name] = docker.Volume(
+                get_logical_name(name),
+                opts=self.__child_opts,
+                driver="local",
+                driver_opts={
+                    "type": "none",
+                    "o": "bind",
+                    "device": path,
+                },
                 labels=DOCKER_VOLUME_LABELS,
             )
 
