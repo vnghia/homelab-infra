@@ -23,6 +23,7 @@ class DockerVolume(ComponentResource):
         self.__build_rclone_config()
         self.__build_rclone_plugin()
         self.__build_mount_volume()
+        self.__build_crypt_volume()
 
         self.volume_map = {k: v.name for k, v in self.__volumes.items()}
         self.register_outputs({"volume_map": self.volume_map})
@@ -117,6 +118,24 @@ class DockerVolume(ComponentResource):
                 opts=self.__rclone_opts,
                 driver=self.__rclone_plugin.alias,
                 driver_opts={"remote": "bucket:{}/{}".format(bucket_name, prefix)},
+                labels=DOCKER_VOLUME_LABELS
+                + [
+                    docker.ContainerLabelArgs(
+                        label="plugin.command.id", value=self.__rclone_plugin_command.id
+                    ),
+                ],
+            )
+
+    def __build_crypt_volume(self):
+        bucket_name = storage_config["bucket"]
+
+        volume_config = storage_config["rclone"].get("crypt", {})
+        for name in volume_config.keys():
+            self.__volumes["crypt-{}".format(name)] = docker.Volume(
+                get_logical_name("crypt-{}".format(name)),
+                opts=self.__rclone_opts,
+                driver=self.__rclone_plugin.alias,
+                driver_opts={"remote": "crypt-{}-{}:/".format(bucket_name, name)},
                 labels=DOCKER_VOLUME_LABELS
                 + [
                     docker.ContainerLabelArgs(
