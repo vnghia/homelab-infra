@@ -13,8 +13,7 @@ from pulumi import Input, Output, ResourceOptions
 
 from _command import Command
 from _common import constant
-from _container.image.image import docker_image
-from _data.docker import volume_map
+from _image import docker_image
 
 
 class File:
@@ -23,10 +22,15 @@ class File:
         cls,
         name: str,
         opts: ResourceOptions,
-        volume: str,
         path: Input[str],
         content: Input[str],
+        volume: str | None = None,
+        docker_asset_volume: Input[str] | None = None,
     ):
+        if not docker_asset_volume:
+            from _data.docker import volume_map
+
+            docker_asset_volume = volume_map[volume]
         return cls.__build(
             "{}-file".format(name),
             opts=opts,
@@ -36,7 +40,7 @@ class File:
             delete_path=Path(__file__).parent / "container" / "delete.py",
             environment={
                 "DOCKER_ASSET_IMAGE": docker_image.image_map["workaround"]["image_id"],
-                "DOCKER_ASSET_VOLUME": volume_map[volume],
+                "DOCKER_ASSET_VOLUME": docker_asset_volume,
             },
         )
 
@@ -82,6 +86,7 @@ class Template:
         module_path: str | Path | None = None,
         config: dict | None = None,
         input_args: dict | None = None,
+        docker_asset_volume: Input[str] | None = None,
     ):
         config = config or {}
         opts = opts or self.__opts
@@ -107,10 +112,11 @@ class Template:
         content = Output.json_dumps(config).apply(output_type_fn[output_type])
         output = File.build_container_file(
             config["name"],
-            opts,
-            config["volume"],
-            config["path"],
-            content,
+            opts=opts,
+            path=config["path"],
+            content=content,
+            volume=config.get("volume"),
+            docker_asset_volume=docker_asset_volume,
         )
 
         return output | {"config": config, "content": content}

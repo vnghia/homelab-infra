@@ -2,8 +2,8 @@ import pulumi_docker as docker
 from pulumi import Input, Output, ResourceOptions
 
 from _common import constant, docker_config, get_logical_name
-from _container.image.image import docker_image
 from _data.docker import volume_map
+from _image import docker_image
 from _network.docker import default_bridge_network
 
 
