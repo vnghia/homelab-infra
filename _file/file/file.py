@@ -1,5 +1,7 @@
 import base64
+import configparser
 import importlib
+import io
 import json
 from pathlib import Path
 from typing import Callable
@@ -79,8 +81,10 @@ class Template:
         opts: ResourceOptions | None = None,
         module_path: str | Path | None = None,
         config: dict | None = None,
+        input_args: dict | None = None,
     ):
         config = config or {}
+        opts = opts or self.__opts
         if module_path:
             module = importlib.import_module(
                 str(
@@ -91,14 +95,19 @@ class Template:
                 ).replace("/", ".")
             )
             config = config | module.output_config
+        if "input_fn" in config:
+            config["input"] = config.pop("input_fn")(opts, input_args)
 
-        output_type_fn = {"toml": self.__build_toml_apply}
+        output_type_fn = {
+            "toml": self.__build_toml_apply,
+            "conf": self.__build_conf_apply,
+        }
         output_type = config.get("type", config["path"].split(".")[-1])
 
         content = Output.json_dumps(config).apply(output_type_fn[output_type])
         output = File.build_container_file(
             config["name"],
-            opts or self.__opts,
+            opts,
             config["volume"],
             config["path"],
             content,
@@ -116,3 +125,24 @@ class Template:
             schema_req.raise_for_status()
             jsonschema.validate(input, schema_req.json())
         return tomlkit.dumps(tomlkit.item(input), sort_keys=True)
+
+    def __build_conf_apply(self, config_str: str):
+        config = json.loads(config_str)
+        input = config["input"]
+        if self.__middleware:
+            input = self.__middleware(input, config)
+        if "schema" in config:
+            schema_req = httpx.get(config["schema"])
+            schema_req.raise_for_status()
+            jsonschema.validate(input, schema_req.json())
+
+        parser = configparser.ConfigParser()
+        for remote_name, remote in input.items():
+            parser.add_section(remote_name)
+            for k, v in remote.items():
+                parser.set(remote_name, k, v)
+        config_content = io.StringIO()
+        parser.write(config_content)
+        config_content.seek(0)
+
+        return config_content.read()
