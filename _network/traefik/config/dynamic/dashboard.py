@@ -1,6 +1,6 @@
 from pulumi import Output
 
-from _network.dns.cloudflare import cloudflare_dns
+from _network.dns import hostnames
 
 output_config = {
     "input": {
@@ -9,7 +9,7 @@ output_config = {
             "name": "traefik",
             "rule": Output.format(
                 "Host(`{0}`) && (PathPrefix(`/proxy`) || HeaderRegexp(`Referer`, `.*/proxy/.*`))",
-                cloudflare_dns.hostnames["private-infra"],
+                hostnames["private-infra"],
             ),
             "service": "api@internal",
             "middlewares": ["traefik-api-strip-prefix"],

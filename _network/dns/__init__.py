@@ -1,3 +1,3 @@
-from _network.dns.cloudflare import cloudflare_dns
+from _network.dns.hostnames import hostnames
 
-__all__ = ["cloudflare_dns"]
+__all__ = ["hostnames"]

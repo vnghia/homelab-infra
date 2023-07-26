@@ -6,7 +6,7 @@ from pulumi import ComponentResource, Output, ResourceOptions
 from _common import traefik_config
 from _container import DockerContainer
 from _file import Template
-from _network.dns import cloudflare_dns
+from _network.dns.cloudflare import cloudflare_dns
 from _network.resource import child_opts
 from _network.tailscale import tailscale_device
 from _network.traefik.config.dynamic_config import TraefikDynamicConfig

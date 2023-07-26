@@ -4,6 +4,7 @@ import pulumi_cloudflare as cloudflare
 from pulumi import ComponentResource, Output, ResourceOptions
 
 from _common import dns_config, get_logical_name, server_config
+from _network.dns.hostnames import hostnames, records
 from _network.resource import child_opts
 from _network.tailscale import tailscale_device
 
@@ -17,10 +18,9 @@ class CloudflareDNS(ComponentResource):
         self.__build_records()
         self.__build_token()
 
-        self.hostnames = {k: v.hostname for k, v in self.__records.items()}
         self.acme_dns_token = self.__token.value
         self.register_outputs(
-            {"hostnames": self.hostnames, "acme_dns_token": self.acme_dns_token}
+            {"hostnames": hostnames, "acme_dns_token": self.acme_dns_token}
         )
 
     def __build_zone_id(self):
@@ -34,18 +34,15 @@ class CloudflareDNS(ComponentResource):
 
     def __build_records(self):
         self.__records: dict[str, cloudflare.Record] = {}
-        self.__ip_map = {
+        ip_map = {
             "public": {"address": server_config["ip"], "proxied": True},
             "private": {"address": tailscale_device.ipv4, "proxied": False},
         }
 
-        for zone_name, zone_config in dns_config["zone"].items():
-            zone_key = zone_config.pop("key", zone_name)
-            zone_id = self.__zone_id_map[zone_name]
-            self.__build_records_zone(zone_key, zone_id, zone_config)
+        for key, record in records.items():
+            zone_id = self.__zone_id_map[record["zone"]]
 
-    def __build_records_zone(self, key: str, id: str, config):
-        for ip_type, ip_config in self.__ip_map.items():
+            ip_config = ip_map[record["type"]]
             record_value = ip_config["address"]
             record_type = Output.from_input(record_value).apply(
                 lambda address: "A"
@@ -53,19 +50,25 @@ class CloudflareDNS(ComponentResource):
                 else "AAAA"
             )
 
-            for record_key, record_name in config.get(ip_type, {}).items():
-                full_key = "-".join(
-                    ([key] if key != "main" else []) + [ip_type] + [record_key]
-                )
-                self.__records[full_key] = cloudflare.Record(
-                    full_key,
-                    opts=self.__child_opts,
-                    name=record_name,
-                    proxied=ip_config["proxied"],
-                    type=record_type,
-                    value=record_value,
-                    zone_id=id,
-                )
+            self.__records[key] = cloudflare.Record(
+                key,
+                opts=self.__child_opts,
+                name=record["name"],
+                proxied=ip_config["proxied"],
+                type=record_type,
+                value=record_value,
+                zone_id=zone_id,
+            )
+
+            Output.all(
+                local=record["hostname"], server=self.__records[key].hostname
+            ).apply(self.__compare_hostname)
+
+    def __compare_hostname(self, args):
+        if args["local"] != args["server"]:
+            raise ValueError(
+                "Local hostname ({}) is different from server hostname ({})."
+            )
 
     def __build_token(self):
         permission_groups = cloudflare.get_api_token_permission_groups()
