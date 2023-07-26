@@ -1,0 +1,51 @@
+from pathlib import Path
+
+from pulumi import ComponentResource, ResourceOptions
+
+from _common import navidrome_config
+from _container import DockerContainer
+from _file import Template
+from _network.traefik import traefik_proxy
+from _service.resource import child_opts
+
+
+class Navidrome(ComponentResource):
+    def __init__(self) -> None:
+        super().__init__("service:index:Navidrome", "navidrome", None, child_opts)
+        self.__child_opts = ResourceOptions(parent=self)
+
+        self.__navidrome_config = Template(self.__child_opts).build(
+            module_path=Path(__file__).parent / "config.py"
+        )
+        self.__container = DockerContainer.build(
+            "navidrome",
+            opts=self.__child_opts,
+            envs={
+                "ND_CONFIGFILE": "{}{}".format(
+                    navidrome_config["data"]["dir"],
+                    self.__navidrome_config["config"]["path"],
+                )
+            },
+            volumes={
+                navidrome_config["music"]["dir"]: {
+                    "name": navidrome_config["music"]["volume"],
+                    "ro": True,
+                },
+                navidrome_config["data"]["dir"]: {
+                    "name": navidrome_config["data"]["volume"],
+                },
+            },
+            labels={
+                "traefik-config-sha256": traefik_proxy.dynamic_config["navidrome"][
+                    "sha256"
+                ],
+                "navidrome-config-sha256": self.__navidrome_config["sha256"],
+            },
+            wait=True,
+        )
+
+        self.container_id = self.__container.id
+        self.register_outputs({"container_id": self.container_id})
+
+
+navidrome = Navidrome()

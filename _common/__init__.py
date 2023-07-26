@@ -2,6 +2,7 @@ from _common import constant
 from _common.config import (
     dns_config,
     docker_config,
+    navidrome_config,
     secret_config,
     server_config,
     storage_config,
@@ -14,6 +15,7 @@ __all__ = [
     "constant",
     "dns_config",
     "docker_config",
+    "navidrome_config",
     "secret_config",
     "server_config",
     "storage_config",
