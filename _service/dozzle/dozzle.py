@@ -1,5 +1,6 @@
 from pulumi import ComponentResource, ResourceOptions
 
+from _common import constant
 from _container import DockerContainer
 from _network.traefik import traefik_proxy
 from _service.resource import child_opts
@@ -11,7 +12,10 @@ class Dozzle(ComponentResource):
         self.__container = DockerContainer.build(
             "dozzle",
             opts=ResourceOptions(parent=self),
-            envs={"DOZZLE_BASE": "/log"},
+            envs={
+                "DOZZLE_BASE": "/log",
+                "DOZZLE_FILTER": "label=pulumi.stack={}".format(constant.PROJECT_STACK),
+            },
             volumes={"/var/run/docker.sock": {"ro": True}},
             labels={
                 "traefik-config-sha256": traefik_proxy.dynamic_config["dozzle"][
