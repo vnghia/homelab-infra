@@ -1,6 +1,5 @@
 from pathlib import Path
 
-import pulumi_docker as docker
 from pulumi import ComponentResource, Output, ResourceOptions
 
 from _common import traefik_config
@@ -32,6 +31,7 @@ class TraefikProxy(ComponentResource):
         )
 
     def __build_container(self):
+        # TODO: Re-enable healthcheck after https://github.com/traefik/traefik/issues/6861
         self.__container = DockerContainer.build(
             name="traefik",
             opts=self.__child_opts.merge(ResourceOptions(delete_before_replace=True)),
@@ -46,12 +46,6 @@ class TraefikProxy(ComponentResource):
                 "CF_DNS_API_TOKEN": cloudflare_dns.acme_dns_token,
                 "CF_ZONE_API_TOKEN": cloudflare_dns.acme_dns_token,
             },
-            healthcheck=docker.ContainerHealthcheckArgs(
-                tests=["CMD-SHELL", "traefik healthcheck --ping"],
-                interval="1s",
-                timeout="5s",
-                retries=60,
-            ),
             network_mode=Output.concat("container:", tailscale_device.container_id),
             volumes={
                 traefik_config["config"]["dir"]: {
@@ -62,7 +56,6 @@ class TraefikProxy(ComponentResource):
                 "/etc/localtime": {"ro": True},
                 "/usr/share/zoneinfo": {"ro": True},
             },
-            wait=True,
             labels={"static-config-sha256": self.__static_config["sha256"]},
         )
 
