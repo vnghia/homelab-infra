@@ -10,3 +10,4 @@ docker[ssh]>=6.0.0,<7.0.0
 httpx<1.0.0
 tomlkit<1.0.0
 jsonschema>=4.0.0,<5.0.0
+pykeepass>=4.0.0,<5.0.0

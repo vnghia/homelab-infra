@@ -27,9 +27,9 @@ config:
           tag: "v4.10.19"
       volume:
         local:
-          - tailscale-state
-          - traefik-config
-          - traefik-cert
+          tailscale-state:
+          traefik-config:
+          traefik-cert:
         bind:
           # https://rclone.org/docker/
           rclone-config: /var/lib/docker-plugins/rclone/config

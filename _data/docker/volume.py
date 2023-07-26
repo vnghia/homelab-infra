@@ -8,6 +8,7 @@ from _common import docker_config, get_logical_name, server_config, storage_conf
 from _data.docker.label import DOCKER_VOLUME_LABELS
 from _data.resource import child_opts
 from _file import Template
+from _secret import secret
 
 
 class DockerVolume(ComponentResource):
@@ -30,12 +31,20 @@ class DockerVolume(ComponentResource):
         volume_config = docker_config.get("volume", {})
         local_volume_config = volume_config.get("local", [])
 
-        for name in local_volume_config:
+        for name, config in local_volume_config.items():
+            config = config or {}
             self.__volumes[name] = docker.Volume(
                 get_logical_name(name),
                 opts=self.__child_opts,
                 driver="local",
-                labels=DOCKER_VOLUME_LABELS,
+                labels=DOCKER_VOLUME_LABELS
+                + [
+                    docker.VolumeLabelArgs(
+                        label="{}-bcrypt-hash".format(key),
+                        value=secret.keys[key].bcrypt_hash,
+                    )
+                    for key in config.get("key", [])
+                ],
             )
 
     def __build_bind_volume(self):
