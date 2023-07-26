@@ -45,13 +45,12 @@ class TraefikDynamicConfig(ComponentResource):
             router_dict["service"] = router_service
 
             if is_http:
+                router_dict["tls"] = {"certResolver": "leresolver_dns"}
                 sec_mode = router_config.pop("sec_mode", "private")
                 if sec_mode == "private":
                     router_dict["entryPoints"] = ["https-private"]
-                    router_dict["tls"] = {"certResolver": "leresolver_dns"}
                 elif sec_mode == "public":
                     router_dict["entryPoints"] = ["https-public"]
-                    router_dict["tls"] = {"certResolver": "leresolver_http"}
 
             main_dict["routers"] = {
                 router_name: deepmerge.always_merger.merge(router_dict, router_config)

@@ -20,7 +20,6 @@ output_config = {
         "ping": {},
         "accessLog": {"fields": {"names": {"StartUTC": "drop"}}},
         "entryPoints": {
-            "http": {"address": ":80"},
             "https-private": {"address": ":443"},
             "https-public": {
                 "address": ":{}".format(tailscale_config["port"]["internal"]),
@@ -37,14 +36,6 @@ output_config = {
                     "email": __acme_email,
                     "storage": "{}{}".format(__cert_dir, "acme-dns.json"),
                     "dnsChallenge": {"provider": "cloudflare"},
-                }
-            },
-            "leresolver_http": {
-                "acme": {
-                    "caServer": __acme_server,
-                    "email": __acme_email,
-                    "storage": "{}{}".format(__cert_dir, "acme_http.json"),
-                    "httpChallenge": {"entryPoint": "http"},
                 }
             },
         },
