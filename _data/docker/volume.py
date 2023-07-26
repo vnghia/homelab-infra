@@ -1,9 +1,13 @@
+from pathlib import Path
+
 import pulumi_docker as docker
 from pulumi import ComponentResource, ResourceOptions
 
-from _common import docker_config, get_logical_name
+from _command import Command
+from _common import docker_config, get_logical_name, server_config, storage_config
 from _data.docker.label import DOCKER_VOLUME_LABELS
 from _data.resource import child_opts
+from _file import Template
 
 
 class DockerVolume(ComponentResource):
@@ -15,6 +19,9 @@ class DockerVolume(ComponentResource):
 
         self.__build_local_volume()
         self.__build_bind_volume()
+        self.__build_rclone_config()
+        self.__build_rclone_plugin()
+        self.__build_mount_volume()
 
         self.volume_map = {k: v.name for k, v in self.__volumes.items()}
         self.register_outputs({"volume_map": self.volume_map})
@@ -46,6 +53,67 @@ class DockerVolume(ComponentResource):
                     "device": path,
                 },
                 labels=DOCKER_VOLUME_LABELS,
+            )
+
+    def __build_rclone_config(self):
+        self.__rclone_opts = ResourceOptions(
+            parent=ComponentResource(
+                "data:rclone:root", "rclone", None, self.__child_opts
+            )
+        )
+        self.__rclone_config = Template().build(
+            opts=self.__rclone_opts,
+            module_path=Path(__file__).parent / "rclone" / "config.py",
+            docker_asset_volume=self.__volumes["rclone-config"].name,
+        )
+
+    def __build_rclone_plugin(self):
+        platform = server_config["platform"]
+        plugin_tag = eval(
+            storage_config["rclone"]["plugin"]["version"], {}, {"platform": platform}
+        )
+
+        self.__rclone_plugin = docker.Plugin(
+            get_logical_name("rclone-volume-plugin"),
+            opts=self.__rclone_opts.merge(ResourceOptions(delete_before_replace=True)),
+            alias=self.__rclone_config["sha256"].apply(
+                lambda sha256: "{}:{}".format(get_logical_name("rclone"), sha256[:7])
+            ),
+            name="rclone/docker-volume-rclone:{}".format(plugin_tag),
+            grant_all_permissions=True,
+        )
+
+        self.rclone_plugin_alias = self.__rclone_plugin.alias
+        self.rclone_config_path = self.__rclone_config["config"]["path"]
+
+        # TODO: https://github.com/kreuzwerker/terraform-provider-docker/issues/108
+        self.__rclone_plugin_command = Command.build(
+            "rclone-plugin-command",
+            opts=self.__rclone_opts.merge(ResourceOptions(delete_before_replace=True)),
+            create=Path(__file__).parent / "rclone" / "enable_plugin.py",
+            delete=Path(__file__).parent / "rclone" / "disable_plugin.py",
+            environment={
+                "PLUGIN_NAME": self.rclone_plugin_alias,
+                "RCLONE_CONFIG": "/data/config/{}".format(self.rclone_config_path),
+            },
+        )
+
+    def __build_mount_volume(self):
+        bucket_name = storage_config["bucket"]
+
+        volume_config = storage_config["rclone"].get("mount", {})
+        for name, prefix in volume_config.items():
+            self.__volumes["mount-{}".format(name)] = docker.Volume(
+                get_logical_name("mount-{}".format(name)),
+                opts=self.__rclone_opts,
+                driver=self.__rclone_plugin.alias,
+                driver_opts={"remote": "bucket:{}/{}".format(bucket_name, prefix)},
+                labels=DOCKER_VOLUME_LABELS
+                + [
+                    docker.ContainerLabelArgs(
+                        label="plugin.command.id", value=self.__rclone_plugin_command.id
+                    ),
+                ],
             )
 
 

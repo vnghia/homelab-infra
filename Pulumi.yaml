@@ -30,6 +30,15 @@ config:
           - tailscale-state
           - traefik-config
           - traefik-cert
+        bind:
+          # https://rclone.org/docker/
+          rclone-config: /var/lib/docker-plugins/rclone/config
+          rclone-cache: /var/lib/docker-plugins/rclone/cache
+  storage:
+    value:
+      rclone:
+        plugin:
+          version: "'{}-1.63.1'.format(platform)"
   tailscale:
     value:
       state:

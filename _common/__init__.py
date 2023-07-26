@@ -3,6 +3,7 @@ from _common.config import (
     dns_config,
     docker_config,
     server_config,
+    storage_config,
     tailscale_config,
     traefik_config,
 )
@@ -13,6 +14,7 @@ __all__ = [
     "dns_config",
     "docker_config",
     "server_config",
+    "storage_config",
     "tailscale_config",
     "traefik_config",
     "get_logical_name",
