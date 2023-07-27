@@ -9,6 +9,7 @@ from typing import Callable
 import httpx
 import jsonschema
 import tomlkit
+import yaml
 from pulumi import Input, Output, ResourceOptions
 
 from _command import Command
@@ -106,6 +107,7 @@ class Template:
         output_type_fn = {
             "toml": self.__build_toml_apply,
             "conf": self.__build_conf_apply,
+            "yaml": self.__build_yaml_apply,
         }
         output_type = config.get("type", config["path"].split(".")[-1])
 
@@ -152,3 +154,14 @@ class Template:
         config_content.seek(0)
 
         return config_content.read()
+
+    def __build_yaml_apply(self, config_str: str):
+        config = json.loads(config_str)
+        input = config["input"]
+        if self.__middleware:
+            input = self.__middleware(input, config)
+        if "schema" in config:
+            schema_req = httpx.get(config["schema"])
+            schema_req.raise_for_status()
+            jsonschema.validate(input, schema_req.json())
+        return yaml.dump(input, default_flow_style=False)
