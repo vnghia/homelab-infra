@@ -24,6 +24,7 @@ class DockerVolume(ComponentResource):
         self.__build_rclone_plugin()
         self.__build_mount_volume()
         self.__build_crypt_volume()
+        self.__build_combine_volume()
 
         self.volume_map = {k: v.name for k, v in self.__volumes.items()}
         self.register_outputs({"volume_map": self.volume_map})
@@ -136,6 +137,21 @@ class DockerVolume(ComponentResource):
                 opts=self.__rclone_opts,
                 driver=self.__rclone_plugin.alias,
                 driver_opts={"remote": "crypt-{}-{}:/".format(bucket_name, name)},
+                labels=DOCKER_VOLUME_LABELS
+                + [
+                    docker.ContainerLabelArgs(
+                        label="plugin.command.id", value=self.__rclone_plugin_command.id
+                    ),
+                ],
+            )
+
+    def __build_combine_volume(self):
+        if "combine" in storage_config["rclone"]:
+            self.__volumes["combine"] = docker.Volume(
+                get_logical_name("combine"),
+                opts=self.__rclone_opts,
+                driver=self.__rclone_plugin.alias,
+                driver_opts={"remote": "combine:/"},
                 labels=DOCKER_VOLUME_LABELS
                 + [
                     docker.ContainerLabelArgs(

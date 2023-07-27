@@ -41,6 +41,18 @@ def input_fn(opts: ResourceOptions, _):
             "password": password_obscured.stdout,
             "password2": salt_obscured.stdout,
         }
+    combine = []
+    for name, path in storage_config["rclone"].get("combine", {}).items():
+        type, key = name.split("-", maxsplit=1)
+        if type == "mount":
+            combine.append(
+                "{}=bucket:{}/{}".format(
+                    path, bucket_name, storage_config["rclone"]["mount"][key]
+                )
+            )
+        elif type == "crypt":
+            combine.append("{}=crypt-{}-{}:".format(path, bucket_name, key))
+    input_dict["combine"] = {"type": "combine", "upstreams": " ".join(combine)}
     return input_dict
 
 
