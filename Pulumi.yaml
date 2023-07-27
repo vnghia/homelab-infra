@@ -34,6 +34,9 @@ config:
         rclone:
           name: rclone/rclone
           tag: "1.63"
+        crowdsec:
+          name: crowdsecurity/crowdsec
+          tag: "v1.5.2"
       volume:
         local:
           tailscale-state:
@@ -43,6 +46,8 @@ config:
             key:
               - navidrome-encryption
           syncthing-config:
+          crowdsec-config:
+          crowdsec-data:
         bind:
           # https://rclone.org/docker/
           rclone-config: /var/lib/docker-plugins/rclone/config
@@ -82,6 +87,10 @@ config:
       schema:
         static: https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/traefik-v2.json
         dynamic: https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/traefik-v2-file-provider.json
+      plugin:
+        crowdsec:
+          name: github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
+          version: "v1.1.13"
   secret_:
     value:
       key:
@@ -116,3 +125,12 @@ config:
         password:
           volume: crypt-password
           dir: /var/syncthing/data/password/
+  crowdsec:
+    value:
+      volume:
+        config:
+          volume: crowdsec-config
+          dir: /etc/crowdsec/
+        data:
+          volume: crowdsec-data
+          dir: /var/lib/crowdsec/data

@@ -1,10 +1,12 @@
 from pathlib import Path
 
 import deepmerge
+import pulumi_cloudflare as cloudflare
 from pulumi import ComponentResource, ResourceOptions
 
 from _common import traefik_config
 from _file import Template
+from _network.security import crowdsec
 
 
 class TraefikDynamicConfig(ComponentResource):
@@ -25,9 +27,32 @@ class TraefikDynamicConfig(ComponentResource):
                     "path": output_path,
                     "schema": traefik_config["schema"]["dynamic"],
                 },
+                input_fn=self.__build_toml_input_fn,
             )
 
         self.register_outputs({k: v["content"] for k, v in self.dynamic_config.items()})
+
+    def __build_toml_input_fn(self, config: dict):
+        if config.get("input", {}).get("router", {}).get("sec_mode") == "public":
+            router_name = config["input"]["router"]["name"]
+            middleware_name = "crowdsec-{}".format(router_name)
+            middleware_dict = {
+                "name": "crowdsec",
+                "plugin": True,
+                "enabled": True,
+                "crowdsecMode": "stream",
+                "crowdseclapikey": crowdsec.add_bouncer(
+                    router_name, opts=self.__child_opts
+                ),
+                "forwardedheaderstrustedips": cloudflare.get_ip_ranges().cidr_blocks,
+            }
+            if "middleware" not in config["input"]:
+                config["input"]["middleware"] = {}
+            if "middlewares" not in config["input"]["router"]:
+                config["input"]["router"]["middlewares"] = []
+            config["input"]["middleware"][middleware_name] = middleware_dict
+            config["input"]["router"]["middlewares"].append(middleware_name)
+        return config
 
     def __build_toml_middleware(self, input, _):
         main_type = input.pop("type")
@@ -87,10 +112,9 @@ class TraefikDynamicConfig(ComponentResource):
         if middleware_configs:
             middlewares_dict = {}
 
-            for middleware_key in middleware_configs:
+            for middleware_key, middleware_config in middleware_configs.items():
                 middleware_dict = {}
 
-                middleware_config = middleware_configs[middleware_key]
                 middleware_name = middleware_config.pop("name")
                 middleware_plugin = middleware_config.pop("plugin", False)
                 if middleware_plugin:
