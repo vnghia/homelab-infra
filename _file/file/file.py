@@ -88,6 +88,7 @@ class Template:
         config: dict | None = None,
         input_args: dict | None = None,
         docker_asset_volume: Input[str] | None = None,
+        input_fn: Callable[[dict], dict] | None = None,
     ):
         config = config or {}
         opts = opts or self.__opts
@@ -101,6 +102,8 @@ class Template:
                 ).replace("/", ".")
             )
             config = config | module.output_config
+        if input_fn:
+            config = input_fn(config)
         if "input_fn" in config:
             config["input"] = config.pop("input_fn")(opts, input_args)
 
@@ -123,7 +126,7 @@ class Template:
 
         return output | {"config": config, "content": content}
 
-    def __build_toml_apply(self, config_str: str):
+    def __build_apply(self, config_str: str):
         config = json.loads(config_str)
         input = config["input"]
         if self.__middleware:
@@ -132,17 +135,14 @@ class Template:
             schema_req = httpx.get(config["schema"])
             schema_req.raise_for_status()
             jsonschema.validate(input, schema_req.json())
+        return input, config
+
+    def __build_toml_apply(self, config_str: str):
+        input, _ = self.__build_apply(config_str)
         return tomlkit.dumps(tomlkit.item(input), sort_keys=True)
 
     def __build_conf_apply(self, config_str: str):
-        config = json.loads(config_str)
-        input = config["input"]
-        if self.__middleware:
-            input = self.__middleware(input, config)
-        if "schema" in config:
-            schema_req = httpx.get(config["schema"])
-            schema_req.raise_for_status()
-            jsonschema.validate(input, schema_req.json())
+        input, _ = self.__build_apply(config_str)
 
         parser = configparser.ConfigParser()
         for remote_name, remote in input.items():
@@ -156,12 +156,5 @@ class Template:
         return config_content.read()
 
     def __build_yaml_apply(self, config_str: str):
-        config = json.loads(config_str)
-        input = config["input"]
-        if self.__middleware:
-            input = self.__middleware(input, config)
-        if "schema" in config:
-            schema_req = httpx.get(config["schema"])
-            schema_req.raise_for_status()
-            jsonschema.validate(input, schema_req.json())
+        input, _ = self.__build_apply(config_str)
         return yaml.dump(input, default_flow_style=False)
