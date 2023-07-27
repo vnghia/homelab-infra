@@ -31,6 +31,9 @@ config:
         syncthing:
           name: syncthing/syncthing
           tag: "1.23"
+        rclone:
+          name: rclone/rclone
+          tag: "1.63"
       volume:
         local:
           tailscale-state:
@@ -53,6 +56,8 @@ config:
           music: music/original/
         crypt:
           password: crypt/password/
+        combine:
+          crypt-password: password
   tailscale:
     value:
       state:
@@ -89,3 +94,9 @@ config:
       data:
         dir: /data/
         volume: navidrome-data
+  rclone:
+    value:
+      config:
+        dir: /etc/rclone/
+        volume: rclone-config
+      port: 8080
