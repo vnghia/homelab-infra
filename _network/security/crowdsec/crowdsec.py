@@ -42,7 +42,7 @@ class Crowdsec(ComponentResource):
         )
         return Command.build(
             "{}-bouncer".format(name),
-            opts=opts.merge(ResourceOptions(delete_before_replace=True)),
+            opts=opts,
             create=Path(__file__).parent / "add_bouncer.py",
             delete=Path(__file__).parent / "delete_bouncer.py",
             environment={

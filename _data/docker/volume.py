@@ -100,7 +100,7 @@ class DockerVolume(ComponentResource):
         # TODO: https://github.com/kreuzwerker/terraform-provider-docker/issues/108
         self.__rclone_plugin_command = Command.build(
             "rclone-plugin-command",
-            opts=self.__rclone_opts.merge(ResourceOptions(delete_before_replace=True)),
+            opts=self.__rclone_opts,
             create=Path(__file__).parent / "rclone" / "enable_plugin.py",
             delete=Path(__file__).parent / "rclone" / "disable_plugin.py",
             environment={

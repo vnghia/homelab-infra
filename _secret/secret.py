@@ -66,9 +66,7 @@ class Secret:
             self.__keepass_entries[name] = Command.build(
                 name="{}-keepass-entry".format(name),
                 opts=self.__keepass_entry_opts.merge(
-                    ResourceOptions(
-                        delete_before_replace=True, replace_on_changes=["stdin"]
-                    )
+                    ResourceOptions(replace_on_changes=["stdin"])
                 ),
                 create=Path(__file__).parent / "keepass" / "entry" / "create.py",
                 delete=Path(__file__).parent / "keepass" / "entry" / "delete.py",

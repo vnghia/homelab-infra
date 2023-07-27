@@ -60,7 +60,7 @@ class File:
         # Blocked by: https://github.com/pulumi/pulumi-command/issues/20
         file = Command.build(
             name,
-            opts=opts.merge(ResourceOptions(delete_before_replace=True)),
+            opts=opts,
             create=create_path,
             delete=delete_path,
             stdin=Output.from_input(content).apply(

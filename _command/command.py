@@ -27,12 +27,15 @@ class Command:
         create: Path | str | None = None,
         delete: Path | str | None = None,
         update: Path | str | None = None,
+        delete_before_replace: bool = True,
         **kwargs
     ):
         environment = kwargs.get("environment", {})
         return command.local.Command(
             name,
-            opts=opts,
+            opts=opts.merge(
+                ResourceOptions(delete_before_replace=delete_before_replace)
+            ),
             create=cls.__build_command(create),
             delete=cls.__build_command(delete),
             update=cls.__build_command(update),
