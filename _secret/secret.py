@@ -13,6 +13,7 @@ class Secret:
     def __init__(self) -> None:
         self.keys = {}
         self.__passwords = {}
+        self.__keepass_entries = {}
         self.accounts = {}
 
         self.__build_key()
@@ -43,15 +44,18 @@ class Secret:
         for name, config in secret_config.pop("account", {}).items():
             config = config or {}
 
-            self.__passwords[name] = self.build_password(
-                "{}-account".format(name),
-                opts=self.__keepass_entry_opts,
-                **(config.pop("password", {}))
-            )
+            password = config.pop("password", {})
+            if not isinstance(password, str):
+                self.__passwords[name] = self.build_password(
+                    "{}-account".format(name),
+                    opts=self.__keepass_entry_opts,
+                    **password
+                )
+                password = self.__passwords[name].result
 
             config["title"] = name
             config["username"] = config.get("username", name)
-            config["password"] = self.__passwords[name].result
+            config["password"] = password
             hostname = hostnames.get(config.pop("hostname", None), None)
             if hostname:
                 config["url"] = Output.concat("https://", hostname)
@@ -59,7 +63,7 @@ class Secret:
                 "{}.{}".format(k, v) for k, v in constant.PROJECT_TAG.items()
             ]
 
-            self.accounts[name] = Command.build(
+            self.__keepass_entries[name] = Command.build(
                 name="{}-keepass-entry".format(name),
                 opts=self.__keepass_entry_opts.merge(
                     ResourceOptions(
@@ -71,6 +75,13 @@ class Secret:
                 stdin=Output.json_dumps(config),
                 environment={"KEEPASS_GROUP_UUID": self.__keepass_group_uuid},
             )
+
+            self.accounts[name] = {
+                "username": config["username"],
+                "password": config["password"],
+            }
+            if name in self.__passwords:
+                self.accounts[name]["bcrypt"] = self.__passwords[name].bcrypt_hash
 
     @classmethod
     def build_password(cls, name: str, opts: ResourceOptions | None = None, **kwargs):
