@@ -95,6 +95,7 @@ class Secret:
             min_numeric=kwargs.pop("min_numeric", 1),
             min_special=kwargs.pop("min_special", 1),
             min_upper=kwargs.pop("min_upper", 1),
+            **kwargs
         )
 
 
