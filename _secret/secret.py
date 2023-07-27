@@ -87,7 +87,9 @@ class Secret:
     def build_password(cls, name: str, opts: ResourceOptions | None = None, **kwargs):
         return random.RandomPassword(
             name,
-            opts=opts or child_opts,
+            opts=(opts or child_opts).merge(
+                ResourceOptions(protect=constant.PROJECT_STACK != "dev")
+            ),
             length=kwargs.pop("length", 32),
             min_lower=kwargs.pop("min_lower", 1),
             min_numeric=kwargs.pop("min_numeric", 1),
