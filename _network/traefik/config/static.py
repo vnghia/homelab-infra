@@ -2,9 +2,9 @@ import pulumi_cloudflare as cloudflare
 
 from _common import tailscale_config, traefik_config
 
-__config_dir = traefik_config["config"]["dir"]
-__config_volume = traefik_config["config"]["volume"]
-__cert_dir = traefik_config["cert"]["dir"]
+__config_dir = traefik_config["volume"]["config"]["dir"]
+__config_volume = traefik_config["volume"]["config"]["volume"]
+__cert_dir = traefik_config["volume"]["cert"]["dir"]
 __acme_server = traefik_config["acme"].get(
     "server", "https://acme-v02.api.letsencrypt.org/directory"
 )

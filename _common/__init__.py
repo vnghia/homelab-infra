@@ -7,6 +7,7 @@ from _common.config import (
     secret_config,
     server_config,
     storage_config,
+    syncthing_config,
     tailscale_config,
     traefik_config,
 )
@@ -21,6 +22,7 @@ __all__ = [
     "secret_config",
     "server_config",
     "storage_config",
+    "syncthing_config",
     "tailscale_config",
     "traefik_config",
     "get_logical_name",

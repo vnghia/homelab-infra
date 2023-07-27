@@ -60,21 +60,24 @@ config:
           crypt-password: password
   tailscale:
     value:
-      state:
-        volume: tailscale-state
-        dir: /var/lib/tailscale/
+      volume:
+        state:
+          volume: tailscale-state
+          dir: /var/lib/tailscale/
       port:
         internal: 444
         external: 443
       socket: /var/run/tailscale/tailscaled.sock
   traefik:
     value:
-      config:
-        volume: traefik-config
-        dir: /etc/traefik/config/
-      cert:
-        volume: traefik-cert
-        dir: /etc/traefik/cert/
+      volume:
+        config:
+          volume: traefik-config
+          dir: /etc/traefik/config/
+          ro: true
+        cert:
+          volume: traefik-cert
+          dir: /etc/traefik/cert/
       # TODO: Upgrade to v3
       schema:
         static: https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/traefik-v2.json
@@ -88,15 +91,28 @@ config:
           hostname: public-navidrome
   navidrome:
     value:
-      music:
-        dir: /music/
-        volume: mount-music
-      data:
-        dir: /data/
-        volume: navidrome-data
+      volume:
+        music:
+          volume: mount-music
+          dir: /music/
+          ro: true
+        data:
+          volume: navidrome-data
+          dir: /data/
   rclone:
     value:
-      config:
-        dir: /etc/rclone/
-        volume: rclone-config
+      volume:
+        config:
+          volume: rclone-config
+          dir: /etc/rclone/
+          ro: true
       port: 8080
+  syncthing:
+    value:
+      volume:
+        config:
+          volume: syncthing-config
+          dir: /var/syncthing/
+        password:
+          volume: crypt-password
+          dir: /var/syncthing/data/password/

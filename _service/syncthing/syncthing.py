@@ -1,5 +1,6 @@
 from pulumi import ComponentResource, Output, ResourceOptions
 
+from _common import syncthing_config
 from _container import DockerContainer
 from _network.tailscale import tailscale_device
 from _service.resource import child_opts
@@ -12,10 +13,7 @@ class Syncthing(ComponentResource):
             "syncthing",
             opts=ResourceOptions(parent=self),
             network_mode=Output.concat("container:", tailscale_device.container_id),
-            volumes={
-                "/var/syncthing/": {"name": "syncthing-config"},
-                "/var/syncthing/data/password/": {"name": "crypt-password"},
-            },
+            volume_config=syncthing_config["volume"],
         )
         self.container_id = self.__container.id
         self.register_outputs({"container_id": self.container_id})

@@ -49,7 +49,9 @@ class TailscaleDevice(ComponentResource):
             length=7,
             special=False,
             upper=False,
-            keepers={"volume_name": volume_map[tailscale_config["state"]["volume"]]},
+            keepers={
+                "volume_name": volume_map[tailscale_config["volume"]["state"]["volume"]]
+            },
         )
         self.__hostname = Output.concat(
             get_logical_name(), "-", self.__hostname_suffix.result
@@ -70,7 +72,7 @@ class TailscaleDevice(ComponentResource):
             opts=self.__child_opts,
             envs={
                 "TS_AUTHKEY": self.__authkey.key,
-                "TS_STATE_DIR": tailscale_config["state"]["dir"],
+                "TS_STATE_DIR": tailscale_config["volume"]["state"]["dir"],
                 "TS_SOCKET": tailscale_config["socket"],
             },
             healthcheck=docker.ContainerHealthcheckArgs(
@@ -89,11 +91,7 @@ class TailscaleDevice(ComponentResource):
                     external=tailscale_config["port"]["external"],
                 )
             ],
-            volumes={
-                tailscale_config["state"]["dir"]: {
-                    "volume": tailscale_config["state"]["volume"]
-                }
-            },
+            volume_config=tailscale_config["volume"],
             wait=True,
         )
 

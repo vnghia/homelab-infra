@@ -21,7 +21,7 @@ class TraefikDynamicConfig(ComponentResource):
                 module_path=module_path,
                 config={
                     "name": "traefik-{}".format(module_path.stem),
-                    "volume": traefik_config["config"]["volume"],
+                    "volume": traefik_config["volume"]["config"]["volume"],
                     "path": output_path,
                     "schema": traefik_config["schema"]["dynamic"],
                 },

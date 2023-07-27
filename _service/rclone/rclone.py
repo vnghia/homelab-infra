@@ -19,7 +19,8 @@ class Rclone(ComponentResource):
                 command=[
                     "--config",
                     "{}{}".format(
-                        rclone_config["config"]["dir"], docker_volume.rclone_config_path
+                        rclone_config["volume"]["config"]["dir"],
+                        docker_volume.rclone_config_path,
                     ),
                     "-v",
                     "serve",
@@ -32,12 +33,7 @@ class Rclone(ComponentResource):
                     "--pass",
                     secret.accounts["rclone"]["password"],
                 ],
-                volumes={
-                    rclone_config["config"]["dir"]: {
-                        "name": rclone_config["config"]["volume"],
-                        "ro": True,
-                    },
-                },
+                volume_config=rclone_config["volume"],
                 labels={
                     "traefik-config-sha256": traefik_proxy.dynamic_config["rclone"][
                         "sha256"

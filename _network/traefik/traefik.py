@@ -37,7 +37,7 @@ class TraefikProxy(ComponentResource):
             opts=self.__child_opts.merge(ResourceOptions(delete_before_replace=True)),
             command=[
                 "--configFile={}{}".format(
-                    traefik_config["config"]["dir"],
+                    traefik_config["volume"]["config"]["dir"],
                     self.__static_config["config"]["path"],
                 ),
             ],
@@ -47,12 +47,8 @@ class TraefikProxy(ComponentResource):
                 "CF_ZONE_API_TOKEN": cloudflare_dns.acme_dns_token,
             },
             network_mode=Output.concat("container:", tailscale_device.container_id),
+            volume_config=traefik_config["volume"],
             volumes={
-                traefik_config["config"]["dir"]: {
-                    "name": traefik_config["config"]["volume"],
-                    "ro": True,
-                },
-                traefik_config["cert"]["dir"]: {"name": traefik_config["cert"]["dir"]},
                 "/etc/localtime": {"ro": True},
                 "/usr/share/zoneinfo": {"ro": True},
             },

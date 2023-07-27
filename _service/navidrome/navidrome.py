@@ -22,19 +22,11 @@ class Navidrome(ComponentResource):
             opts=self.__child_opts,
             envs={
                 "ND_CONFIGFILE": "{}{}".format(
-                    navidrome_config["data"]["dir"],
+                    navidrome_config["volume"]["data"]["dir"],
                     self.__navidrome_config["config"]["path"],
                 )
             },
-            volumes={
-                navidrome_config["music"]["dir"]: {
-                    "name": navidrome_config["music"]["volume"],
-                    "ro": True,
-                },
-                navidrome_config["data"]["dir"]: {
-                    "name": navidrome_config["data"]["volume"],
-                },
-            },
+            volume_config=navidrome_config["volume"],
             labels={
                 "traefik-config-sha256": traefik_proxy.dynamic_config["navidrome"][
                     "sha256"

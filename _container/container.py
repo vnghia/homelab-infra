@@ -15,6 +15,7 @@ class DockerContainer:
         opts: ResourceOptions,
         image: str | None = None,
         envs: dict[Input[str], Input[str]] | None = None,
+        volume_config: dict[str, dict] | None = None,
         volumes: dict[Input[str], dict] | None = None,
         **kwargs
     ):
@@ -32,19 +33,24 @@ class DockerContainer:
             ]
 
         volume_args = kwargs.pop("_volumes", [])
+        if volume_config:
+            for volume in volume_config.values():
+                volume_args.append(
+                    docker.ContainerVolumeArgs(
+                        container_path=volume["dir"],
+                        read_only=volume.get("ro", False),
+                        volume_name=volume_map.get(volume["volume"]),
+                    )
+                )
         if volumes:
             for container_path, volume in volumes.items():
-                volume_name = volume_map.get(volume.get("name"))
-                host_path = volume.get(
-                    "host", container_path if volume_name is None else None
-                )
+                host_path = volume.get("host", container_path)
                 read_only = volume.get("ro", False)
                 volume_args.append(
                     docker.ContainerVolumeArgs(
                         container_path=container_path,
                         host_path=host_path,
                         read_only=read_only,
-                        volume_name=volume_name,
                     )
                 )
         if len(volume_args):
