@@ -10,11 +10,9 @@ __acme_server = traefik_config["acme"].get(
 )
 __acme_email = traefik_config["acme"]["email"]
 
-output_config = {
-    "name": "traefik-static",
-    "volume": __config_volume,
-    "path": "static.toml",
-    "input": {
+
+def build_config():
+    input_dict = {
         "api": {"dashboard": True},
         "log": {"level": "INFO"},
         "ping": {},
@@ -39,6 +37,26 @@ output_config = {
                 }
             },
         },
-    },
+    }
+
+    experimental_dict = {}
+
+    plugins_dict = {}
+    for name, data in traefik_config.get("plugin", {}).items():
+        plugins_dict[name] = {"moduleName": data["name"], "version": data["version"]}
+    if len(plugins_dict):
+        experimental_dict["plugins"] = plugins_dict
+
+    if len(experimental_dict):
+        input_dict["experimental"] = experimental_dict
+
+    return input_dict
+
+
+output_config = {
+    "name": "traefik-static",
+    "volume": __config_volume,
+    "path": "static.toml",
+    "input": build_config(),
     "schema": traefik_config["schema"]["static"],
 }
