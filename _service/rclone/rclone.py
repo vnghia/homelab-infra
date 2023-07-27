@@ -14,7 +14,10 @@ class Rclone(ComponentResource):
         if "combine" in storage_config["rclone"]:
             self.__webdav_container = DockerContainer.build(
                 "rclone-webdav",
-                opts=ResourceOptions(parent=self),
+                opts=ResourceOptions(
+                    parent=self,
+                    depends_on=[traefik_proxy.dynamic_config["rclone"]["file"]],
+                ),
                 image="rclone",
                 command=[
                     "--config",
@@ -34,12 +37,7 @@ class Rclone(ComponentResource):
                     secret.accounts["rclone"]["password"],
                 ],
                 volume_config=rclone_config["volume"],
-                labels={
-                    "traefik-config-sha256": traefik_proxy.dynamic_config["rclone"][
-                        "sha256"
-                    ],
-                    "rclone-plugin-alias": docker_volume.rclone_plugin_alias,
-                },
+                labels={"rclone-plugin-alias": docker_volume.rclone_plugin_alias},
             )
             self.webdav_container_id = self.__webdav_container.id
             self.register_outputs({"webdav_container_id": self.webdav_container_id})

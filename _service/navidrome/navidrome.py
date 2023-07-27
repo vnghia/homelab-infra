@@ -12,7 +12,9 @@ from _service.resource import child_opts
 class Navidrome(ComponentResource):
     def __init__(self) -> None:
         super().__init__("service:index:Navidrome", "navidrome", None, child_opts)
-        self.__child_opts = ResourceOptions(parent=self)
+        self.__child_opts = ResourceOptions(
+            parent=self, depends_on=[traefik_proxy.dynamic_config["navidrome"]["file"]]
+        )
 
         self.__navidrome_config = Template(self.__child_opts).build(
             module_path=Path(__file__).parent / "config.py"
@@ -27,12 +29,7 @@ class Navidrome(ComponentResource):
                 )
             },
             volume_config=navidrome_config["volume"],
-            labels={
-                "traefik-config-sha256": traefik_proxy.dynamic_config["navidrome"][
-                    "sha256"
-                ],
-                "navidrome-config-sha256": self.__navidrome_config["sha256"],
-            },
+            labels={"navidrome-config-sha256": self.__navidrome_config["sha256"]},
             wait=True,
         )
 
