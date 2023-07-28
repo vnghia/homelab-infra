@@ -60,7 +60,10 @@ class DockerContainer:
 
         return docker.Container(
             get_logical_name(name),
-            opts=opts.merge(ResourceOptions(ignore_changes=["image"])),
+            opts=opts.merge(
+                ResourceOptions(delete_before_replace=True, ignore_changes=["image"])
+            ),
+            name=get_logical_name(name),
             image=image_data["image_name"],
             restart=kwargs.pop("restart", "unless-stopped"),
             labels=[

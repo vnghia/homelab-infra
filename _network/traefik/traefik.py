@@ -34,7 +34,7 @@ class TraefikProxy(ComponentResource):
         # TODO: Re-enable healthcheck after https://github.com/traefik/traefik/issues/6861
         self.__container = DockerContainer.build(
             name="traefik",
-            opts=self.__child_opts.merge(ResourceOptions(delete_before_replace=True)),
+            opts=self.__child_opts,
             command=[
                 "--configFile={}{}".format(
                     traefik_config["volume"]["config"]["dir"],

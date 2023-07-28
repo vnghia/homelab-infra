@@ -6,7 +6,7 @@ output_config = {
     "path": "acquis.d/traefik.yaml",
     "input": {
         "source": "docker",
-        "container_name_regexp": ["{}-.*".format(get_logical_name("traefik"))],
+        "container_name": [get_logical_name("traefik")],
         "labels": {"type": "traefik"},
     },
 }
