@@ -4,7 +4,6 @@ import pulumi_random as random
 from pulumi import ComponentResource, ResourceOptions
 
 from _command import Command
-from _common import crowdsec_config
 from _container import DockerContainer
 from _file import Template
 from _network.resource import child_opts
@@ -28,7 +27,6 @@ class Crowdsec(ComponentResource):
                 "CUSTOM_HOSTNAME": "crowdsec",
                 "DISABLE_ONLINE_API": "true",
             },
-            volume_config=crowdsec_config["volume"],
             volumes={"/var/run/docker.sock": {"ro": True}},
             labels={"acquis-traefik-sha256": self.__acquis_traefik["sha256"]},
         )

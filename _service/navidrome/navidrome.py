@@ -2,11 +2,13 @@ from pathlib import Path
 
 from pulumi import ComponentResource, ResourceOptions
 
-from _common import navidrome_config
+from _common import container_storage_config
 from _container import DockerContainer
 from _file import Template
 from _network.traefik import traefik_proxy
 from _service.resource import child_opts
+
+_navidrome_volume = container_storage_config["navidrome"]
 
 
 class Navidrome(ComponentResource):
@@ -24,11 +26,10 @@ class Navidrome(ComponentResource):
             opts=self.__child_opts,
             envs={
                 "ND_CONFIGFILE": "{}{}".format(
-                    navidrome_config["volume"]["data"]["dir"],
+                    _navidrome_volume["data"]["dir"],
                     self.__navidrome_config["config"]["path"],
                 )
             },
-            volume_config=navidrome_config["volume"],
             labels={"navidrome-config-sha256": self.__navidrome_config["sha256"]},
             wait=True,
         )

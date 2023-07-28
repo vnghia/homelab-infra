@@ -4,9 +4,12 @@ import deepmerge
 import pulumi_cloudflare as cloudflare
 from pulumi import ComponentResource, ResourceOptions
 
-from _common import traefik_config
+from _common import container_storage_config, service_config
 from _file import Template
 from _network.security import crowdsec
+
+_traefik_config = service_config["traefik"]
+_traefik_volume = container_storage_config["traefik"]
 
 
 class TraefikDynamicConfig(ComponentResource):
@@ -23,9 +26,9 @@ class TraefikDynamicConfig(ComponentResource):
                 module_path=module_path,
                 config={
                     "name": "traefik-{}".format(module_path.stem),
-                    "volume": traefik_config["volume"]["config"]["volume"],
+                    "volume": _traefik_volume["config"]["volume"],
                     "path": output_path,
-                    "schema": traefik_config["schema"]["dynamic"],
+                    "schema": _traefik_config["schema"]["dynamic"],
                 },
                 input_fn=self.__build_toml_input_fn,
             )

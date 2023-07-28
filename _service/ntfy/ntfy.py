@@ -4,7 +4,6 @@ import pulumi_docker as docker
 from pulumi import ComponentResource, ResourceOptions
 
 from _command import Command
-from _common import ntfy_config
 from _container import DockerContainer
 from _file import Template
 from _network.traefik import traefik_proxy
@@ -36,7 +35,6 @@ class Ntfy(ComponentResource):
                 retries=60,
                 start_period="10s",
             ),
-            volume_config=ntfy_config["volume"],
             wait=True,
             labels={"ntfy-server-config-sha256": self.__ntfy_config["sha256"]},
         )

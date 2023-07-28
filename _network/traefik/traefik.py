@@ -2,13 +2,15 @@ from pathlib import Path
 
 from pulumi import ComponentResource, Output, ResourceOptions
 
-from _common import traefik_config
+from _common import container_storage_config
 from _container import DockerContainer
 from _file import Template
 from _network.dns.cloudflare import cloudflare_dns
 from _network.resource import child_opts
 from _network.tailscale import tailscale_device
 from _network.traefik.config.dynamic_config import TraefikDynamicConfig
+
+_traefik_volume = container_storage_config["traefik"]
 
 
 class TraefikProxy(ComponentResource):
@@ -37,7 +39,7 @@ class TraefikProxy(ComponentResource):
             opts=self.__child_opts,
             command=[
                 "--configFile={}{}".format(
-                    traefik_config["volume"]["config"]["dir"],
+                    _traefik_volume["config"]["dir"],
                     self.__static_config["config"]["path"],
                 ),
             ],
@@ -47,7 +49,6 @@ class TraefikProxy(ComponentResource):
                 "CF_ZONE_API_TOKEN": cloudflare_dns.acme_dns_token,
             },
             network_mode=Output.concat("container:", tailscale_device.container_id),
-            volume_config=traefik_config["volume"],
             volumes={
                 "/etc/localtime": {"ro": True},
                 "/usr/share/zoneinfo": {"ro": True},

@@ -8,6 +8,17 @@ config:
   server:
     value:
       platform: amd64
+  secret_:
+    value:
+      key:
+        navidrome-encryption:
+      account:
+        navidrome:
+          hostname: public-navidrome
+        ntfy:
+          hostname: public-ntfy
+        rclone:
+          hostname: public-rclone
   docker:
     value:
       env:
@@ -70,91 +81,63 @@ config:
           password: crypt/password/
         combine:
           crypt-password: password
-  tailscale:
-    value:
-      volume:
-        state:
-          volume: tailscale-state
-          dir: /var/lib/tailscale/
-      port:
-        internal: 444
-        external: 443
-      socket: /var/run/tailscale/tailscaled.sock
-  traefik:
-    value:
-      volume:
-        config:
-          volume: traefik-config
-          dir: /etc/traefik/config/
-          ro: true
-        cert:
-          volume: traefik-cert
-          dir: /etc/traefik/cert/
-      # TODO: Upgrade to v3
-      schema:
-        static: https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/traefik-v2.json
-        dynamic: https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/traefik-v2-file-provider.json
-      plugin:
-        crowdsec:
-          name: github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
-          version: "v1.1.13"
-  secret_:
-    value:
-      key:
-        navidrome-encryption:
-      account:
+      container:
+        tailscale:
+          state:
+            dir: /var/lib/tailscale/
+        traefik:
+          config:
+            dir: /etc/traefik/config/
+            ro: true
+          cert:
+            dir: /etc/traefik/cert/
         navidrome:
-          hostname: public-navidrome
+          music:
+            volume: mount-music
+            dir: /music/
+            ro: true
+          data:
+            volume: navidrome-data
+            dir: /data/
+        rclone-webdav:
+          config:
+            volume: rclone-config
+            dir: /etc/rclone/
+            ro: true
+        syncthing:
+          config:
+            dir: /var/syncthing/
+          password:
+            volume: crypt-password
+            dir: /var/syncthing/data/password/
+        crowdsec:
+          config:
+            dir: /etc/crowdsec/
+          data:
+            dir: /var/lib/crowdsec/data
         ntfy:
-          hostname: public-ntfy
-        rclone:
-          hostname: public-rclone
-  navidrome:
+          config:
+            dir: /etc/ntfy/
+            ro: true
+          cache:
+            dir: /var/cache/ntfy/
+          data:
+            dir: /var/lib/ntfy/
+  service:
     value:
-      volume:
-        music:
-          volume: mount-music
-          dir: /music/
-          ro: true
-        data:
-          volume: navidrome-data
-          dir: /data/
-  rclone:
-    value:
-      volume:
-        config:
-          volume: rclone-config
-          dir: /etc/rclone/
-          ro: true
-      port: 8080
-  syncthing:
-    value:
-      volume:
-        config:
-          volume: syncthing-config
-          dir: /var/syncthing/
-        password:
-          volume: crypt-password
-          dir: /var/syncthing/data/password/
-  crowdsec:
-    value:
-      volume:
-        config:
-          volume: crowdsec-config
-          dir: /etc/crowdsec/
-        data:
-          volume: crowdsec-data
-          dir: /var/lib/crowdsec/data
-  ntfy:
-    value:
-      volume:
-        config:
-          volume: ntfy-config
-          dir: /etc/ntfy/
-          ro: true
-        cache:
-          volume: ntfy-cache
-          dir: /var/cache/ntfy/
-        data:
-          volume: ntfy-data
-          dir: /var/lib/ntfy/
+      tailscale:
+        port:
+          internal: 444
+          external: 443
+        socket: /var/run/tailscale/tailscaled.sock
+      traefik:
+        # TODO: Upgrade to v3
+        schema:
+          static: https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/traefik-v2.json
+          dynamic: https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/traefik-v2-file-provider.json
+        plugin:
+          crowdsec:
+            name: github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
+            version: "v1.1.13"
+      rclone-webdav:
+        port: 8080

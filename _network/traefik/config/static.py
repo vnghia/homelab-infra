@@ -1,14 +1,18 @@
 import pulumi_cloudflare as cloudflare
 
-from _common import tailscale_config, traefik_config
+from _common import container_storage_config, service_config
 
-__config_dir = traefik_config["volume"]["config"]["dir"]
-__config_volume = traefik_config["volume"]["config"]["volume"]
-__cert_dir = traefik_config["volume"]["cert"]["dir"]
-__acme_server = traefik_config["acme"].get(
+_tailscale_config = service_config["tailscale"]
+_traefik_config = service_config["traefik"]
+_traefik_volume = container_storage_config["traefik"]
+
+_config_dir = _traefik_volume["config"]["dir"]
+_config_volume = _traefik_volume["config"]["volume"]
+_cert_dir = _traefik_volume["cert"]["dir"]
+_acme_server = _traefik_config["acme"].get(
     "server", "https://acme-v02.api.letsencrypt.org/directory"
 )
-__acme_email = traefik_config["acme"]["email"]
+_acme_email = _traefik_config["acme"]["email"]
 
 
 def build_config():
@@ -20,19 +24,19 @@ def build_config():
         "entryPoints": {
             "https-private": {"address": ":443"},
             "https-public": {
-                "address": ":{}".format(tailscale_config["port"]["internal"]),
+                "address": ":{}".format(_tailscale_config["port"]["internal"]),
                 "forwardedHeaders": {
                     "trustedIPs": cloudflare.get_ip_ranges().cidr_blocks
                 },
             },
         },
-        "providers": {"file": {"directory": __config_dir, "watch": True}},
+        "providers": {"file": {"directory": _config_dir, "watch": True}},
         "certificatesResolvers": {
             "leresolver_dns": {
                 "acme": {
-                    "caServer": __acme_server,
-                    "email": __acme_email,
-                    "storage": "{}{}".format(__cert_dir, "acme-dns.json"),
+                    "caServer": _acme_server,
+                    "email": _acme_email,
+                    "storage": "{}{}".format(_cert_dir, "acme-dns.json"),
                     "dnsChallenge": {"provider": "cloudflare"},
                 }
             },
@@ -42,7 +46,7 @@ def build_config():
     experimental_dict = {}
 
     plugins_dict = {}
-    for name, data in traefik_config.get("plugin", {}).items():
+    for name, data in _traefik_config.get("plugin", {}).items():
         plugins_dict[name] = {"moduleName": data["name"], "version": data["version"]}
     if len(plugins_dict):
         experimental_dict["plugins"] = plugins_dict
@@ -55,8 +59,8 @@ def build_config():
 
 output_config = {
     "name": "traefik-static",
-    "volume": __config_volume,
+    "volume": _config_volume,
     "path": "static.toml",
     "input": build_config(),
-    "schema": traefik_config["schema"]["static"],
+    "schema": _traefik_config["schema"]["static"],
 }

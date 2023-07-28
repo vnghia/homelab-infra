@@ -1,7 +1,7 @@
 import pulumi_docker as docker
 from pulumi import Input, Output, ResourceOptions
 
-from _common import constant, docker_config, get_logical_name
+from _common import constant, container_storage_config, docker_config, get_logical_name
 from _data.docker import volume_map
 from _image import docker_image
 from _network.docker import default_bridge_network
@@ -15,7 +15,6 @@ class DockerContainer:
         opts: ResourceOptions,
         image: str | None = None,
         envs: dict[Input[str], Input[str]] | None = None,
-        volume_config: dict[str, dict] | None = None,
         volumes: dict[Input[str], dict] | None = None,
         **kwargs
     ):
@@ -33,8 +32,8 @@ class DockerContainer:
             ]
 
         volume_args = kwargs.pop("_volumes", [])
-        if volume_config:
-            for volume in volume_config.values():
+        if name in container_storage_config:
+            for volume in container_storage_config[name].values():
                 volume_args.append(
                     docker.ContainerVolumeArgs(
                         container_path=volume["dir"],

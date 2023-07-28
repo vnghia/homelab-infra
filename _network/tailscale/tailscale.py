@@ -6,10 +6,13 @@ import pulumi_tailscale as tailscale
 from pulumi import ComponentResource, Output, ResourceOptions
 
 from _command import Command
-from _common import get_logical_name, tailscale_config
+from _common import container_storage_config, get_logical_name, service_config
 from _container import DockerContainer
 from _data.docker import volume_map
 from _network.resource import child_opts
+
+_tailscale_config = service_config["tailscale"]
+_tailscale_volume = container_storage_config["tailscale"]
 
 
 class TailscaleDevice(ComponentResource):
@@ -49,9 +52,7 @@ class TailscaleDevice(ComponentResource):
             length=7,
             special=False,
             upper=False,
-            keepers={
-                "volume_name": volume_map[tailscale_config["volume"]["state"]["volume"]]
-            },
+            keepers={"volume_name": volume_map[_tailscale_volume["state"]["volume"]]},
         )
         self.__hostname = Output.concat(
             get_logical_name(), "-", self.__hostname_suffix.result
@@ -72,8 +73,8 @@ class TailscaleDevice(ComponentResource):
             opts=self.__child_opts,
             envs={
                 "TS_AUTHKEY": self.__authkey.key,
-                "TS_STATE_DIR": tailscale_config["volume"]["state"]["dir"],
-                "TS_SOCKET": tailscale_config["socket"],
+                "TS_STATE_DIR": _tailscale_volume["state"]["dir"],
+                "TS_SOCKET": _tailscale_config["socket"],
             },
             healthcheck=docker.ContainerHealthcheckArgs(
                 tests=["CMD-SHELL", "tailscale status"],
@@ -87,11 +88,10 @@ class TailscaleDevice(ComponentResource):
             ],
             ports=[
                 docker.ContainerPortArgs(
-                    internal=tailscale_config["port"]["internal"],
-                    external=tailscale_config["port"]["external"],
+                    internal=_tailscale_config["port"]["internal"],
+                    external=_tailscale_config["port"]["external"],
                 )
             ],
-            volume_config=tailscale_config["volume"],
             wait=True,
         )
 
@@ -99,7 +99,7 @@ class TailscaleDevice(ComponentResource):
         self.__device = tailscale.get_device_output(
             name=Output.all(
                 hostname=self.__container.hostname,
-                tailnet_name=tailscale_config["tailnet_name"],
+                tailnet_name=_tailscale_config["tailnet_name"],
                 _=self.__container.id,
             ).apply(
                 lambda args: "{}.{}".format(args["hostname"], args["tailnet_name"])

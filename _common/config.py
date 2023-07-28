@@ -11,13 +11,23 @@ def __build_config(key: str) -> dict:
 
 docker_config = __build_config("docker")
 server_config = __build_config("server")
-tailscale_config = __build_config("tailscale")
 dns_config = __build_config("dns")
-traefik_config = __build_config("traefik")
 storage_config = __build_config("storage")
 secret_config = __build_config("secret_")
-navidrome_config = __build_config("navidrome")
-rclone_config = __build_config("rclone")
-syncthing_config = __build_config("syncthing")
-crowdsec_config = __build_config("crowdsec")
-ntfy_config = __build_config("ntfy")
+service_config = __build_config("service")
+
+volume_config = storage_config.get("volume", {})
+
+
+def __build_container_storage():
+    __config = storage_config.get("container", {})
+    for ks, vs in __config.items():
+        for kc, vc in vs.items():
+            if "volume" not in vc:
+                volume = "{}-{}".format(ks, kc)
+                assert volume in volume_config.get("local", {})
+                vc["volume"] = volume
+    return __config
+
+
+container_storage_config = __build_container_storage()

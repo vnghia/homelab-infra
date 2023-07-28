@@ -1,11 +1,14 @@
 from pulumi import ComponentResource, ResourceOptions
 
-from _common import rclone_config, volume_config
+from _common import container_storage_config, service_config, volume_config
 from _container import DockerContainer
 from _data.docker import docker_volume
 from _network.traefik import traefik_proxy
 from _secret import secret
 from _service.resource import child_opts
+
+_rclone_webdav_config = service_config["rclone-webdav"]
+_rclone_webdav_volume = container_storage_config["rclone-webdav"]
 
 
 class Rclone(ComponentResource):
@@ -22,7 +25,7 @@ class Rclone(ComponentResource):
                 command=[
                     "--config",
                     "{}{}".format(
-                        rclone_config["volume"]["config"]["dir"],
+                        _rclone_webdav_volume["config"]["dir"],
                         docker_volume.rclone_config_path,
                     ),
                     "-v",
@@ -30,13 +33,12 @@ class Rclone(ComponentResource):
                     "webdav",
                     "combine:",
                     "--addr",
-                    "0.0.0.0:{}".format(rclone_config["port"]),
+                    "0.0.0.0:{}".format(_rclone_webdav_config["port"]),
                     "--user",
                     secret.accounts["rclone"]["username"],
                     "--pass",
                     secret.accounts["rclone"]["password"],
                 ],
-                volume_config=rclone_config["volume"],
                 labels={"rclone-plugin-alias": docker_volume.rclone_plugin_alias},
             )
             self.webdav_container_id = self.__webdav_container.id
