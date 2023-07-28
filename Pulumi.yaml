@@ -40,6 +40,12 @@ config:
         ntfy:
           name: binwiederhier/ntfy
           tag: "v2.6.2"
+      plugin:
+        rclone:
+          name: rclone/docker-volume-rclone
+          version: "'{}-1.63.1'.format(platform)"
+  storage:
+    value:
       volume:
         local:
           tailscale-state:
@@ -58,11 +64,6 @@ config:
           # https://rclone.org/docker/
           rclone-config: /var/lib/docker-plugins/rclone/config
           rclone-cache: /var/lib/docker-plugins/rclone/cache
-  storage:
-    value:
-      rclone:
-        plugin:
-          version: "'{}-1.63.1'.format(platform)"
         mount:
           music: music/original/
         crypt:
@@ -106,6 +107,8 @@ config:
           hostname: public-navidrome
         ntfy:
           hostname: public-ntfy
+        rclone:
+          hostname: public-rclone
   navidrome:
     value:
       volume:

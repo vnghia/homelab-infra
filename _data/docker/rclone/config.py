@@ -1,7 +1,7 @@
 from pulumi import ResourceOptions
 
 from _command import Command
-from _common import get_logical_name, storage_config
+from _common import get_logical_name, storage_config, volume_config
 from _secret import secret
 
 
@@ -17,7 +17,7 @@ def input_fn(opts: ResourceOptions, _):
             "endpoint": storage_config["endpoint"],
         }
     }
-    for name, prefix in storage_config["rclone"].get("crypt", {}).items():
+    for name, prefix in volume_config.get("crypt", {}).items():
         password = secret.build_password("crypt-{}".format(name), opts=opts, length=32)
         password_obscured = Command.build(
             "rclone:obscure:{}".format(name),
@@ -42,13 +42,11 @@ def input_fn(opts: ResourceOptions, _):
             "password2": salt_obscured.stdout,
         }
     combine = []
-    for name, path in storage_config["rclone"].get("combine", {}).items():
+    for name, path in volume_config.get("combine", {}).items():
         type, key = name.split("-", maxsplit=1)
         if type == "mount":
             combine.append(
-                "{}=bucket:{}/{}".format(
-                    path, bucket_name, storage_config["rclone"]["mount"][key]
-                )
+                "{}=bucket:{}/{}".format(path, bucket_name, volume_config["mount"][key])
             )
         elif type == "crypt":
             combine.append("{}=crypt-{}-{}:".format(path, bucket_name, key))

@@ -1,6 +1,6 @@
 from pulumi import ComponentResource, ResourceOptions
 
-from _common import rclone_config, storage_config
+from _common import rclone_config, volume_config
 from _container import DockerContainer
 from _data.docker import docker_volume
 from _network.traefik import traefik_proxy
@@ -11,7 +11,7 @@ from _service.resource import child_opts
 class Rclone(ComponentResource):
     def __init__(self) -> None:
         super().__init__("service:index:Rclone", "rclone", None, child_opts)
-        if "combine" in storage_config["rclone"]:
+        if "combine" in volume_config:
             self.__webdav_container = DockerContainer.build(
                 "rclone-webdav",
                 opts=ResourceOptions(

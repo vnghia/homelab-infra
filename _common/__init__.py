@@ -15,6 +15,8 @@ from _common.config import (
 )
 from _common.naming import get_logical_name
 
+volume_config = storage_config.get("volume", {})
+
 __all__ = [
     "constant",
     "crowdsec_config",
@@ -30,4 +32,5 @@ __all__ = [
     "tailscale_config",
     "traefik_config",
     "get_logical_name",
+    "volume_config",
 ]

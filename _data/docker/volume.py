@@ -4,7 +4,13 @@ import pulumi_docker as docker
 from pulumi import ComponentResource, ResourceOptions
 
 from _command import Command
-from _common import docker_config, get_logical_name, server_config, storage_config
+from _common import (
+    docker_config,
+    get_logical_name,
+    server_config,
+    storage_config,
+    volume_config,
+)
 from _data.docker.label import DOCKER_VOLUME_LABELS
 from _data.resource import child_opts
 from _file import Template
@@ -30,7 +36,6 @@ class DockerVolume(ComponentResource):
         self.register_outputs({"volume_map": self.volume_map})
 
     def __build_local_volume(self):
-        volume_config = docker_config.get("volume", {})
         local_volume_config = volume_config.get("local", [])
 
         for name, config in local_volume_config.items():
@@ -50,7 +55,6 @@ class DockerVolume(ComponentResource):
             )
 
     def __build_bind_volume(self):
-        volume_config = docker_config.get("volume", {})
         bind_volume_config = volume_config.get("bind", {})
 
         for name, path in bind_volume_config.items():
@@ -80,8 +84,11 @@ class DockerVolume(ComponentResource):
 
     def __build_rclone_plugin(self):
         platform = server_config["platform"]
-        plugin_tag = eval(
-            storage_config["rclone"]["plugin"]["version"], {}, {"platform": platform}
+        plugin_name = "{}:{}".format(
+            docker_config["plugin"]["rclone"]["name"],
+            eval(
+                docker_config["plugin"]["rclone"]["version"], {}, {"platform": platform}
+            ),
         )
 
         self.__rclone_plugin = docker.Plugin(
@@ -90,7 +97,7 @@ class DockerVolume(ComponentResource):
             alias=self.__rclone_config["sha256"].apply(
                 lambda sha256: "{}:{}".format(get_logical_name("rclone"), sha256[:7])
             ),
-            name="rclone/docker-volume-rclone:{}".format(plugin_tag),
+            name=plugin_name,
             grant_all_permissions=True,
         )
 
@@ -112,8 +119,9 @@ class DockerVolume(ComponentResource):
     def __build_mount_volume(self):
         bucket_name = storage_config["bucket"]
 
-        volume_config = storage_config["rclone"].get("mount", {})
-        for name, prefix in volume_config.items():
+        mount_volume_config = volume_config.get("mount", {})
+
+        for name, prefix in mount_volume_config.items():
             self.__volumes["mount-{}".format(name)] = docker.Volume(
                 get_logical_name("mount-{}".format(name)),
                 opts=self.__rclone_opts,
@@ -130,8 +138,9 @@ class DockerVolume(ComponentResource):
     def __build_crypt_volume(self):
         bucket_name = storage_config["bucket"]
 
-        volume_config = storage_config["rclone"].get("crypt", {})
-        for name in volume_config.keys():
+        crypt_volume_config = volume_config.get("crypt", {})
+
+        for name in crypt_volume_config.keys():
             self.__volumes["crypt-{}".format(name)] = docker.Volume(
                 get_logical_name("crypt-{}".format(name)),
                 opts=self.__rclone_opts,
@@ -146,7 +155,7 @@ class DockerVolume(ComponentResource):
             )
 
     def __build_combine_volume(self):
-        if "combine" in storage_config["rclone"]:
+        if "combine" in volume_config:
             self.__volumes["combine"] = docker.Volume(
                 get_logical_name("combine"),
                 opts=self.__rclone_opts,
