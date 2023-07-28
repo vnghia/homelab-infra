@@ -37,6 +37,9 @@ config:
         crowdsec:
           name: crowdsecurity/crowdsec
           tag: "v1.5.2"
+        ntfy:
+          name: binwiederhier/ntfy
+          tag: "v2.6.2"
       volume:
         local:
           tailscale-state:
@@ -48,6 +51,9 @@ config:
           syncthing-config:
           crowdsec-config:
           crowdsec-data:
+          ntfy-config:
+          ntfy-cache:
+          ntfy-data:
         bind:
           # https://rclone.org/docker/
           rclone-config: /var/lib/docker-plugins/rclone/config
@@ -98,6 +104,8 @@ config:
       account:
         navidrome:
           hostname: public-navidrome
+        ntfy:
+          hostname: public-ntfy
   navidrome:
     value:
       volume:
@@ -134,3 +142,16 @@ config:
         data:
           volume: crowdsec-data
           dir: /var/lib/crowdsec/data
+  ntfy:
+    value:
+      volume:
+        config:
+          volume: ntfy-config
+          dir: /etc/ntfy/
+          ro: true
+        cache:
+          volume: ntfy-cache
+          dir: /var/cache/ntfy/
+        data:
+          volume: ntfy-data
+          dir: /var/lib/ntfy/
