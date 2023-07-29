@@ -51,6 +51,9 @@ config:
         ntfy:
           name: binwiederhier/ntfy
           tag: "v2.6.2"
+        wireguard:
+          name: linuxserver/wireguard
+          tag: "1.0.20210914"
       plugin:
         rclone:
           name: rclone/docker-volume-rclone
@@ -71,6 +74,7 @@ config:
           ntfy-config:
           ntfy-cache:
           ntfy-data:
+          wireguard-config:
         bind:
           # https://rclone.org/docker/
           rclone-config: /var/lib/docker-plugins/rclone/config
@@ -123,6 +127,9 @@ config:
             dir: /var/cache/ntfy/
           data:
             dir: /var/lib/ntfy/
+        wireguard:
+          config:
+            dir: /config/
   service:
     value:
       tailscale:
