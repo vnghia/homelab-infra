@@ -35,7 +35,7 @@ config:
           tag: "v3.0.0-beta3"
         dozzle:
           name: amir20/dozzle
-          tag: "v4.10.19"
+          tag: "v4.10.22"
         navidrome:
           name: deluan/navidrome
           tag: "0.49.3"
