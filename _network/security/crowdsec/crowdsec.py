@@ -35,11 +35,8 @@ class Crowdsec(ComponentResource):
                 "ENROLL_INSTANCE_NAME": get_logical_name(),
                 "USE_WAL": "true",
             },
+            uploads=[self.__acquis_traefik["docker"], self.__online_api["docker"]],
             volumes={"/var/run/docker.sock": {"ro": True}},
-            labels={
-                "acquis-traefik-sha256": self.__acquis_traefik["sha256"],
-                "online-api-sha256": self.__online_api["sha256"],
-            },
         )
         self.container_id = self.__container.id
         self.register_outputs({"container_id": self.container_id})

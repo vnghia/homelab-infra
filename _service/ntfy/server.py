@@ -5,9 +5,7 @@ _ntfy_volume = container_storage_config["ntfy"]
 
 output_config = {
     "type": "yaml",
-    "name": "ntfy-server-config",
-    "volume": _ntfy_volume["config"]["volume"],
-    "path": "server.yml",
+    "path": "/etc/ntfy/server.yml",
     "input": {
         "base-url": "https://{}".format(hostnames["public-ntfy"]),
         "cache-file": "{}cache.db".format(_ntfy_volume["cache"]["volume"]),

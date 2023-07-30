@@ -69,12 +69,9 @@ config:
             key:
               - navidrome-encryption
           syncthing-config:
-          crowdsec-config:
           crowdsec-data:
-          ntfy-config:
           ntfy-cache:
           ntfy-data:
-          wireguard-config:
         bind:
           # https://rclone.org/docker/
           rclone-config: /var/lib/docker-plugins/rclone/config
@@ -115,21 +112,13 @@ config:
             volume: crypt-password
             dir: /var/syncthing/data/password/
         crowdsec:
-          config:
-            dir: /etc/crowdsec/
           data:
             dir: /var/lib/crowdsec/data
         ntfy:
-          config:
-            dir: /etc/ntfy/
-            ro: true
           cache:
             dir: /var/cache/ntfy/
           data:
             dir: /var/lib/ntfy/
-        wireguard:
-          config:
-            dir: /config/
   service:
     value:
       tailscale:

@@ -35,8 +35,8 @@ class Ntfy(ComponentResource):
                 retries=60,
                 start_period="10s",
             ),
+            uploads=[self.__ntfy_config["docker"]],
             wait=True,
-            labels={"ntfy-server-config-sha256": self.__ntfy_config["sha256"]},
         )
 
         self.container_id = self.__container.id
