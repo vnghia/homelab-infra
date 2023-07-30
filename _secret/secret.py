@@ -12,6 +12,7 @@ from _secret.resource import child_opts
 class Secret:
     def __init__(self) -> None:
         self.keys = {}
+        self.__usernames = {}
         self.__passwords = {}
         self.__keepass_entries = {}
         self.accounts = {}
@@ -47,6 +48,16 @@ class Secret:
         for name, config in secret_config.pop("account", {}).items():
             config = config or {}
 
+            config["title"] = name
+
+            username = config.get("username")
+            if not username:
+                self.__usernames[name] = self.build_string(
+                    "{}-account".format(name), opts=self.__keepass_entry_opts
+                )
+                username = self.__usernames[name].result
+            config["username"] = username
+
             password = config.pop("password", {})
             if not isinstance(password, str):
                 self.__passwords[name] = self.build_password(
@@ -55,10 +66,8 @@ class Secret:
                     **password
                 )
                 password = self.__passwords[name].result
-
-            config["title"] = name
-            config["username"] = config.get("username", name)
             config["password"] = password
+
             hostname = hostnames.get(config.pop("hostname", None), None)
             if hostname:
                 config["url"] = Output.concat("https://", hostname)
@@ -99,6 +108,20 @@ class Secret:
             min_numeric=kwargs.pop("min_numeric", 1),
             min_special=kwargs.pop("min_special", 1),
             min_upper=kwargs.pop("min_upper", 1),
+            **kwargs
+        )
+
+    @classmethod
+    def build_string(cls, name: str, opts: ResourceOptions | None = None, **kwargs):
+        return random.RandomString(
+            name,
+            opts=(opts or child_opts),
+            length=kwargs.pop("length", 8),
+            min_lower=kwargs.pop("min_lower", 1),
+            min_numeric=kwargs.pop("min_numeric", 1),
+            min_special=kwargs.pop("min_special", 0),
+            min_upper=kwargs.pop("min_upper", 1),
+            special=kwargs.pop("special", False),
             **kwargs
         )
 
