@@ -1,6 +1,5 @@
 from pathlib import Path
 
-import pulumi_random as random
 from pulumi import ComponentResource, ResourceOptions
 
 from _command import Command
@@ -8,6 +7,7 @@ from _common import get_logical_name, service_config
 from _container import DockerContainer
 from _file import Template
 from _network.resource import child_opts
+from _secret import secret
 
 _crowdsec_config = service_config["crowdsec"]
 
@@ -46,9 +46,7 @@ class Crowdsec(ComponentResource):
 
     def add_bouncer(self, name: str, opts: ResourceOptions | None = None):
         opts = opts or self.__child_opts
-        key = random.RandomString(
-            "{}-bouncer-key".format(name), opts=opts, length=32, special=False
-        )
+        key = secret.build_string("{}-bouncer-key".format(name), opts=opts)
         return Command.build(
             "{}-bouncer".format(name),
             opts=opts,

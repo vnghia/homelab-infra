@@ -1,12 +1,10 @@
 from pathlib import Path
 
 import deepmerge
-import pulumi_cloudflare as cloudflare
 from pulumi import ComponentResource, ResourceOptions
 
 from _common import container_storage_config, service_config
 from _file import Template
-from _network.security import crowdsec
 
 _traefik_config = service_config["traefik"]
 _traefik_volume = container_storage_config["traefik"]
@@ -30,32 +28,9 @@ class TraefikDynamicConfig(ComponentResource):
                     "path": output_path,
                     "schema": _traefik_config["schema"]["dynamic"],
                 },
-                input_fn=self.__build_toml_input_fn,
             )
 
         self.register_outputs({k: v["content"] for k, v in self.dynamic_config.items()})
-
-    def __build_toml_input_fn(self, config: dict):
-        if config.get("input", {}).get("router", {}).get("sec_mode") == "public":
-            router_name = config["input"]["router"]["name"]
-            middleware_name = "crowdsec-{}".format(router_name)
-            middleware_dict = {
-                "name": "crowdsec",
-                "plugin": True,
-                "enabled": True,
-                "crowdsecMode": "stream",
-                "crowdseclapikey": crowdsec.add_bouncer(
-                    router_name, opts=self.__child_opts
-                ),
-                "forwardedheaderstrustedips": cloudflare.get_ip_ranges().cidr_blocks,
-            }
-            if "middleware" not in config["input"]:
-                config["input"]["middleware"] = {}
-            if "middlewares" not in config["input"]["router"]:
-                config["input"]["router"]["middlewares"] = []
-            config["input"]["middleware"][middleware_name] = middleware_dict
-            config["input"]["router"]["middlewares"].append(middleware_name)
-        return config
 
     def __build_toml_middleware(self, input, _):
         main_type = input.pop("type")
@@ -79,6 +54,8 @@ class TraefikDynamicConfig(ComponentResource):
                     router_dict["entryPoints"] = ["https-private"]
                 elif sec_mode == "public":
                     router_dict["entryPoints"] = ["https-public"]
+                    router_dict["middlewares"] = router_config.pop("middlewares", [])
+                    router_dict["middlewares"].append("crowdsec")
 
             main_dict["routers"] = {
                 router_name: deepmerge.always_merger.merge(router_dict, router_config)
