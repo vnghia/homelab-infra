@@ -8,6 +8,7 @@ from typing import Callable
 
 import httpx
 import jsonschema
+import pulumi_docker as docker
 import tomlkit
 import yaml
 from pulumi import Input, Output, ResourceOptions
@@ -115,14 +116,23 @@ class Template:
         output_type = config.get("type", config["path"].split(".")[-1])
 
         content = Output.json_dumps(config).apply(output_type_fn[output_type])
-        output = File.build_container_file(
-            config["name"],
-            opts=opts,
-            path=config["path"],
-            content=content,
-            volume=config.get("volume"),
-            docker_asset_volume=docker_asset_volume,
-        )
+        if not config.get("name"):
+            output = {
+                "docker": docker.ContainerUploadArgs(
+                    file=config["path"],
+                    content=content,
+                    executable=config.get("executable"),
+                )
+            }
+        else:
+            output = File.build_container_file(
+                config["name"],
+                opts=opts,
+                path=config["path"],
+                content=content,
+                volume=config.get("volume"),
+                docker_asset_volume=docker_asset_volume,
+            )
 
         return output | {"config": config, "content": content}
 
