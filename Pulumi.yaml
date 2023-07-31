@@ -54,6 +54,12 @@ config:
         wireguard:
           name: linuxserver/wireguard
           tag: "1.0.20210914"
+        awscli:
+          name: amazon/aws-cli
+          tag: "2.13.5"
+        restic:
+          name: restic/restic
+          tag: "0.16.0"
       plugin:
         rclone:
           name: rclone/docker-volume-rclone

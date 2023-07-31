@@ -30,4 +30,9 @@ def __build_container_storage():
     return __config
 
 
+storage_config["aws"] = {
+    "AWS_ACCESS_KEY_ID": storage_config["key-id"],
+    "AWS_SECRET_ACCESS_KEY": storage_config["key-secret"],
+}
+
 container_storage_config = __build_container_storage()
