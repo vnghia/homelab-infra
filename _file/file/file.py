@@ -41,7 +41,9 @@ class File:
             create_path=Path(__file__).parent / "container" / "create.py",
             delete_path=Path(__file__).parent / "container" / "delete.py",
             environment={
-                "DOCKER_ASSET_IMAGE": docker_image.image_map["workaround"]["image_id"],
+                "DOCKER_ASSET_IMAGE_ID": docker_image.image_map["workaround"][
+                    "image_id"
+                ],
                 "DOCKER_ASSET_VOLUME": docker_asset_volume,
             },
         )

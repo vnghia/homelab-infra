@@ -8,7 +8,7 @@ import docker
 def main():
     VOLUME_BIND_PATH = "/nmt/volume/"
     docker.from_env().containers.run(
-        image=os.environ["DOCKER_ASSET_IMAGE"],
+        image=os.environ["DOCKER_ASSET_IMAGE_ID"],
         command=["rm", "-rf", os.environ["FILE_PATH"]],
         name="".join(
             random.choice(string.ascii_letters + string.digits) for _ in range(32)

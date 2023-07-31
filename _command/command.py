@@ -2,7 +2,7 @@ import sys
 from pathlib import Path
 
 import pulumi_command as command
-from pulumi import ResourceOptions
+from pulumi import Output, ResourceOptions
 
 from _common import constant
 
@@ -30,7 +30,18 @@ class Command:
         delete_before_replace: bool = True,
         **kwargs
     ):
-        environment = kwargs.get("environment", {})
+        source_environment = kwargs.pop("environment", {})
+        environment = {k.removeprefix("__"): v for k, v in source_environment.items()}
+        trigger_environment = [
+            Output.format("{}={}", k, v)
+            for k, v in source_environment.items()
+            if not (
+                k.startswith("__")
+                or k.endswith("CONTAINER_ID")
+                or k.endswith("IMAGE_ID")
+            )
+        ]
+
         return command.local.Command(
             name,
             opts=opts.merge(
@@ -40,8 +51,7 @@ class Command:
             delete=cls.__build_command(delete),
             update=cls.__build_command(update),
             interpreter=kwargs.pop("interpreter", [cls.PYTHON_EXECUTABLE, "-c"]),
-            triggers=list(environment.keys())
-            + list(environment.values())
-            + kwargs.pop("triggers", []),
+            environment=environment,
+            triggers=trigger_environment + kwargs.pop("triggers", []),
             **kwargs,
         )

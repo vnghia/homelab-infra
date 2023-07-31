@@ -23,7 +23,7 @@ def to_tar_file(content: bytes, path: str):
 def main():
     VOLUME_BIND_PATH = "/nmt/volume/"
     volume_proxy_container = docker.from_env().containers.create(
-        image=os.environ["DOCKER_ASSET_IMAGE"],
+        image=os.environ["DOCKER_ASSET_IMAGE_ID"],
         name="".join(
             random.choice(string.ascii_letters + string.digits) for _ in range(32)
         ),
