@@ -65,6 +65,7 @@ class DockerContainer:
             name=get_logical_name(name),
             image=image_data["image_name"],
             restart=kwargs.pop("restart", "unless-stopped"),
+            rm=kwargs.pop("rm", False),
             labels=[
                 docker.ContainerLabelArgs(label=k, value=v)
                 for k, v in constant.PROJECT_TAG.items()
