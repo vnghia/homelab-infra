@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import pulumi
 import pulumi_random as random
 from pulumi import Output, ResourceOptions
 
@@ -97,8 +98,14 @@ class Secret:
                 self.accounts[name]["bcrypt"] = self.__passwords[name].bcrypt_hash
 
     @classmethod
-    def build_password(cls, name: str, opts: ResourceOptions | None = None, **kwargs):
-        return random.RandomPassword(
+    def build_password(
+        cls,
+        name: str,
+        opts: ResourceOptions | None = None,
+        export: bool = False,
+        **kwargs
+    ):
+        password = random.RandomPassword(
             name,
             opts=(opts or child_opts).merge(
                 ResourceOptions(protect=constant.PROJECT_STACK != "dev")
@@ -110,6 +117,9 @@ class Secret:
             min_upper=kwargs.pop("min_upper", 1),
             **kwargs
         )
+        if export:
+            pulumi.export(name, password.result)
+        return password
 
     @classmethod
     def build_string(cls, name: str, opts: ResourceOptions | None = None, **kwargs):

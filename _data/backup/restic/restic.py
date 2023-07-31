@@ -18,7 +18,9 @@ class ResticRepo(ComponentResource):
 
         self.__repo_prefix = "backup/restic"
         self.__repo_password = secret.build_password(
-            "restic-repo-password", opts=self.__child_opts
+            "restic-repo-password",
+            opts=self.__child_opts,
+            export=True,
         )
         self.password = self.__repo_password.result
 

@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import pulumi
 import pulumi_docker as docker
 from pulumi import ComponentResource, ResourceOptions
 
@@ -81,6 +82,7 @@ class DockerVolume(ComponentResource):
             module_path=Path(__file__).parent / "rclone" / "config.py",
             docker_asset_volume=self.__volumes["rclone-config"].name,
         )
+        pulumi.export("rclone-config", self.__rclone_config["content"])
 
     def __build_rclone_plugin(self):
         platform = server_config["platform"]
