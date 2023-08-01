@@ -3,6 +3,7 @@ from pathlib import Path
 from _common import backup_config
 from _data.backup.restic.restic import restic_repo
 from _image import docker_image
+from _service import ntfy
 
 
 def input_fn():
@@ -13,6 +14,7 @@ def input_fn():
                 "pull_policy": "never",
                 "profiles": ["manual"],
                 "environment": restic_repo.env
+                | ntfy.env
                 | {"RESTIC_CACHE_DIR": backup_config["cache"]["dir"]}
                 | {"BACKUP_CONFIG": backup_config},
             }

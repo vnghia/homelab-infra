@@ -5,6 +5,7 @@ from contextlib import contextmanager
 from pathlib import Path
 
 import docker
+import notification
 import typed_argparse as tap
 
 import _file
@@ -88,9 +89,26 @@ def __backup_and_restore(is_backup: bool, args: BackupArgs | RestoreArgs):
 
         print("\n**** finish {} for {} ****\n".format(action, service), flush=True)
 
+    notification_config = backup_common_config["notification"]
+    notification_topic = notification_config.pop("topic")
+    notification_title = notification_config.pop("title")
     if len(exceptions):
-        message = "Backup of {} failed.".format(", ".join(failed_services))
+        message = "{} for {} failed.".format(action, ", ".join(failed_services))
+        notification.publish(
+            topic=notification_topic,
+            message=message,
+            title=notification_title,
+            priority=5,
+            **notification_config
+        )
         raise ExceptionGroup(message, exceptions)
+    else:
+        notification.publish(
+            topic=notification_topic,
+            message="{} for {} successful.".format(action, ", ".join(args.services)),
+            title=notification_title,
+            **notification_config
+        )
 
 
 def backup(args: BackupArgs):

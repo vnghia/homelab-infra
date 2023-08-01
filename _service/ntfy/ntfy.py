@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import pulumi_docker as docker
-from pulumi import ComponentResource, ResourceOptions
+from pulumi import ComponentResource, Output, ResourceOptions
 
 from _command import Command
 from _container import DockerContainer
@@ -40,17 +40,20 @@ class Ntfy(ComponentResource):
         )
 
         self.container_id = self.__container.id
+
+        self.env = {
+            "NTFY_USERNAME": secret.accounts["ntfy"]["username"],
+            "NTFY_PASSWORD": secret.accounts["ntfy"]["password"],
+            "NTFY_ENDPOINT": Output.format("http://{}:80", self.__container.name),
+        }
+
         self.__access = Command.build(
             "ntfy-access-setup",
             opts=self.__child_opts,
             create=Path(__file__).parent / "add_access.py",
             delete=Path(__file__).parent / "delete_access.py",
             update="",
-            environment={
-                "NTFY_CONTAINER_ID": self.container_id,
-                "NTFY_USERNAME": secret.accounts["ntfy"]["username"],
-                "NTFY_PASSWORD": secret.accounts["ntfy"]["password"],
-            },
+            environment={"NTFY_CONTAINER_ID": self.container_id} | self.env,
         )
 
         self.register_outputs({"container_id": self.container_id})

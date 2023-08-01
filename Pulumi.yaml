@@ -138,6 +138,10 @@ config:
       backup:
         common:
           prefix: /volume/
+          notification:
+            topic: backup
+            tags:
+              - daily-backup
         cache:
           volume: restic-cache
           dir: /var/cache/restic/
