@@ -64,6 +64,8 @@ config:
         rclone:
           name: rclone/docker-volume-rclone
           version: "'{}-1.63.1'.format(platform)"
+      compose:
+        volume: docker-compose
   storage:
     value:
       volume:
@@ -78,6 +80,7 @@ config:
           crowdsec-data:
           ntfy-cache:
           ntfy-data:
+          docker-compose:
         bind:
           # https://rclone.org/docker/
           rclone-config: /var/lib/docker-plugins/rclone/config
