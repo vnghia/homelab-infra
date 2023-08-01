@@ -66,6 +66,8 @@ config:
           material:
             - _data/backup/image/requirements.txt
             - _data/backup/image/*.py
+        script-server:
+          dockerfile: _service/script_server/image/Dockerfile
       plugin:
         rclone:
           name: rclone/docker-volume-rclone
@@ -88,6 +90,7 @@ config:
           ntfy-data:
           docker-compose:
           restic-cache:
+          script-server-log:
         bind:
           # https://rclone.org/docker/
           rclone-config: /var/lib/docker-plugins/rclone/config
@@ -135,6 +138,9 @@ config:
             dir: /var/cache/ntfy/
           data:
             dir: /var/lib/ntfy/
+        script-server:
+          log:
+            dir: /app/logs/
       backup:
         common:
           prefix: /volume/
@@ -180,3 +186,6 @@ config:
             version: "v1.1.13"
       rclone-webdav:
         port: 8080
+      script-server:
+        port: 8080
+        admin: 127.0.0.1

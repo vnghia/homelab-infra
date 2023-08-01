@@ -7,3 +7,6 @@
 # data/backup/image
 !_data/backup/image/**/*.py
 !_data/backup/image/Dockerfile
+
+# service/script_server/image
+!_service/script_server/image/Dockerfile
