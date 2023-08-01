@@ -114,6 +114,7 @@ class Template:
             "toml": self.__build_toml_apply,
             "conf": self.__build_conf_apply,
             "yaml": self.__build_yaml_apply,
+            "json": self.__build_json_apply,
         }
         output_type = config.get("type", config["path"].split(".")[-1])
 
@@ -166,6 +167,10 @@ class Template:
         config_content.seek(0)
 
         return config_content.read()
+
+    def __build_json_apply(self, config_str: str):
+        input, _ = self.__build_apply(config_str)
+        return json.dumps(input, indent=2)
 
     def __build_yaml_apply(self, config_str: str):
         input, _ = self.__build_apply(config_str)
