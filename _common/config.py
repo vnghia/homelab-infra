@@ -1,6 +1,8 @@
 import deepmerge
 import pulumi
 
+from _common.naming import get_logical_name
+
 
 def __build_config(key: str) -> dict:
     return deepmerge.always_merger.merge(
@@ -30,9 +32,29 @@ def __build_container_storage():
     return __config
 
 
+def __build_backup():
+    __config = storage_config.get("backup", {})
+    __config["common"]["host"] = get_logical_name()
+
+    for ks, vs in __config.get("service", {}).items():
+        stops = vs.pop("stop", [])
+        vs["stop"] = [get_logical_name(stop) for stop in stops]
+
+        volume_dict = {}
+        for kc, vc in vs.pop("volume", {}).items():
+            if kc not in volume_config.get("local", {}):
+                kc = "{}-{}".format(ks, kc)
+            volume_dict[kc] = vc
+        vs["volume"] = volume_dict
+
+    return __config
+
+
 storage_config["aws"] = {
     "AWS_ACCESS_KEY_ID": storage_config["key-id"],
     "AWS_SECRET_ACCESS_KEY": storage_config["key-secret"],
 }
 
 container_storage_config = __build_container_storage()
+
+backup_config = __build_backup()

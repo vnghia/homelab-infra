@@ -60,6 +60,9 @@ config:
         restic:
           name: restic/restic
           tag: "0.16.0"
+      build:
+        backup:
+          context: _data/backup/image/
       plugin:
         rclone:
           name: rclone/docker-volume-rclone
@@ -81,6 +84,7 @@ config:
           ntfy-cache:
           ntfy-data:
           docker-compose:
+          restic-cache:
         bind:
           # https://rclone.org/docker/
           rclone-config: /var/lib/docker-plugins/rclone/config
@@ -128,6 +132,29 @@ config:
             dir: /var/cache/ntfy/
           data:
             dir: /var/lib/ntfy/
+      backup:
+        common:
+          prefix: /volume/
+        cache:
+          volume: restic-cache
+          dir: /var/cache/restic/
+        service:
+          navidrome:
+            stop:
+              - navidrome
+            volume:
+              data:
+                path:
+                  - navidrome.db
+          syncthing:
+            stop:
+              - syncthing
+            volume:
+              config:
+                path:
+                  - config/config.xml
+                  - config/key.pem
+                  - config/cert.pem
   service:
     value:
       tailscale:
