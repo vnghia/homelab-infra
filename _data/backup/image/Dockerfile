@@ -4,10 +4,9 @@ WORKDIR /app
 
 COPY --from=restic/restic:0.16.0 /usr/bin/restic /usr/bin/restic
 
-COPY requirements.txt requirements.txt
+COPY _data/backup/image/requirements.txt ./
 RUN pip install -r requirements.txt
 
-COPY _file.py _file.py
-COPY main.py main.py
+COPY _data/backup/image/*.py ./
 
 ENTRYPOINT [ "python", "main.py" ]

@@ -1,3 +1,4 @@
+import hashlib
 from pathlib import Path
 
 import pulumi_docker as docker
@@ -49,34 +50,42 @@ class DockerImage(ComponentResource):
     def __build_image_build(self, platform: str):
         build_config = docker_config.get("build", {})
         for key, data in build_config.items():
-            context_path = (
-                Path(data["context"])
-                .resolve(True)
-                .relative_to(constant.PROJECT_ROOT_DIR)
-            )
             dockerfile = (
-                (context_path / data.get("dockerfile", "Dockerfile"))
+                (constant.PROJECT_ROOT_DIR / data["dockerfile"])
                 .resolve(True)
                 .relative_to(constant.PROJECT_ROOT_DIR)
             )
 
+            material_hash = hashlib.file_digest(
+                open(dockerfile, "rb"), "sha256"
+            ).digest()
+            for context in data.get("material", []):
+                for file in constant.PROJECT_ROOT_DIR.glob(context):
+                    material_hash += hashlib.file_digest(
+                        open(file, "rb"), "sha256"
+                    ).digest()
+            material_hash = hashlib.sha256(material_hash).hexdigest()
+
             image_full_name = "{}/{}:{}".format(
-                constant.PROJECT_NAME, key, constant.PROJECT_STACK
+                get_logical_name(), key, material_hash[:7]
             )
             self.image_map[key] = {
                 "image_name": image_full_name,
                 "image_id": docker.Image(
                     get_logical_name(key),
+                    opts=self.__child_opts.merge(
+                        ResourceOptions(ignore_changes=["build.contextDigest"])
+                    ),
                     build=docker.DockerBuildArgs(
                         args=data.get("args"),
                         builder_version=docker.BuilderVersion.BUILDER_BUILD_KIT,
-                        context=str(context_path),
+                        context=".",
                         dockerfile=str(dockerfile),
                         platform="linux/{}".format(platform),
                     ),
                     image_name=image_full_name,
                     skip_push=True,
-                ).id,
+                ).image_name,
             }
 
 

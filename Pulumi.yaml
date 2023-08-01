@@ -62,7 +62,10 @@ config:
           tag: "0.16.0"
       build:
         backup:
-          context: _data/backup/image/
+          dockerfile: _data/backup/image/Dockerfile
+          material:
+            - _data/backup/image/requirements.txt
+            - _data/backup/image/*.py
       plugin:
         rclone:
           name: rclone/docker-volume-rclone

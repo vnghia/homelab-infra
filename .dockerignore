@@ -1,0 +1,9 @@
+*
+!**/requirements.txt
+
+# common/notification
+!_common/notification/**/*.py
+
+# data/backup/image
+!_data/backup/image/**/*.py
+!_data/backup/image/Dockerfile
