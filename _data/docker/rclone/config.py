@@ -1,7 +1,7 @@
 from pulumi import ResourceOptions
 
 from _command import Command
-from _common import get_logical_name, storage_config, volume_config
+from _common import aws, get_logical_name, storage_config, volume_config
 from _secret import secret
 
 
@@ -33,6 +33,13 @@ def input_fn(opts: ResourceOptions, _):
             create="rclone obscure -",
             stdin=salt.result,
             interpreter=["/bin/sh", "-c"],
+        )
+
+        aws.build_cleanup(
+            "crypt-{}-cleanup".format(name),
+            opts=opts,
+            prefix=prefix,
+            triggers=[password, salt],
         )
 
         input_dict["crypt-{}-{}".format(bucket_name, name)] = {

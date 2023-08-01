@@ -3,7 +3,7 @@ from pathlib import Path
 from pulumi import ComponentResource, ResourceOptions
 
 from _command import Command
-from _common import constant, storage_config
+from _common import aws, storage_config
 from _data.resource import child_opts
 from _image import docker_image
 from _secret import secret
@@ -24,24 +24,10 @@ class ResticRepo(ComponentResource):
         )
         self.password = self.__repo_password.result
 
-        self.__repo_config = {
-            "S3_ENDPOINT": storage_config["endpoint"],
-            "S3_BUCKET": storage_config["bucket"],
-            "S3_PREFIX": self.__repo_prefix,
-        }
-
-        self.__repo_cleanup = Command.build(
+        self.__repo_cleanup = aws.build_cleanup(
             "restic-repo-cleanup",
-            opts=self.__child_opts.merge(
-                ResourceOptions(protect=constant.PROJECT_STACK != "dev")
-            ),
-            delete=Path(__file__).parent / "cleanup.py",
-            update="",
-            environment={
-                "AWSCLI_IMAGE_ID": docker_image.image_map["awscli"]["image_id"]
-            }
-            | _aws_env
-            | self.__repo_config,
+            opts=self.__child_opts,
+            prefix=self.__repo_prefix,
             triggers=[self.password],
         )
 
@@ -55,9 +41,9 @@ class ResticRepo(ComponentResource):
             environment={
                 "RESTIC_IMAGE_ID": docker_image.image_map["restic"]["image_id"],
                 "RESTIC_PASSWORD": self.password,
+                "RESTIC_REPO_PREFIX": self.__repo_prefix,
             }
-            | _aws_env
-            | self.__repo_config,
+            | _aws_env,
         )
 
         self.repo = self.__repo_init.stdout

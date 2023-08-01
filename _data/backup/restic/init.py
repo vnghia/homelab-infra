@@ -8,7 +8,7 @@ def main():
     restic_repo = "s3:{}/{}/{}".format(
         os.environ["S3_ENDPOINT"],
         os.environ["S3_BUCKET"],
-        os.environ["S3_PREFIX"],
+        os.environ["RESTIC_REPO_PREFIX"],
     )
 
     client = docker.from_env()
