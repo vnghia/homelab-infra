@@ -141,6 +141,10 @@ config:
         script-server:
           log:
             dir: /app/logs/
+          compose:
+            volume: docker-compose
+            dir: /app/compose/
+            ro: true
       backup:
         common:
           prefix: /volume/

@@ -1,5 +1,6 @@
 import json
 import os
+import subprocess
 import typing
 from contextlib import contextmanager
 from pathlib import Path
@@ -18,6 +19,10 @@ service_list = list(backup_service_config.keys())
 
 mount_path_prefix = Path(backup_common_config["prefix"])
 backup_host = backup_common_config["host"]
+
+notification_config = backup_common_config["notification"]
+notification_topic = notification_config.pop("topic")
+notification_title = notification_config.pop("title")
 
 docker_client = docker.from_env()
 
@@ -48,6 +53,14 @@ class BackupArgs(ServiceArgs):
 
 class RestoreArgs(ServiceArgs):
     snapshot: str = tap.arg(default="latest")
+
+
+class PruneArgs(tap.TypedArgs):
+    keep_last: int = tap.arg("-k", "--keep-last", default=14)
+
+
+class CheckArgs(tap.TypedArgs):
+    read_data: bool = tap.arg("-r", "--read-data", default=False)
 
 
 def __backup_and_restore(is_backup: bool, args: BackupArgs | RestoreArgs):
@@ -89,9 +102,6 @@ def __backup_and_restore(is_backup: bool, args: BackupArgs | RestoreArgs):
 
         print("\n**** finish {} for {} ****\n".format(action, service), flush=True)
 
-    notification_config = backup_common_config["notification"]
-    notification_topic = notification_config.pop("topic")
-    notification_title = notification_config.pop("title")
     if len(exceptions):
         message = "{} for {} failed.".format(action, ", ".join(failed_services))
         notification.publish(
@@ -119,12 +129,67 @@ def restore(args: RestoreArgs):
     __backup_and_restore(False, args)
 
 
+def prune(args: PruneArgs):
+    try:
+        subprocess.check_call(
+            [
+                "restic",
+                "forget",
+                "--keep-last",
+                str(args.keep_last),
+                "--group-by",
+                "path,tags",
+                "--host",
+                backup_host,
+                "--prune",
+            ]
+        )
+        notification.publish(
+            topic=notification_topic,
+            message="prune backup successful.",
+            title=notification_title,
+            **notification_config
+        )
+    except Exception:
+        notification.publish(
+            topic=notification_topic,
+            message="prune backup failed.",
+            title=notification_title,
+            **notification_config
+        )
+        raise
+
+
+def check(args: CheckArgs):
+    try:
+        subprocess.check_call(
+            ["restic", "check"] + (["--read-data"] if args.read_data else [])
+        )
+        notification.publish(
+            topic=notification_topic,
+            message="prune backup successful.",
+            title=notification_title,
+            **notification_config
+        )
+    except Exception:
+        notification.publish(
+            topic=notification_topic,
+            message="prune backup failed.",
+            title=notification_title,
+            **notification_config
+        )
+        raise
+
+
 def main():
     tap.Parser(
         tap.SubParserGroup(
-            tap.SubParser("backup", BackupArgs), tap.SubParser("restore", RestoreArgs)
+            tap.SubParser("backup", BackupArgs),
+            tap.SubParser("restore", RestoreArgs),
+            tap.SubParser("prune", PruneArgs),
+            tap.SubParser("check", CheckArgs),
         ),
-    ).bind(backup, restore).run()
+    ).bind(backup, restore, prune, check).run()
 
 
 if __name__ == "__main__":
