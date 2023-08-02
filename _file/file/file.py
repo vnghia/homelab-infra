@@ -1,6 +1,5 @@
 import base64
 import configparser
-import importlib
 import io
 import json
 from pathlib import Path
@@ -14,7 +13,7 @@ import yaml
 from pulumi import Input, Output, ResourceOptions
 
 from _command import Command
-from _common import constant
+from _common import import_module
 from _image import docker_image
 
 
@@ -96,14 +95,7 @@ class Template:
         config = config or {}
         opts = opts or self.__opts
         if module_path:
-            module = importlib.import_module(
-                str(
-                    Path(module_path)
-                    .resolve()
-                    .relative_to(constant.PROJECT_ROOT_DIR)
-                    .with_suffix("")
-                ).replace("/", ".")
-            )
+            module = import_module(module_path)
             config = config | module.output_config
         if input_fn:
             config = input_fn(config)

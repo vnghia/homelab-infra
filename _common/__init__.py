@@ -10,6 +10,7 @@ from _common.config import (
     storage_config,
     volume_config,
 )
+from _common.import_module import import_module
 from _common.naming import get_logical_name
 
 __all__ = [
@@ -23,5 +24,6 @@ __all__ = [
     "service_config",
     "storage_config",
     "volume_config",
+    "import_module",
     "get_logical_name",
 ]
