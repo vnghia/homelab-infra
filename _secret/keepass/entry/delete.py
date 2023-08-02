@@ -13,7 +13,7 @@ def main():
     entry = kp.find_entries(
         uuid=uuid.UUID(hex=os.environ["PULUMI_COMMAND_STDOUT"]), first=True
     )
-    kp.delete_group(entry)
+    kp.delete_entry(entry)
     kp.save()
 
 

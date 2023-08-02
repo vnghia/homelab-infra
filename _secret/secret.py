@@ -31,7 +31,7 @@ class Secret:
     def __build_keepass_group(self):
         self.__keepass_group = Command.build(
             name="keepass-group",
-            opts=child_opts,
+            opts=child_opts.merge(ResourceOptions(delete_before_replace=True)),
             create=Path(__file__).parent / "keepass" / "group" / "create.py",
             delete=Path(__file__).parent / "keepass" / "group" / "delete.py",
             environment={
@@ -40,7 +40,9 @@ class Secret:
             },
         )
         self.__keepass_group_uuid = self.__keepass_group.stdout
-        self.__keepass_entry_opts = ResourceOptions(parent=self.__keepass_group)
+        self.__keepass_entry_opts = ResourceOptions(
+            parent=self.__keepass_group, delete_before_replace=True
+        )
 
     def __build_keepass_entry(self):
         # fix race condition when accessing keepass file
