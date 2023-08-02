@@ -11,15 +11,15 @@ _rclone_webdav_config = service_config["rclone-webdav"]
 _rclone_webdav_volume = container_storage_config["rclone-webdav"]
 
 
-class Rclone(ComponentResource):
+class RcloneWebdav(ComponentResource):
     def __init__(self) -> None:
-        super().__init__("service:index:Rclone", "rclone", None, child_opts)
+        super().__init__("service:index:Rclone", "rclone-webdav", None, child_opts)
         if "combine" in volume_config:
             self.__webdav_container = DockerContainer.build(
                 "rclone-webdav",
                 opts=ResourceOptions(
                     parent=self,
-                    depends_on=[traefik_proxy.dynamic_config["rclone"]["file"]],
+                    depends_on=[traefik_proxy.dynamic_config["rclone-webdav"]["file"]],
                 ),
                 image="rclone",
                 command=[
@@ -35,9 +35,9 @@ class Rclone(ComponentResource):
                     "--addr",
                     "0.0.0.0:{}".format(_rclone_webdav_config["port"]),
                     "--user",
-                    secret.accounts["rclone"]["username"],
+                    secret.accounts["rclone-webdav"]["username"],
                     "--pass",
-                    secret.accounts["rclone"]["password"],
+                    secret.accounts["rclone-webdav"]["password"],
                 ],
                 labels={"rclone-plugin-alias": docker_volume.rclone_plugin_alias},
             )
@@ -47,4 +47,4 @@ class Rclone(ComponentResource):
             self.register_outputs({})
 
 
-rclone = Rclone()
+rclone_webdav = RcloneWebdav()

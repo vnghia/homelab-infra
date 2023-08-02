@@ -17,8 +17,8 @@ config:
           hostname: public-navidrome
         ntfy:
           hostname: public-ntfy
-        rclone:
-          hostname: public-rclone
+        rclone-webdav:
+          hostname: public-rclone-webdav
   docker:
     value:
       env:

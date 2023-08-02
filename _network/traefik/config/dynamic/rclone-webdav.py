@@ -7,7 +7,7 @@ output_config = {
         "type": "http",
         "router": {
             "name": "rclone-webdav",
-            "rule": Output.format("Host(`{0}`)", hostnames["public-rclone"]),
+            "rule": Output.format("Host(`{0}`)", hostnames["public-rclone-webdav"]),
             "sec_mode": "public",
         },
         "service": {"port": 8080},
