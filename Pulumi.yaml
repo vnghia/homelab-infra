@@ -60,6 +60,9 @@ config:
         restic:
           name: restic/restic
           tag: "0.16.0"
+        socat:
+          name: alpine/socat
+          tag: "1.7.4.4"
       build:
         backup:
           dockerfile: _data/backup/image/Dockerfile

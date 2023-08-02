@@ -30,6 +30,7 @@ class ScriptServer(ComponentResource):
 
         self.__runners: dict[str, Template] = {}
         self.__schedules: dict[str, Template] = {}
+        self.__scripts: dict[str, Template] = {}
 
         self.__raw_input = {"name": "__raw_input", "type": "text"}
         self.__import_and_build()
@@ -40,7 +41,8 @@ class ScriptServer(ComponentResource):
             volumes={"/var/run/docker.sock": {}},
             uploads=[self._config["docker"]]
             + [runner["docker"] for runner in self.__runners.values()]
-            + [schedule["docker"] for schedule in self.__schedules.values()],
+            + [schedule["docker"] for schedule in self.__schedules.values()]
+            + [script["docker"] for script in self.__scripts.values()],
         )
 
         self.container_id = self.__container.id
@@ -51,7 +53,14 @@ class ScriptServer(ComponentResource):
         output_config = {"path": "/app/conf/runners/{}.json".format(path)}
 
         input_dict = {"name": name} | config
-        input_dict["script_path"] = " ".join(input_dict["script_path"])
+        script_type_map = {
+            "shell": self.__build_script_shell,
+            None: lambda _1, _2, scripts: " ".join(scripts),
+        }
+        input_dict["script_path"] = script_type_map[config.get("script_type")](
+            name, path, input_dict["script_path"]
+        )
+
         if "parameters" not in input_dict:
             input_dict["parameters"] = []
         input_dict["parameters"].append(self.__raw_input)
@@ -97,6 +106,15 @@ class ScriptServer(ComponentResource):
 
         output_config["input"] = input_dict
         self.__schedules[name] = self.__template.build(config=output_config)
+
+    def __build_script_shell(self, name: str, path: str, scripts: list[str]):
+        full_path = "/app/conf/scripts/{}.sh".format(path)
+        output_config = {"path": full_path, "type": "raw", "executable": True}
+        output_config["input"] = "\n".join(
+            ["#!/bin/sh", "", "set -euxo pipefail", ""] + scripts + [""]
+        )
+        self.__scripts[name] = self.__template.build(config=output_config)
+        return full_path
 
     def __import_and_build(self):
         for path in sorted(
