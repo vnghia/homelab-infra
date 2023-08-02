@@ -10,3 +10,7 @@
 
 # service/script_server/image
 !_service/script_server/image/Dockerfile
+
+# service/ttyd/image
+!_service/ttyd/image/Dockerfile
+!_service/ttyd/image/ns

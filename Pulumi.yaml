@@ -71,6 +71,10 @@ config:
             - _data/backup/image/*.py
         script-server:
           dockerfile: _service/script_server/image/Dockerfile
+        ttyd:
+          dockerfile: _service/ttyd/image/Dockerfile
+          material:
+            - _service/ttyd/image/ns
       plugin:
         rclone:
           name: rclone/docker-volume-rclone
@@ -148,6 +152,11 @@ config:
             volume: docker-compose
             dir: /app/compose/
             ro: true
+        ttyd:
+          compose:
+            volume: docker-compose
+            dir: /compose/
+            ro: true
       backup:
         common:
           prefix: /volume/
@@ -196,3 +205,13 @@ config:
       script-server:
         port: 8080
         admin: 127.0.0.1
+      ttyd:
+        port: 8080
+        option:
+          disableReconnect: 1
+          cursorStyle: bar
+          fontSize: 16
+          allowTransparency: 1
+          drawBoldTextInBrightColors: 1
+          enableTrzsz: 1
+          disableLeaveAlert: 1
