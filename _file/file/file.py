@@ -101,12 +101,16 @@ class Template:
             config = input_fn(config)
         if "input_fn" in config:
             config["input"] = config.pop("input_fn")(opts, input_args)
+        if config.get("type") == "file":
+            config["type"] = "raw"
+            config["input"] = open(config["input"], "r").read()
 
         output_type_fn = {
             "toml": self.__build_toml_apply,
             "conf": self.__build_conf_apply,
             "yaml": self.__build_yaml_apply,
             "json": self.__build_json_apply,
+            "raw": self.__build_raw_apply,
         }
         output_type = config.get("type", config["path"].split(".")[-1])
 
@@ -167,3 +171,7 @@ class Template:
     def __build_yaml_apply(self, config_str: str):
         input, _ = self.__build_apply(config_str)
         return yaml.dump(input, default_flow_style=False)
+
+    def __build_raw_apply(self, config_str: str):
+        input, _ = self.__build_apply(config_str)
+        return input
