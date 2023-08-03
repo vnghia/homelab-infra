@@ -239,6 +239,12 @@ config:
               session:
                 path:
                   - "."
+          paperless-ngx:
+            volume:
+              export:
+                path:
+                  - "."
+                script_path: _data/backup/script/paperless_ngx.py
       redis:
         - paperless-ngx
   service:

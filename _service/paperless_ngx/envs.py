@@ -18,6 +18,7 @@ envs = {
     ),
     "PAPERLESS_SECRET_KEY": secret.keys["paperless-ngx-secret"].result,
     "PAPERLESS_URL": "https://{}".format(hostnames["private-paperless-ngx"]),
+    "PAPERLESS_AUTO_LOGIN_USERNAME": _account_config["username"],
     "PAPERLESS_ADMIN_USER": _account_config["username"],
     "PAPERLESS_ADMIN_PASSWORD": _account_config["password"],
     "PAPERLESS_FILENAME_FORMAT": "{document_type}/{correspondent}/{created_year}/{tag_list}/{title}",
