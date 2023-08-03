@@ -18,7 +18,18 @@ storage_config = __build_config("storage")
 secret_config = __build_config("secret_")
 service_config = __build_config("service")
 
-volume_config = storage_config.get("volume", {})
+redis_config = storage_config.get("redis", [])
+
+
+def __build_volume_config():
+    __config = storage_config.get("volume", {})
+    if "local" not in __config:
+        __config["local"] = {}
+    __config["local"] |= {"redis-{}-data".format(db): None for db in redis_config}
+    return __config
+
+
+volume_config = __build_volume_config()
 
 
 def __build_container_storage():
@@ -29,6 +40,11 @@ def __build_container_storage():
                 volume = "{}-{}".format(ks, kc)
                 assert volume in volume_config.get("local", {})
                 vc["volume"] = volume
+    for db in redis_config:
+        container = "redis-{}".format(db)
+        __config[container] = {
+            "data": {"dir": "/data/", "volume": "{}-data".format(container)}
+        }
     return __config
 
 

@@ -68,6 +68,9 @@ config:
         jellyfin:
           name: linuxserver/jellyfin
           tag: "10.8.10"
+        redis:
+          name: redis
+          tag: "7.0.12-alpine3.18"
       build:
         backup:
           dockerfile: _data/backup/image/Dockerfile
@@ -220,6 +223,7 @@ config:
               session:
                 path:
                   - "."
+      redis: []
   service:
     value:
       tailscale:
