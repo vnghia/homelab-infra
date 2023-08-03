@@ -73,6 +73,7 @@ def __backup_and_restore(is_backup: bool, args: BackupArgs | RestoreArgs):
 
     for service, config in service_config.items():
         action = "backing up" if is_backup else "restoring"
+        action_key = "backup" if is_backup else "restore"
         print("**** running {} for {} ****\n".format(action, service), flush=True)
 
         with stop_container(config.get("stop", [])):
@@ -80,6 +81,23 @@ def __backup_and_restore(is_backup: bool, args: BackupArgs | RestoreArgs):
                 try:
                     root_dir = mount_path_prefix / volume
                     tags = [service, volume] + data.get("tag", [])
+
+                    script_data = data.get("{}-script".format(action_key), {})
+
+                    if "pre" in script_data:
+                        print(
+                            "**** running pre-{} for {} ****\n".format(
+                                action_key, service
+                            ),
+                            flush=True,
+                        )
+                        subprocess.check_call(script_data["pre"])
+                        print(
+                            "**** finish pre-{} for {} ****\n".format(
+                                action_key, service
+                            ),
+                            flush=True,
+                        )
 
                     if is_backup:
                         _file.backup(
@@ -94,6 +112,21 @@ def __backup_and_restore(is_backup: bool, args: BackupArgs | RestoreArgs):
                             snapshot=args.snapshot,
                             host=backup_host,
                             tags=tags,
+                        )
+
+                    if "post" in script_data:
+                        print(
+                            "**** running post-{} for {} ****\n".format(
+                                action_key, service
+                            ),
+                            flush=True,
+                        )
+                        subprocess.check_call(script_data["post"])
+                        print(
+                            "**** finish post-{} for {} ****\n".format(
+                                action_key, service
+                            ),
+                            flush=True,
                         )
 
                 except Exception as e:

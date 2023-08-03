@@ -1,6 +1,9 @@
+from pathlib import Path
+
 import deepmerge
 import pulumi
 
+from _common.import_module import import_module
 from _common.naming import get_logical_name
 
 
@@ -60,7 +63,13 @@ def __build_backup():
         for kc, vc in vs.pop("volume", {}).items():
             if kc not in volume_config.get("local", {}):
                 kc = "{}-{}".format(ks, kc)
+
+            if "script_path" in vc:
+                script_config = import_module(Path(vc.pop("script_path"))).script_config
+                vc |= script_config
+
             volume_dict[kc] = vc
+
         vs["volume"] = volume_dict
 
     return __config
