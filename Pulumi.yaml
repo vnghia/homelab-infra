@@ -12,6 +12,7 @@ config:
     value:
       key:
         navidrome-encryption:
+        paperless-ngx-secret:
       account:
         navidrome:
           hostname: public-navidrome
@@ -21,6 +22,8 @@ config:
           hostname: public-rclone-webdav
         jellyfin:
           hostname: private-jellyfin
+        paperless-ngx:
+          hostname: private-paperless-ngx
   docker:
     value:
       env:
@@ -71,6 +74,9 @@ config:
         redis:
           name: redis
           tag: "7.0.12-alpine3.18"
+        paperless-ngx:
+          name: ghcr.io/paperless-ngx/paperless-ngx
+          tag: "1.16.5"
       build:
         backup:
           dockerfile: _data/backup/image/Dockerfile
@@ -115,6 +121,9 @@ config:
           jellyfin-config:
           jellyfin-cache:
           jellyfin-data:
+          paperless-ngx-data:
+          paperless-ngx-media:
+          paperless-ngx-export:
         bind:
           # https://rclone.org/docker/
           rclone-config: /var/lib/docker-plugins/rclone/config
@@ -191,6 +200,13 @@ config:
             volume: crypt-media
             dir: /media/
             ro: true
+        paperless-ngx:
+          data:
+            dir: /usr/src/paperless/data/
+          media:
+            dir: /usr/src/paperless/media/
+          export:
+            dir: /usr/src/paperless/export/
       backup:
         common:
           prefix: /volume/
@@ -223,7 +239,8 @@ config:
               session:
                 path:
                   - "."
-      redis: []
+      redis:
+        - paperless-ngx
   service:
     value:
       tailscale:
