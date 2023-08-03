@@ -14,3 +14,7 @@
 # service/ttyd/image
 !_service/ttyd/image/Dockerfile
 !_service/ttyd/image/ns
+
+# service/telegram/image
+!_service/telegram/image/**/*.py
+!_service/telegram/image/Dockerfile

@@ -75,6 +75,11 @@ config:
           dockerfile: _service/ttyd/image/Dockerfile
           material:
             - _service/ttyd/image/ns
+        telegram:
+          dockerfile: _service/telegram/image/Dockerfile
+          material:
+            - _service/telegram/image/requirements.txt
+            - _service/telegram/image/*.py
       plugin:
         rclone:
           name: rclone/docker-volume-rclone
@@ -98,6 +103,7 @@ config:
           docker-compose:
           restic-cache:
           script-server-log:
+          telegram-session:
         bind:
           # https://rclone.org/docker/
           rclone-config: /var/lib/docker-plugins/rclone/config
@@ -157,6 +163,11 @@ config:
             volume: docker-compose
             dir: /compose/
             ro: true
+        telegram-login-code:
+          session:
+            volume: telegram-session
+            dir: /telegram/session/
+            ro: true
       backup:
         common:
           prefix: /volume/
@@ -184,6 +195,11 @@ config:
                   - config/config.xml
                   - config/key.pem
                   - config/cert.pem
+          telegram:
+            volume:
+              session:
+                path:
+                  - "."
   service:
     value:
       tailscale:
@@ -215,3 +231,8 @@ config:
           drawBoldTextInBrightColors: 1
           enableTrzsz: 1
           disableLeaveAlert: 1
+      telegram:
+        session: /telegram/session/
+        notification:
+          topic: telegram
+          icon: https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/240px-Telegram_logo.svg.png
