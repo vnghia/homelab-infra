@@ -19,6 +19,8 @@ config:
           hostname: public-ntfy
         rclone-webdav:
           hostname: public-rclone-webdav
+        jellyfin:
+          hostname: private-jellyfin
   docker:
     value:
       env:
@@ -63,6 +65,9 @@ config:
         socat:
           name: alpine/socat
           tag: "1.7.4.4"
+        jellyfin:
+          name: linuxserver/jellyfin
+          tag: "10.8.10"
       build:
         backup:
           dockerfile: _data/backup/image/Dockerfile
@@ -104,6 +109,9 @@ config:
           restic-cache:
           script-server-log:
           telegram-session:
+          jellyfin-config:
+          jellyfin-cache:
+          jellyfin-data:
         bind:
           # https://rclone.org/docker/
           rclone-config: /var/lib/docker-plugins/rclone/config
@@ -112,6 +120,7 @@ config:
           music: music/original/
         crypt:
           password: crypt/password/
+          media: crypt/media/
         combine:
           crypt-password: password
       container:
@@ -167,6 +176,17 @@ config:
           session:
             volume: telegram-session
             dir: /telegram/session/
+            ro: true
+        jellyfin:
+          config:
+            dir: /config/
+          cache:
+            dir: /config/cache/
+          data:
+            dir: /config/data/
+          media:
+            volume: crypt-media
+            dir: /media/
             ro: true
       backup:
         common:

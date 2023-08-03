@@ -1,4 +1,5 @@
 from _service.dozzle.dozzle import dozzle
+from _service.jellyfin.jellyfin import jellyfin
 from _service.navidrome.navidrome import navidrome
 from _service.ntfy.ntfy import ntfy
 from _service.rclone.rclone_webdav import rclone_webdav
@@ -9,6 +10,7 @@ from _service.ttyd.ttyd import ttyd
 
 __all__ = [
     "dozzle",
+    "jellyfin",
     "navidrome",
     "ntfy",
     "rclone_webdav",
