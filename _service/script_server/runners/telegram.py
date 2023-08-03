@@ -19,16 +19,15 @@ docker_compose_script = [
     "run",
     "--rm",
 ]
-docker_restart = ["docker restart {}".format(get_logical_name("telegram-login-code"))]
+docker_restart = ["docker", "restart", get_logical_name("telegram-login-code")]
 
 script_config = {
     "Login telegram": {
-        "script_path": [" ".join(docker_compose_script + ["login"])] + docker_restart,
+        "script_path": [docker_compose_script + ["login"]] + [docker_restart],
         "requires_terminal": True,
     },
     "Refresh telegram session": {
-        "script_path": [" ".join(docker_compose_script + ["refresh_session"])]
-        + docker_restart,
+        "script_path": [docker_compose_script + ["refresh_session"]] + [docker_restart],
         "scheduling": {
             "schedule": {
                 "start_datetime": datetime.fromtimestamp(0).replace(hour=0),

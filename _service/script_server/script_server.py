@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from pulumi import ComponentResource, ResourceOptions
+from pulumi import ComponentResource, Output, ResourceOptions
 from slugify import slugify
 
 from _common import import_module, service_config
@@ -55,7 +55,9 @@ class ScriptServer(ComponentResource):
         input_dict = {"name": name} | config
         script_type_map = {
             "shell": self.__build_script_shell,
-            None: lambda _1, _2, scripts: " ".join(scripts),
+            None: lambda _1, _2, scripts: Output.from_input(scripts).apply(
+                lambda scripts: " ".join(scripts)
+            ),
         }
         input_dict["script_path"] = script_type_map[config.get("script_type")](
             name, path, input_dict["script_path"]
@@ -107,11 +109,15 @@ class ScriptServer(ComponentResource):
         output_config["input"] = input_dict
         self.__schedules[name] = self.__template.build(config=output_config)
 
-    def __build_script_shell(self, name: str, path: str, scripts: list[str]):
+    def __build_script_shell(self, name: str, path: str, scripts: list[list]):
         full_path = "/app/conf/scripts/{}.sh".format(path)
         output_config = {"path": full_path, "type": "raw", "executable": True}
-        output_config["input"] = "\n".join(
-            ["#!/bin/sh", "", "set -euxo pipefail", ""] + scripts + [""]
+        output_config["input"] = Output.from_input(scripts).apply(
+            lambda scripts: "\n".join(
+                ["#!/bin/sh", "", "set -euxo pipefail", ""]
+                + [" ".join(script) for script in scripts]
+                + [""]
+            )
         )
         self.__scripts[name] = self.__template.build(config=output_config)
         return full_path
