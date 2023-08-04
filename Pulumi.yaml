@@ -16,12 +16,18 @@ config:
       account:
         navidrome:
           hostname: public-navidrome
+          custom:
+            AndroidApp1: app.symfonik.music.player
         ntfy:
           hostname: public-ntfy
+          custom:
+            AndroidApp1: io.heckel.ntfy
         rclone-webdav:
           hostname: public-rclone-webdav
         jellyfin:
           hostname: private-jellyfin
+          custom:
+            AndroidApp1: org.jellyfin.mobile
         paperless-ngx:
           hostname: private-paperless-ngx
   docker:
