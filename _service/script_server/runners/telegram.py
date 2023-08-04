@@ -1,24 +1,16 @@
 from datetime import datetime
 
-from _common import container_storage_config, get_logical_name
-
-_script_server_volume = container_storage_config["script-server"]
+from _common import get_logical_name
+from _service.script_server.docker import build_compose_script, docker_compose_dir
 
 common_config = {
     "group": "Telegram",
-    "working_directory": _script_server_volume["compose"]["dir"],
+    "working_directory": docker_compose_dir,
     "requires_terminal": False,
     "script_type": "shell",
 }
 
-docker_compose_script = [
-    "docker",
-    "compose",
-    "-f",
-    "telegram-compose.yaml",
-    "run",
-    "--rm",
-]
+docker_compose_script = build_compose_script("telegram-compose.yaml")
 docker_restart = ["docker", "restart", get_logical_name("telegram-login-code")]
 
 script_config = {

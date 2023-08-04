@@ -1,23 +1,15 @@
 from pulumi import Output
 
-from _common import get_logical_name
 from _image import docker_image
 from _network.docker import default_bridge_network
 from _network.tailscale import tailscale_device
+from _service.script_server.docker import build_run_net_tailscale
 
 common_config = {
     "group": "Network",
     "requires_terminal": False,
     "script_type": "shell",
 }
-
-docker_run_net_tailscale = [
-    "docker",
-    "run",
-    "--rm",
-    "--network",
-    "container:{}".format(get_logical_name("tailscale")),
-]
 
 browser_image_list = {
     v["image_name"]: k.removeprefix("neko-")
@@ -28,12 +20,25 @@ browser_image_list = {
 script_config = {
     "Private port forwarding": {
         "script_path": [
-            docker_run_net_tailscale
+            ["PARAM_SCR_PORT=$1"],
+            ["PARAM_DEST_HOSTNAME=$2"],
+            ["PARAM_DEST_PORT=$3"],
+            [
+                "echo",
+                tailscale_device.ipv4.apply(
+                    lambda ipv4: "http://{}:${{PARAM_SCR_PORT}}".format(ipv4)
+                ),
+            ],
+            build_run_net_tailscale()
+            + [
+                "--name",
+                "port-forwarding-${PARAM_SCR_PORT}-${PARAM_DEST_HOSTNAME}-${PARAM_DEST_PORT}",
+            ]
             + [
                 docker_image.image_map["socat"]["image_name"],
-                "tcp-listen:$1,fork,reuseaddr",
-                "tcp:$2:$3",
-            ]
+                "tcp-listen:${PARAM_SCR_PORT},fork,reuseaddr",
+                "tcp:${PARAM_DEST_HOSTNAME}:${PARAM_DEST_PORT}",
+            ],
         ],
         "parameters": [
             {
@@ -61,7 +66,7 @@ script_config = {
     },
     "Private browser": {
         "script_path": [
-            docker_run_net_tailscale
+            build_run_net_tailscale("neko-browser")
             + [
                 "--shm-size",
                 "2G",
