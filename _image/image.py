@@ -25,6 +25,15 @@ class DockerImage(ComponentResource):
         self.__build_image_build(platform)
 
     def __get_image_id(self, name: str, tag: str, platform: str):
+        name_ = name
+        try:
+            name = eval(name_, {}, {"platform": platform})
+        except Exception:
+            name = name_
+        else:
+            if not isinstance(tag, str):
+                name = name_
+
         tag_ = tag
         try:
             tag = eval(tag_, {}, {"platform": platform})
@@ -33,6 +42,7 @@ class DockerImage(ComponentResource):
         else:
             if not isinstance(tag, str):
                 tag = tag_
+
         full_name = "{}:{}".format(name, tag)
         return {
             "image_name": full_name,
