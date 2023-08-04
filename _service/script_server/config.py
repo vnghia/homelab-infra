@@ -1,4 +1,5 @@
 from _common import service_config
+from _network.docker import default_bridge_network
 
 _script_server_config = service_config["script-server"]
 
@@ -8,12 +9,10 @@ output_config = {
         "port": _script_server_config["port"],
         "access": {
             "admin_users": [_script_server_config["admin"]],
-            "trusted_ips": [
-                _script_server_config["admin"],
-                "10.0.0.0/8",
-                "172.16.0.0/12",
-                "192.168.0.0/16",
-            ],
+            "trusted_ips": default_bridge_network.ipam_configs.apply(
+                lambda configs: [config.subnet for config in configs]
+            ),
+            "user_header_name": "X-Forwarded-User",
         },
         "logging": {
             "execution_file": "${SCRIPT}-${DATE}.log",

@@ -99,7 +99,7 @@ class ScriptServer(ComponentResource):
             "id": len(self.__schedules) + 1,
             "user": {
                 "user_id": _script_server_config["admin"],
-                "audit_names": {"proxied_ip": _script_server_config["admin"]},
+                "audit_names": {"auth_username": _script_server_config["admin"]},
             },
             "script_name": name,
             "schedule": schedule,
