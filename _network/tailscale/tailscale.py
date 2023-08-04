@@ -40,9 +40,9 @@ class TailscaleDevice(ComponentResource):
             "tailscale",
             opts=self.__child_opts,
             ephemeral=False,
-            expiry=90 * 24 * 60 * 60,
+            expiry=5 * 60,
             preauthorized=True,
-            reusable=True,
+            reusable=False,
         )
 
     def __build_hostname(self):
@@ -71,10 +71,13 @@ class TailscaleDevice(ComponentResource):
         self.__container = DockerContainer.build(
             name="tailscale",
             opts=self.__child_opts,
+            capabilities=docker.ContainerCapabilitiesArgs(adds=["NET_ADMIN"]),
             envs={
                 "TS_AUTHKEY": self.__authkey.key,
                 "TS_STATE_DIR": _tailscale_volume["state"]["dir"],
                 "TS_SOCKET": _tailscale_config["socket"],
+                "TS_USERSPACE": "false",
+                "TS_AUTH_ONCE": "true",
             },
             healthcheck=docker.ContainerHealthcheckArgs(
                 tests=["CMD-SHELL", "tailscale status"],
