@@ -87,6 +87,7 @@ class Secret:
                 ),
                 create=Path(__file__).parent / "keepass" / "entry" / "create.py",
                 delete=Path(__file__).parent / "keepass" / "entry" / "delete.py",
+                update="",
                 stdin=Output.json_dumps(config),
                 environment={"KEEPASS_GROUP_UUID": self.__keepass_group_uuid},
             )

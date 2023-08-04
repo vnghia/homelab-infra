@@ -15,6 +15,7 @@ def main():
         uuid=uuid.UUID(hex=os.environ["KEEPASS_GROUP_UUID"]), first=True
     )
     entry_data = json.loads(input())
+    custom_data = entry_data.pop("custom", {})
     entry = kp.add_entry(
         group,
         entry_data.pop("title"),
@@ -22,7 +23,7 @@ def main():
         entry_data.pop("password"),
         **entry_data
     )
-    for k, v in entry_data.get("custom", {}).items():
+    for k, v in custom_data.items():
         entry.set_custom_property(k, v)
     kp.save()
     print(entry.uuid.hex)
