@@ -89,6 +89,9 @@ config:
         neko-tor-browser:
           name: "'ghcr.io/m1k1o/neko/{}-tor-browser'.format('intel' if platform == 'amd64' else 'arm')"
           tag: "2.8.8"
+        cloudflared:
+          name: cloudflare/cloudflared
+          tag: "2023.7.3"
       build:
         backup:
           dockerfile: _data/backup/image/Dockerfile
