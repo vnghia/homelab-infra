@@ -200,14 +200,14 @@ def check(args: CheckArgs):
         )
         notification.publish(
             topic=notification_topic,
-            message="prune backup successful.",
+            message="check backup successful.",
             title=notification_title,
             **notification_config
         )
     except Exception:
         notification.publish(
             topic=notification_topic,
-            message="prune backup failed.",
+            message="check backup failed.",
             title=notification_title,
             **notification_config
         )
