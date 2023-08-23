@@ -135,23 +135,14 @@ def __backup_and_restore(is_backup: bool, args: BackupArgs | RestoreArgs):
 
         print("\n**** finish {} for {} ****\n".format(action, service), flush=True)
 
-    if len(exceptions):
-        message = "{} for {} failed.".format(action, ", ".join(failed_services))
-        notification.publish(
-            topic=notification_topic,
-            message=message,
-            title=notification_title,
-            priority=5,
-            **notification_config
-        )
-        raise ExceptionGroup(message, exceptions)
-    else:
-        notification.publish(
-            topic=notification_topic,
-            message="{} for {} successful.".format(action, ", ".join(args.services)),
-            title=notification_title,
-            **notification_config
-        )
+    notification.publish_with_status(
+        topic=notification_topic,
+        message="{} for {}".format(action, ", ".join(args.services)),
+        title=notification_title,
+        exceptions=exceptions,
+        message_failed="{} for {}".format(action, ", ".join(failed_services)),
+        **notification_config
+    )
 
 
 def backup(args: BackupArgs):
@@ -163,6 +154,7 @@ def restore(args: RestoreArgs):
 
 
 def prune(args: PruneArgs):
+    exceptions = []
     try:
         subprocess.check_call(
             [
@@ -177,41 +169,32 @@ def prune(args: PruneArgs):
                 "--prune",
             ]
         )
-        notification.publish(
-            topic=notification_topic,
-            message="prune backup successful.",
-            title=notification_title,
-            **notification_config
-        )
-    except Exception:
-        notification.publish(
-            topic=notification_topic,
-            message="prune backup failed.",
-            title=notification_title,
-            **notification_config
-        )
-        raise
+    except Exception as e:
+        exceptions.append(e)
+    notification.publish_with_status(
+        topic=notification_topic,
+        message="prune backup",
+        title=notification_title,
+        exceptions=exceptions,
+        **notification_config
+    )
 
 
 def check(args: CheckArgs):
+    exceptions = []
     try:
         subprocess.check_call(
             ["restic", "check"] + (["--read-data"] if args.read_data else [])
         )
-        notification.publish(
-            topic=notification_topic,
-            message="check backup successful.",
-            title=notification_title,
-            **notification_config
-        )
-    except Exception:
-        notification.publish(
-            topic=notification_topic,
-            message="check backup failed.",
-            title=notification_title,
-            **notification_config
-        )
-        raise
+    except Exception as e:
+        exceptions.append(e)
+    notification.publish_with_status(
+        topic=notification_topic,
+        message="check backup",
+        title=notification_title,
+        exceptions=exceptions,
+        **notification_config
+    )
 
 
 def main():
