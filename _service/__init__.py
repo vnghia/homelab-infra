@@ -1,5 +1,6 @@
 from _service.dozzle.dozzle import dozzle
 from _service.jellyfin.jellyfin import jellyfin
+from _service.memos.memos import memos
 from _service.navidrome.navidrome import navidrome
 from _service.ntfy.ntfy import ntfy
 from _service.paperless_ngx.paperless_ngx import paperless_ngx
@@ -12,6 +13,7 @@ from _service.ttyd.ttyd import ttyd
 __all__ = [
     "dozzle",
     "jellyfin",
+    "memos",
     "navidrome",
     "ntfy",
     "paperless_ngx",

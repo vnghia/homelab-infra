@@ -30,6 +30,10 @@ config:
             AndroidApp1: org.jellyfin.mobile
         paperless-ngx:
           hostname: private-paperless-ngx
+        memos:
+          hostname: private-memos
+          custom:
+            AndroidApp1: me.mudkip.moememos
   docker:
     value:
       env:
@@ -92,6 +96,9 @@ config:
         cloudflared:
           name: cloudflare/cloudflared
           tag: "2023.7.3"
+        memos:
+          name: ghcr.io/usememos/memos
+          tag: "0.14.4"
       build:
         backup:
           dockerfile: _data/backup/image/Dockerfile
@@ -139,12 +146,14 @@ config:
           paperless-ngx-data:
           paperless-ngx-media:
           paperless-ngx-export:
+          memos-data:
         bind:
           # https://rclone.org/docker/
           rclone-config: /var/lib/docker-plugins/rclone/config
           rclone-cache: /var/lib/docker-plugins/rclone/cache
         mount:
           music: music/original/
+          memos-assets: memos/
         crypt:
           password: crypt/password/
           media: crypt/media/
@@ -222,6 +231,12 @@ config:
             dir: /usr/src/paperless/media/
           export:
             dir: /usr/src/paperless/export/
+        memos:
+          data:
+            dir: /var/opt/memos
+          assets:
+            volume: mount-memos-assets
+            dir: /var/opt/memos/assets
       backup:
         common:
           prefix: /volume/
