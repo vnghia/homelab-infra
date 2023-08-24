@@ -275,6 +275,13 @@ config:
                 path:
                   - "."
                 script_path: _data/backup/script/paperless_ngx.py
+          memos:
+            stop:
+              - memos
+            volume:
+              data:
+                path:
+                  - memos_prod.db
       redis:
         - paperless-ngx
   service:
