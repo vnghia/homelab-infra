@@ -98,7 +98,7 @@ config:
           tag: "2023.7.3"
         memos:
           name: ghcr.io/usememos/memos
-          tag: "0.14.4"
+          tag: "0.15.2"
       build:
         backup:
           dockerfile: _data/backup/image/Dockerfile
