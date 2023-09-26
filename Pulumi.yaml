@@ -65,7 +65,7 @@ config:
           tag: "v1.5.4"
         ntfy:
           name: binwiederhier/ntfy
-          tag: "v2.6.2"
+          tag: "v2.7.0"
         wireguard:
           name: linuxserver/wireguard
           tag: "1.0.20210914"
