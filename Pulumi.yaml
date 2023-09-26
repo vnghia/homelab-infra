@@ -86,7 +86,7 @@ config:
           tag: "7.0.12-alpine3.18"
         paperless-ngx:
           name: ghcr.io/paperless-ngx/paperless-ngx
-          tag: "1.16.5"
+          tag: "1.17.4"
         neko-firefox:
           name: "'ghcr.io/m1k1o/neko/{}-firefox'.format('intel' if platform == 'amd64' else 'arm')"
           tag: "2.8.8"
