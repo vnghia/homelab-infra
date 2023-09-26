@@ -62,7 +62,7 @@ config:
           tag: "1.64.0"
         crowdsec:
           name: crowdsecurity/crowdsec
-          tag: "v1.5.2"
+          tag: "v1.5.4"
         ntfy:
           name: binwiederhier/ntfy
           tag: "v2.6.2"
