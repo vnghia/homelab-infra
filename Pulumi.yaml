@@ -89,10 +89,10 @@ config:
           tag: "1.17.4"
         neko-firefox:
           name: "'ghcr.io/m1k1o/neko/{}-firefox'.format('intel' if platform == 'amd64' else 'arm')"
-          tag: "2.8.8"
+          tag: "2.8.9"
         neko-tor-browser:
           name: "'ghcr.io/m1k1o/neko/{}-tor-browser'.format('intel' if platform == 'amd64' else 'arm')"
-          tag: "2.8.8"
+          tag: "2.8.9"
         cloudflared:
           name: cloudflare/cloudflared
           tag: "2023.8.2"
