@@ -7,6 +7,7 @@ _traefik_config = service_config["traefik"]
 _traefik_volume = container_storage_config["traefik"]
 
 _config_dir = _traefik_volume["config"]["dir"]
+_config_volume = _traefik_volume["config"]["volume"]
 _cert_dir = _traefik_volume["cert"]["dir"]
 _acme_server = _traefik_config["acme"].get(
     "server", "https://acme-v02.api.letsencrypt.org/directory"
@@ -57,7 +58,9 @@ def build_config():
 
 
 output_config = {
-    "path": "/etc/traefik/traefik.toml",
+    "name": "traefik-static",
+    "volume": _config_volume,
+    "path": "static.toml",
     "input": build_config(),
     "schema": _traefik_config["schema"]["static"],
 }

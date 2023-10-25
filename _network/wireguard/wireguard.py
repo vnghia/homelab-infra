@@ -22,7 +22,7 @@ class Wireguard(ComponentResource):
             opts=ResourceOptions(parent=self),
             capabilities=docker.ContainerCapabilitiesArgs(adds=["NET_ADMIN"]),
             sysctls={"net.ipv4.conf.all.src_valid_mark": "1"},
-            uploads=[self.__wireguard_config["docker"]],
+            labels={"wireguard-config-sha256": self.__wireguard_config["sha256"]},
         )
         self.container_id = self.__container.id
         self.register_outputs({"container_id": self.container_id})

@@ -133,7 +133,9 @@ config:
             key:
               - navidrome-encryption
           syncthing-config:
+          crowdsec-config:
           crowdsec-data:
+          ntfy-config:
           ntfy-cache:
           ntfy-data:
           docker-compose:
@@ -147,6 +149,7 @@ config:
           paperless-ngx-media:
           paperless-ngx-export:
           memos-data:
+          wireguard-config:
         bind:
           # https://rclone.org/docker/
           rclone-config: /var/lib/docker-plugins/rclone/config
@@ -189,9 +192,14 @@ config:
             volume: crypt-password
             dir: /var/syncthing/data/password/
         crowdsec:
+          config:
+            dir: /etc/crowdsec/
           data:
-            dir: /var/lib/crowdsec/data
+            dir: /var/lib/crowdsec/data/
         ntfy:
+          config:
+            dir: /etc/ntfy/
+            ro: true
           cache:
             dir: /var/cache/ntfy/
           data:
@@ -237,6 +245,9 @@ config:
           assets:
             volume: mount-memos-assets
             dir: /var/opt/memos/assets
+        wireguard:
+          config:
+            dir: /config/
       backup:
         common:
           prefix: /volume/
