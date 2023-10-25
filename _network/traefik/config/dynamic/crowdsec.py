@@ -3,9 +3,7 @@ from pulumi import ResourceOptions
 
 from _network.security import crowdsec
 
-
-def input_fn(opts: ResourceOptions, _):
-    input_dict = {
+output_config = {"input": {
         "type": "http",
         "middleware": {
             "crowdsec": {
@@ -13,12 +11,8 @@ def input_fn(opts: ResourceOptions, _):
                 "plugin": True,
                 "enabled": True,
                 "crowdsecMode": "stream",
-                "crowdseclapikey": crowdsec.add_bouncer("traefik", opts=opts),
+                "crowdseclapikey": crowdsec.bouncer_key,
                 "forwardedheaderstrustedips": cloudflare.get_ip_ranges().cidr_blocks,
             }
         },
-    }
-    return input_dict
-
-
-output_config = {"input_fn": input_fn}
+    }}
