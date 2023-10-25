@@ -22,9 +22,6 @@ class Crowdsec(ComponentResource):
         self.__acquis_traefik = self.__template.build(
             module_path=Path(__file__).parent / "acquis" / "traefik.py"
         )
-        self.__online_api = self.__template.build(
-            module_path=Path(__file__).parent / "online_api.py"
-        )
 
         self.bouncer_key = secret.build_string("traefik-bouncer-key", length=32).result
 
@@ -42,7 +39,6 @@ class Crowdsec(ComponentResource):
             volumes={"/var/run/docker.sock": {"ro": True}},
             labels={
                 "acquis-traefik-sha256": self.__acquis_traefik["sha256"],
-                "online-api-sha256": self.__online_api["sha256"],
             },
         )
         self.container_id = self.__container.id
