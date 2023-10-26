@@ -47,7 +47,7 @@ config:
           tag: "1.35-uclibc"
         traefik:
           name: traefik
-          tag: "v3.0.0-beta3"
+          tag: "v3.0.0-beta4"
         dozzle:
           name: amir20/dozzle
           tag: "v5.0.1"
