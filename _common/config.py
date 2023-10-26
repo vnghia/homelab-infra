@@ -22,6 +22,7 @@ secret_config = __build_config("secret_")
 service_config = __build_config("service")
 
 redis_config = storage_config.get("redis", [])
+postgres_config = storage_config.get("postgres", {})
 
 
 def __build_volume_config():
@@ -29,6 +30,9 @@ def __build_volume_config():
     if "local" not in __config:
         __config["local"] = {}
     __config["local"] |= {"redis-{}-data".format(db): None for db in redis_config}
+    __config["local"] |= {
+        "postgres-{}-data".format(db): None for db in postgres_config.keys()
+    }
     return __config
 
 
@@ -47,6 +51,14 @@ def __build_container_storage():
         container = "redis-{}".format(db)
         __config[container] = {
             "data": {"dir": "/data/", "volume": "{}-data".format(container)}
+        }
+    for db in postgres_config.keys():
+        container = "postgres-{}".format(db)
+        __config[container] = {
+            "data": {
+                "dir": "/var/lib/postgresql/data/",
+                "volume": "{}-data".format(container),
+            }
         }
     return __config
 

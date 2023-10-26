@@ -1,5 +1,6 @@
 import _compose  # noqa: F401
 import _data.docker  # noqa: F401
+import _data.postgres  # noqa: F401
 import _data.redis  # noqa: F401
 import _network.cloudflared  # noqa: F401
 import _network.docker  # noqa: F401
