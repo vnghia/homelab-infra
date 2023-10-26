@@ -271,7 +271,7 @@ config:
         wireguard:
           config:
             dir: /config/
-        immich-service:
+        immich-server:
           upload:
             volume: immich-upload
             dir: /usr/src/app/upload/
