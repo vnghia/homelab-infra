@@ -83,7 +83,7 @@ config:
           tag: "10.8.11"
         redis:
           name: redis
-          tag: "7.0.12-alpine3.18"
+          tag: "7.2.2-alpine3.18"
         paperless-ngx:
           name: ghcr.io/paperless-ngx/paperless-ngx
           tag: "1.17.4"
