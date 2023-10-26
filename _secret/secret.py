@@ -55,10 +55,21 @@ class Secret:
 
             username = config.get("username")
             if not username:
-                self.__usernames[name] = self.build_string(
-                    "{}-account".format(name), opts=self.__keepass_entry_opts
-                )
-                username = self.__usernames[name].result
+                use_email = config.pop("email", False)
+                if not use_email:
+                    self.__usernames[name] = self.build_string(
+                        "{}-account".format(name), opts=self.__keepass_entry_opts
+                    )
+                    username = self.__usernames[name].result
+                else:
+                    hostname = hostnames[config["hostname"]]
+                    email_hostname = ".".join(hostname.split(".")[-2:])
+                    self.__usernames[name] = self.build_string(
+                        "{}-account".format(name), opts=self.__keepass_entry_opts
+                    ).result.apply(
+                        lambda username: "{}@{}".format(username, email_hostname)
+                    )
+                    username = self.__usernames[name]
             config["username"] = username
 
             password = config.pop("password", {})
