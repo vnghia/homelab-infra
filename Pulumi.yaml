@@ -310,7 +310,7 @@ config:
         plugin:
           crowdsec:
             name: github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
-            version: "v1.1.13"
+            version: "v1.1.16"
       rclone-webdav:
         port: 8080
       script-server:
