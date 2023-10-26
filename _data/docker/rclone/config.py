@@ -17,7 +17,7 @@ def rclone_obscure(plaintext: str):
     crypter = AES.new(key=crypt_key, mode=AES.MODE_CTR, initial_value=iv, nonce=b"")
     encrypted_password = crypter.encrypt(plaintext.encode())
 
-    return base64.urlsafe_b64encode(iv + encrypted_password).decode('utf-8').rstrip("=")
+    return base64.urlsafe_b64encode(iv + encrypted_password).decode("utf-8").rstrip("=")
 
 
 def input_fn(opts: ResourceOptions, _):

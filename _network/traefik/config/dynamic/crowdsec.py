@@ -3,7 +3,8 @@ from pulumi import ResourceOptions
 
 from _network.security import crowdsec
 
-output_config = {"input": {
+output_config = {
+    "input": {
         "type": "http",
         "middleware": {
             "crowdsec": {
@@ -15,4 +16,5 @@ output_config = {"input": {
                 "forwardedheaderstrustedips": cloudflare.get_ip_ranges().cidr_blocks,
             }
         },
-    }}
+    }
+}

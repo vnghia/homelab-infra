@@ -34,7 +34,7 @@ class Crowdsec(ComponentResource):
                 "ENROLL_KEY": _crowdsec_config["console-id"],
                 "ENROLL_INSTANCE_NAME": get_logical_name(),
                 "USE_WAL": "true",
-                "BOUNCER_KEY_TRAEFIK": self.bouncer_key
+                "BOUNCER_KEY_TRAEFIK": self.bouncer_key,
             },
             volumes={"/var/run/docker.sock": {"ro": True}},
             labels={
