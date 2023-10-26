@@ -34,6 +34,11 @@ config:
           hostname: private-memos
           custom:
             AndroidApp1: me.mudkip.moememos
+        immich:
+          hostname: private-immich
+          email: true
+          custom:
+            AndroidApp1: app.alextran.immich
   docker:
     value:
       env:
@@ -102,6 +107,18 @@ config:
         memos:
           name: ghcr.io/usememos/memos
           tag: "0.16.1"
+        immich-server:
+          name: ghcr.io/immich-app/immich-server
+          tag: "v1.82.1"
+        immich-machine-learning:
+          name: ghcr.io/immich-app/immich-machine-learning
+          tag: "v1.82.1"
+        immich-web:
+          name: ghcr.io/immich-app/immich-web
+          tag: "v1.82.1"
+        immich-typesense:
+          name: typesense/typesense
+          tag: "0.25.1"
       build:
         backup:
           dockerfile: _data/backup/image/Dockerfile
@@ -153,6 +170,9 @@ config:
           paperless-ngx-export:
           memos-data:
           wireguard-config:
+          immich-upload:
+          immich-machine-learning-model-cache:
+          immich-typesense-data:
         bind:
           # https://rclone.org/docker/
           rclone-config: /var/lib/docker-plugins/rclone/config
@@ -251,6 +271,20 @@ config:
         wireguard:
           config:
             dir: /config/
+        immich-service:
+          upload:
+            volume: immich-upload
+            dir: /usr/src/app/upload/
+        immich-microservices:
+          upload:
+            volume: immich-upload
+            dir: /usr/src/app/upload/
+        immich-machine-learning:
+          model-cache:
+            dir: /cache/
+        immich-typesense:
+          data:
+            dir: /data/
       backup:
         common:
           prefix: /volume/
@@ -298,6 +332,9 @@ config:
                   - memos_prod.db
       redis:
         - paperless-ngx
+        - immich
+      postgres:
+        immich:
   service:
     value:
       tailscale:

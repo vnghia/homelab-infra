@@ -1,4 +1,5 @@
 from _service.dozzle.dozzle import dozzle
+from _service.immich.immich import immich
 from _service.jellyfin.jellyfin import jellyfin
 from _service.memos.memos import memos
 from _service.navidrome.navidrome import navidrome
@@ -12,6 +13,7 @@ from _service.ttyd.ttyd import ttyd
 
 __all__ = [
     "dozzle",
+    "immich",
     "jellyfin",
     "memos",
     "navidrome",
