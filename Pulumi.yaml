@@ -180,6 +180,7 @@ config:
         mount:
           music: music/original/
           memos-assets: memos/
+          image: image/
         crypt:
           password: crypt/password/
           media: crypt/media/
@@ -275,10 +276,18 @@ config:
           upload:
             volume: immich-upload
             dir: /usr/src/app/upload/
+          image-self:
+            volume: mount-image
+            dir: /mnt/media/self/
+            ro: true
         immich-microservices:
           upload:
             volume: immich-upload
             dir: /usr/src/app/upload/
+          image-self:
+            volume: mount-image
+            dir: /mnt/media/self/
+            ro: true
         immich-machine-learning:
           model-cache:
             dir: /cache/
