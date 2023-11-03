@@ -13,7 +13,11 @@ class Immich(ComponentResource):
 
         self.__server_container = DockerContainer.build(
             "immich-server",
-            opts=self.__child_opts,
+            opts=self.__child_opts.merge(
+                ResourceOptions(
+                    depends_on=[traefik_proxy.dynamic_config["immich-server"]["file"]]
+                )
+            ),
             command=["start.sh", "immich"],
             envs=envs,
         )
@@ -28,7 +32,13 @@ class Immich(ComponentResource):
             "immich-machine-learning", opts=self.__child_opts, envs=envs
         )
         self.__web_container = DockerContainer.build(
-            "immich-web", opts=self.__child_opts, envs=envs
+            "immich-web",
+            opts=self.__child_opts.merge(
+                ResourceOptions(
+                    depends_on=[traefik_proxy.dynamic_config["immich-web"]["file"]]
+                )
+            ),
+            envs=envs,
         )
         self.__typesense_container = DockerContainer.build(
             "immich-typesense", opts=self.__child_opts, envs=typesense_envs
