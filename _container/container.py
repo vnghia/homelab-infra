@@ -22,7 +22,9 @@ class DockerContainer:
         if len(envs):
             kwargs["envs"] = []
             for k, v in envs.items():
-                kwargs["envs"].append(Output.concat(k, "=", v))
+                kwargs["envs"].append(
+                    Output.concat(k, "=", Output.from_input(v).apply(str))
+                )
 
         if not ("network_mode" in kwargs or "networks_advanced" in kwargs):
             kwargs["networks_advanced"] = [
