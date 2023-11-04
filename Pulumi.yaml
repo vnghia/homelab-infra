@@ -39,6 +39,7 @@ config:
           email: true
           custom:
             AndroidApp1: app.alextran.immich
+        soulseek:
   docker:
     value:
       env:
@@ -119,6 +120,9 @@ config:
         immich-typesense:
           name: typesense/typesense
           tag: "0.25.1"
+        slskd:
+          name: ghcr.io/slskd/slskd
+          tag: "0.19.1"
       build:
         backup:
           dockerfile: _data/backup/image/Dockerfile
@@ -173,6 +177,7 @@ config:
           immich-upload:
           immich-machine-learning-model-cache:
           immich-typesense-data:
+          slskd-data:
         bind:
           # https://rclone.org/docker/
           rclone-config: /var/lib/docker-plugins/rclone/config
@@ -294,6 +299,13 @@ config:
         immich-typesense:
           data:
             dir: /data/
+        slskd:
+          music:
+            volume: mount-music
+            dir: /music/
+            ro: true
+          data:
+            dir: /app/
       backup:
         common:
           prefix: /volume/
