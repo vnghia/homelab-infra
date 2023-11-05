@@ -29,7 +29,9 @@ class Immich(ComponentResource):
             envs=envs,
         )
         self.__machine_learning_container = DockerContainer.build(
-            "immich-machine-learning", opts=self.__child_opts, envs=envs
+            "immich-machine-learning",
+            opts=self.__child_opts,
+            envs=envs | {"MACHINE_LEARNING_MODEL_TTL": 3600},
         )
         self.__web_container = DockerContainer.build(
             "immich-web",
