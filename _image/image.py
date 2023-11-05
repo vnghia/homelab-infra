@@ -65,16 +65,23 @@ class DockerImage(ComponentResource):
                 .resolve(True)
                 .relative_to(constant.PROJECT_ROOT_DIR)
             )
+            material_hash_map = {
+                str(dockerfile): hashlib.file_digest(
+                    open(dockerfile, "rb"), "sha256"
+                ).hexdigest()
+            }
 
-            material_hash = hashlib.file_digest(
-                open(dockerfile, "rb"), "sha256"
-            ).hexdigest()
             for context in data.get("material", []):
                 for file in constant.PROJECT_ROOT_DIR.glob(context):
-                    material_hash += hashlib.file_digest(
+                    file = file.relative_to(constant.PROJECT_ROOT_DIR)
+                    material_hash_map[str(file)] = hashlib.file_digest(
                         open(file, "rb"), "sha256"
                     ).hexdigest()
-            material_hash = hashlib.sha256(material_hash.encode()).hexdigest()
+            material_hash = hashlib.sha256(
+                "\n".join(
+                    [k + "\n" + material_hash_map[k] for k in sorted(material_hash_map)]
+                ).encode()
+            ).hexdigest()
 
             image_full_name = "{}/{}:{}".format(
                 get_logical_name(), key, material_hash[:7]
