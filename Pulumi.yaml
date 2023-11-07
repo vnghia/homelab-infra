@@ -72,9 +72,6 @@ config:
         ntfy:
           name: binwiederhier/ntfy
           tag: "v2.7.0"
-        wireguard:
-          name: linuxserver/wireguard
-          tag: "1.0.20210914"
         awscli:
           name: amazon/aws-cli
           tag: "2.13.5"
@@ -173,7 +170,6 @@ config:
           paperless-ngx-media:
           paperless-ngx-export:
           memos-data:
-          wireguard-config:
           immich-upload:
           immich-machine-learning-model-cache:
           immich-typesense-data:
@@ -274,9 +270,6 @@ config:
           assets:
             volume: mount-memos-assets
             dir: /var/opt/memos/assets
-        wireguard:
-          config:
-            dir: /config/
         immich-server:
           upload:
             volume: immich-upload
