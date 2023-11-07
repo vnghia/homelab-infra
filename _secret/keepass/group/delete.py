@@ -13,8 +13,9 @@ def main():
     group = kp.find_groups(
         uuid=uuid.UUID(hex=os.environ["PULUMI_COMMAND_STDOUT"]), first=True
     )
-    kp.delete_group(group)
-    kp.save()
+    if group:
+        kp.delete_group(group)
+        kp.save()
 
 
 if __name__ == "__main__":
