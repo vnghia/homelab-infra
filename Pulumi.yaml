@@ -101,7 +101,7 @@ config:
           tag: "2.8.9"
         cloudflared:
           name: cloudflare/cloudflared
-          tag: "2023.8.2"
+          tag: "2023.10.0"
         memos:
           name: ghcr.io/usememos/memos
           tag: "0.16.1"
