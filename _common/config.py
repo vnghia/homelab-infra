@@ -5,6 +5,7 @@ import pulumi
 
 from _common.import_module import import_module
 from _common.naming import get_logical_name
+from _data.backup.script.postgres import gen_postgres_backup_restore_script
 
 
 def __build_config(key: str) -> dict:
@@ -33,6 +34,7 @@ def __build_volume_config():
     __config["local"] |= {
         "postgres-{}-data".format(db): None for db in postgres_config.keys()
     }
+    __config["local"] |= {"postgres-backup": None}
     return __config
 
 
@@ -58,7 +60,11 @@ def __build_container_storage():
             "data": {
                 "dir": "/var/lib/postgresql/data/",
                 "volume": "{}-data".format(container),
-            }
+            },
+            "backup": {
+                "dir": "/backup/",
+                "volume": "postgres-backup",
+            },
         }
     return __config
 
@@ -81,6 +87,9 @@ def __build_backup():
                 vc |= script_config
 
             volume_dict[kc] = vc
+
+        if vs.pop("postgres", False):
+            volume_dict["postgres-backup"] = gen_postgres_backup_restore_script(ks)
 
         vs["volume"] = volume_dict
 
