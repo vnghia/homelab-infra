@@ -87,6 +87,11 @@ class DockerImage(ComponentResource):
             image_full_name = "{}/{}:{}".format(
                 get_logical_name(), key, material_hash[:7]
             )
+            image_args = {
+                k.replace("-", "_").upper() + "_IMAGE": self.image_map[k]["image_name"]
+                for k in data.get("image", [])
+            }
+
             self.image_map[key] = {
                 "image_name": image_full_name,
                 "image_id": docker.Image(
@@ -95,7 +100,7 @@ class DockerImage(ComponentResource):
                         ResourceOptions(ignore_changes=["build.contextDigest"])
                     ),
                     build=docker.DockerBuildArgs(
-                        args=data.get("args"),
+                        args=image_args | data.get("args", {}),
                         builder_version=docker.BuilderVersion.BUILDER_BUILD_KIT,
                         context=".",
                         dockerfile=str(dockerfile),
