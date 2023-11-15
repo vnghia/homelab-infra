@@ -4,8 +4,12 @@ import docker
 
 
 def main():
-    registry_data = docker.from_env().images.get_registry_data(os.environ["IMAGE_NAME"])
-    print(registry_data.pull(os.environ["IMAGE_PLATFORM"]).id)
+    repository = os.environ["IMAGE_REPOSITORY"]
+    tag = os.environ["IMAGE_TAG"]
+    image = docker.from_env().images.pull(
+        repository=repository, tag=tag, platform=os.environ["IMAGE_PLATFORM"]
+    )
+    print(image.id)
 
 
 if __name__ == "__main__":

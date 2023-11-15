@@ -51,7 +51,8 @@ class DockerImage(ComponentResource):
                 opts=self.__child_opts,
                 create=Path(__file__).parent / "get.py",
                 environment={
-                    "IMAGE_NAME": full_name,
+                    "IMAGE_REPOSITORY": name,
+                    "IMAGE_TAG": tag,
                     "IMAGE_PLATFORM": "linux/{}".format(platform),
                 },
             ).stdout,
