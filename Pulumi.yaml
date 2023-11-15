@@ -131,6 +131,7 @@ config:
           dockerfile: _data/backup/image/Dockerfile
           image:
             - python-alpine
+            - restic
           material:
             - _data/backup/image/requirements.txt
             - _data/backup/image/*.py
