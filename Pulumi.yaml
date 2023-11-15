@@ -359,6 +359,11 @@ config:
               data:
                 path:
                   - memos_prod.db
+          immich:
+            stop:
+              - immich-server
+              - immich-microservices
+            postgres: true
       redis:
         - paperless-ngx
         - immich
