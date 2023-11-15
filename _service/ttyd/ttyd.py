@@ -18,6 +18,7 @@ class Ttyd(ComponentResource):
             "ttyd",
             "-p",
             _ttyd_config["port"],
+            "--writable",
             "--base-path",
             "{}".format(_ttyd_config["base-path"]),
         ]

@@ -122,7 +122,7 @@ config:
           tag: "0.19.1"
         ttyd:
           name: tsl0922/ttyd
-          tag: "1.7.3-alpine"
+          tag: "1.7.4-alpine"
       build:
         backup:
           dockerfile: _data/backup/image/Dockerfile
