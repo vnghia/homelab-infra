@@ -120,6 +120,9 @@ config:
         slskd:
           name: ghcr.io/slskd/slskd
           tag: "0.19.1"
+        ttyd:
+          name: tsl0922/ttyd
+          tag: "1.7.3-alpine"
       build:
         backup:
           dockerfile: _data/backup/image/Dockerfile
@@ -130,6 +133,8 @@ config:
           dockerfile: _service/script_server/image/Dockerfile
         ttyd:
           dockerfile: _service/ttyd/image/Dockerfile
+          image:
+            - ttyd
           material:
             - _service/ttyd/image/ns
         telegram:

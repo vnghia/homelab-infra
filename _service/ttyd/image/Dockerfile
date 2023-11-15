@@ -1,4 +1,5 @@
-FROM tsl0922/ttyd:1.7.3-alpine
+ARG TTYD_IMAGE
+FROM $TTYD_IMAGE
 
 RUN apk add --update --no-cache \
   openssh-client \
