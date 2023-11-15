@@ -13,8 +13,7 @@ import yaml
 from pulumi import Input, Output, ResourceOptions
 
 from _command import Command
-from _common import import_module
-from _image import docker_image
+from _common import import_module, server_config
 
 
 class File:
@@ -40,10 +39,8 @@ class File:
             create_path=Path(__file__).parent / "container" / "create.py",
             delete_path=Path(__file__).parent / "container" / "delete.py",
             environment={
-                "DOCKER_ASSET_IMAGE_ID": docker_image.image_map["workaround"][
-                    "image_id"
-                ],
                 "DOCKER_ASSET_VOLUME": docker_asset_volume,
+                "IMAGE_PLATFORM": "linux/{}".format(server_config["platform"]),
             },
         )
 

@@ -48,9 +48,6 @@ config:
         tailscale:
           name: tailscale/tailscale
           tag: "v1.50.0"
-        workaround:
-          name: busybox
-          tag: "1.35-uclibc"
         traefik:
           name: traefik
           tag: "v3.0.0-beta4"

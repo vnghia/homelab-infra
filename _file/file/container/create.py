@@ -23,11 +23,12 @@ def to_tar_file(content: bytes, path: str):
 def main():
     VOLUME_BIND_PATH = "/nmt/volume/"
     volume_proxy_container = docker.from_env().containers.create(
-        image=os.environ["DOCKER_ASSET_IMAGE_ID"],
+        image="busybox:1.35.0-uclibc",
         name="".join(
             random.choice(string.ascii_letters + string.digits) for _ in range(32)
         ),
         network_mode="none",
+        platform=os.environ["IMAGE_PLATFORM"],
         volumes={
             os.environ["DOCKER_ASSET_VOLUME"]: {"bind": VOLUME_BIND_PATH, "mode": "rw"}
         },
