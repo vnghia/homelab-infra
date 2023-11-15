@@ -1,5 +1,4 @@
 from pulumi import ComponentResource, ResourceOptions
-from pulumi.output import Inputs
 
 from _common import postgres_config
 from _container import DockerContainer
