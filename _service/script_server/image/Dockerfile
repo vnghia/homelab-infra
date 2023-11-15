@@ -1,14 +1,16 @@
+ARG SCRIPT_SERVER_IMAGE
 ARG PYTHON_ALPINE_IMAGE
+
+FROM $SCRIPT_SERVER_IMAGE AS script-server
+
 FROM $PYTHON_ALPINE_IMAGE
 
 WORKDIR /app
 
+COPY --from=script-server /app/ /app/
+RUN pip install -r requirements.txt
+
 RUN apk add --update --no-cache \
   docker-cli-compose
-
-RUN wget https://github.com/bugy/script-server/releases/download/1.18.0/script-server.zip -O /tmp/app.zip \
-  && unzip /tmp/app.zip -d /app \
-  && rm -rf /tmp/app.zip
-RUN pip install -r requirements.txt
 
 CMD [ "python", "launcher.py" ]

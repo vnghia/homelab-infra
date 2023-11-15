@@ -123,6 +123,9 @@ config:
         ttyd:
           name: tsl0922/ttyd
           tag: "1.7.4-alpine"
+        script-server:
+          name: bugy/script-server
+          tag: "1.18.0"
         python-alpine:
           name: python
           tag: "3.11.4-alpine3.18"
@@ -138,6 +141,7 @@ config:
           dockerfile: _service/script_server/image/Dockerfile
           image:
             - python-alpine
+            - script-server
         ttyd:
           dockerfile: _service/ttyd/image/Dockerfile
           image:
