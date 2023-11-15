@@ -123,14 +123,21 @@ config:
         ttyd:
           name: tsl0922/ttyd
           tag: "1.7.4-alpine"
+        python-alpine:
+          name: python
+          tag: "3.11.4-alpine3.18"
       build:
         backup:
           dockerfile: _data/backup/image/Dockerfile
+          image:
+            - python-alpine
           material:
             - _data/backup/image/requirements.txt
             - _data/backup/image/*.py
         script-server:
           dockerfile: _service/script_server/image/Dockerfile
+          image:
+            - python-alpine
         ttyd:
           dockerfile: _service/ttyd/image/Dockerfile
           image:
@@ -139,6 +146,8 @@ config:
             - _service/ttyd/image/ns
         telegram:
           dockerfile: _service/telegram/image/Dockerfile
+          image:
+            - python-alpine
           material:
             - _service/telegram/image/requirements.txt
             - _service/telegram/image/*.py
