@@ -92,13 +92,11 @@ class Secret:
             self.__keepass_entries[name] = Command.build(
                 name="{}-keepass-entry".format(name),
                 opts=self.__keepass_entry_opts.merge(
-                    ResourceOptions(
-                        depends_on=[entry_depend_on], replace_on_changes=["stdin"]
-                    )
+                    ResourceOptions(depends_on=[entry_depend_on])
                 ),
                 create=Path(__file__).parent / "keepass" / "entry" / "create.py",
                 delete=Path(__file__).parent / "keepass" / "entry" / "delete.py",
-                update="",
+                update=Path(__file__).parent / "keepass" / "entry" / "update.py",
                 stdin=Output.json_dumps(config),
                 environment={"KEEPASS_GROUP_UUID": self.__keepass_group_uuid},
             )
