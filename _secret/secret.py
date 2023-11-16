@@ -1,3 +1,4 @@
+import hashlib
 from pathlib import Path
 
 import pulumi
@@ -45,8 +46,9 @@ class Secret:
         )
 
     def __build_keepass_entry(self):
-        # fix race condition when accessing keepass file
-        entry_depend_on = self.__keepass_group
+        common_sha256 = hashlib.file_digest(
+            open(Path(__file__).parent / "keepass" / "common.py", "rb"), "sha256"
+        ).hexdigest()
 
         for name, config in secret_config.pop("account", {}).items():
             config = config or {}
@@ -91,16 +93,16 @@ class Secret:
 
             self.__keepass_entries[name] = Command.build(
                 name="{}-keepass-entry".format(name),
-                opts=self.__keepass_entry_opts.merge(
-                    ResourceOptions(depends_on=[entry_depend_on])
-                ),
+                opts=self.__keepass_entry_opts,
                 create=Path(__file__).parent / "keepass" / "entry" / "create.py",
                 delete=Path(__file__).parent / "keepass" / "entry" / "delete.py",
                 update=Path(__file__).parent / "keepass" / "entry" / "update.py",
                 stdin=Output.json_dumps(config),
-                environment={"KEEPASS_GROUP_UUID": self.__keepass_group_uuid},
+                environment={
+                    "KEEPASS_GROUP_UUID": self.__keepass_group_uuid,
+                    "__KEEPASS_COMMON_SHA256": common_sha256,
+                },
             )
-            entry_depend_on = self.__keepass_entries[name]
 
             self.accounts[name] = {
                 "username": config["username"],

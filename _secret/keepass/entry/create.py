@@ -4,7 +4,10 @@ import uuid
 
 import pykeepass
 
+from _secret.keepass.common import make_lock
 
+
+@make_lock
 def main():
     kp = pykeepass.PyKeePass(
         os.environ["KEEPASS_DATABASE"],
