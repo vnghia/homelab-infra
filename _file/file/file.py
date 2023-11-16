@@ -1,5 +1,6 @@
 import base64
 import configparser
+import hashlib
 import io
 import json
 from pathlib import Path
@@ -27,6 +28,10 @@ class File:
         volume: str | None = None,
         docker_asset_volume: Input[str] | None = None,
     ):
+        common_sha256 = hashlib.file_digest(
+            open(Path(__file__).parent / "container" / "common.py", "rb"), "sha256"
+        ).hexdigest()
+
         if not docker_asset_volume:
             from _data.docker import volume_map
 
@@ -41,6 +46,7 @@ class File:
             environment={
                 "DOCKER_ASSET_VOLUME": docker_asset_volume,
                 "IMAGE_PLATFORM": "linux/{}".format(server_config["platform"]),
+                "__CONTAINER_COMMON_SHA256": common_sha256,
             },
         )
 

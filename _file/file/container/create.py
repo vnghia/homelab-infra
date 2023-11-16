@@ -1,12 +1,17 @@
 import base64
 import hashlib
-import os
-import random
-import string
 import tarfile
 import tempfile
+from typing import cast
 
 import docker
+from docker.models.containers import Container
+
+from _file.file.container.common import (
+    DOCKER_COMMON_KWARGS,
+    UPLOAD_FILE_PATH,
+    VOLUME_BIND_PATH,
+)
 
 
 def to_tar_file(content: bytes, path: str):
@@ -21,22 +26,13 @@ def to_tar_file(content: bytes, path: str):
 
 
 def main():
-    VOLUME_BIND_PATH = "/nmt/volume/"
-    volume_proxy_container = docker.from_env().containers.create(
-        image="busybox:1.35.0-uclibc",
-        name="".join(
-            random.choice(string.ascii_letters + string.digits) for _ in range(32)
-        ),
-        network_mode="none",
-        platform=os.environ["IMAGE_PLATFORM"],
-        volumes={
-            os.environ["DOCKER_ASSET_VOLUME"]: {"bind": VOLUME_BIND_PATH, "mode": "rw"}
-        },
+    volume_proxy_container = cast(
+        Container, docker.from_env().containers.create(**DOCKER_COMMON_KWARGS)
     )
 
     content = base64.standard_b64decode(input())
     volume_proxy_container.put_archive(
-        VOLUME_BIND_PATH, to_tar_file(content, os.environ["FILE_PATH"])
+        VOLUME_BIND_PATH, to_tar_file(content, UPLOAD_FILE_PATH)
     )
     volume_proxy_container.remove(force=True)
 
