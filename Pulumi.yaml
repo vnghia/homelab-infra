@@ -101,7 +101,7 @@ config:
           tag: "2023.10.0"
         memos:
           name: ghcr.io/usememos/memos
-          tag: "0.16.1"
+          tag: "0.17.0"
         immich-server:
           name: ghcr.io/immich-app/immich-server
           tag: &immich-version "v1.86.0"
