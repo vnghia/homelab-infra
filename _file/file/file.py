@@ -43,6 +43,7 @@ class File:
             content=content,
             create_path=Path(__file__).parent / "container" / "create.py",
             delete_path=Path(__file__).parent / "container" / "delete.py",
+            update_path=Path(__file__).parent / "container" / "update.py",
             environment={
                 "DOCKER_ASSET_VOLUME": docker_asset_volume,
                 "IMAGE_PLATFORM": "linux/{}".format(server_config["platform"]),
@@ -59,6 +60,7 @@ class File:
         content: Input[str],
         create_path: Path,
         delete_path: Path,
+        update_path: Path | None,
         **kwargs
     ):
         # TODO: Checking for diff (the content of this file and does it still exist)
@@ -68,6 +70,7 @@ class File:
             opts=opts,
             create=create_path,
             delete=delete_path,
+            update=update_path,
             stdin=Output.from_input(content).apply(
                 lambda content: base64.standard_b64encode(content.encode()).decode(),
             ),

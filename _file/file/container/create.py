@@ -1,7 +1,4 @@
-import base64
 import hashlib
-import tarfile
-import tempfile
 from typing import cast
 
 import docker
@@ -9,20 +6,9 @@ from docker.models.containers import Container
 
 from _file.file.container.common import (
     DOCKER_COMMON_KWARGS,
-    UPLOAD_FILE_PATH,
-    VOLUME_BIND_PATH,
+    load_upload_content,
+    upload_content,
 )
-
-
-def to_tar_file(content: bytes, path: str):
-    tar_file = tempfile.NamedTemporaryFile()
-    with tarfile.open(mode="w", fileobj=tar_file) as tar:
-        with tempfile.NamedTemporaryFile() as f:
-            f.write(content)
-            f.flush()
-            tar.add(f.name, arcname=path)
-    tar_file.seek(0)
-    return tar_file
 
 
 def main():
@@ -30,10 +16,8 @@ def main():
         Container, docker.from_env().containers.create(**DOCKER_COMMON_KWARGS)
     )
 
-    content = base64.standard_b64decode(input())
-    volume_proxy_container.put_archive(
-        VOLUME_BIND_PATH, to_tar_file(content, UPLOAD_FILE_PATH)
-    )
+    content = load_upload_content()
+    upload_content(volume_proxy_container, content)
     volume_proxy_container.remove(force=True)
 
     print(hashlib.sha256(content).hexdigest())
