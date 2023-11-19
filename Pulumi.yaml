@@ -388,6 +388,10 @@ config:
             stop:
               - monica
             postgres: true
+          linkwarden:
+            stop:
+              - linkwarden
+            postgres: true
       redis:
         - paperless-ngx
         - immich
