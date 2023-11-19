@@ -4,7 +4,7 @@ from _data.redis import redis
 from _network.dns import hostnames
 from _secret import secret
 
-_redis_config = redis.db["paperless-ngx"]
+_redis_config = redis.db["immich"]
 _postgres_config = postgres.db["immich"]
 _immich_typesense_volume = container_storage_config["immich-typesense"]
 
