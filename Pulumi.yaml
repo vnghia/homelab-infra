@@ -375,6 +375,10 @@ config:
               - immich-server
               - immich-microservices
             postgres: true
+          monica:
+            stop:
+              - monica
+            postgres: true
       redis:
         - paperless-ngx
         - immich
