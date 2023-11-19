@@ -1,3 +1,4 @@
+import hashlib
 from pathlib import Path
 
 from pulumi import ComponentResource, Output, ResourceOptions
@@ -6,6 +7,7 @@ from _common import container_storage_config
 from _container import DockerContainer
 from _file import Template
 from _network.dns.cloudflare import cloudflare_dns
+from _network.dns.hostnames import hostnames
 from _network.resource import child_opts
 from _network.tailscale import tailscale_device
 from _network.traefik.config.dynamic_config import TraefikDynamicConfig
@@ -47,6 +49,11 @@ class TraefikProxy(ComponentResource):
                 "LEGO_DISABLE_CNAME_SUPPORT": "true",
                 "CF_DNS_API_TOKEN": cloudflare_dns.acme_dns_token,
                 "CF_ZONE_API_TOKEN": cloudflare_dns.acme_dns_token,
+                "HOSTNAMES_HASH": hashlib.sha256(
+                    "\n".join(
+                        [k + "\n" + hostnames[k] for k in sorted(hostnames)]
+                    ).encode()
+                ).hexdigest(),
             },
             network_mode=Output.concat("container:", tailscale_device.container_id),
             volumes={
