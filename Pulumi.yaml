@@ -43,6 +43,8 @@ config:
         monica:
           hostname: private-monica
           email: true
+        linkwarden:
+          hostname: private-linkwarden
   docker:
     value:
       env:
@@ -129,6 +131,9 @@ config:
         monica:
           name: ghcr.io/monicahq/monica-next
           tag: "main"
+        linkwarden:
+          name: ghcr.io/linkwarden/linkwarden
+          tag: "v2.2.1"
         python-alpine:
           name: python
           tag: "3.11.4-alpine3.18"
@@ -197,6 +202,7 @@ config:
           immich-typesense-data:
           slskd-data:
           monica-data:
+          linkwarden-data:
         bind:
           # https://rclone.org/docker/
           rclone-config: /var/lib/docker-plugins/rclone/config
@@ -325,6 +331,9 @@ config:
         monica:
           data:
             dir: /var/www/html/storage/
+        linkwarden:
+          data:
+            dir: /data/data/
       backup:
         common:
           prefix: /volume/
@@ -386,6 +395,7 @@ config:
       postgres:
         immich:
         monica:
+        linkwarden:
   service:
     value:
       tailscale:
