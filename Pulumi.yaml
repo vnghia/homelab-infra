@@ -40,6 +40,9 @@ config:
           custom:
             AndroidApp1: app.alextran.immich
         soulseek:
+        monica:
+          hostname: private-monica
+          email: true
   docker:
     value:
       env:
@@ -123,6 +126,9 @@ config:
         script-server:
           name: bugy/script-server
           tag: "1.18.0"
+        monica:
+          name: ghcr.io/monicahq/monica-next
+          tag: "main"
         python-alpine:
           name: python
           tag: "3.11.4-alpine3.18"
@@ -190,6 +196,7 @@ config:
           immich-machine-learning-model-cache:
           immich-typesense-data:
           slskd-data:
+          monica-data:
         bind:
           # https://rclone.org/docker/
           rclone-config: /var/lib/docker-plugins/rclone/config
@@ -315,6 +322,9 @@ config:
             ro: true
           data:
             dir: /app/
+        monica:
+          data:
+            dir: /var/www/html/storage/
       backup:
         common:
           prefix: /volume/
@@ -368,8 +378,10 @@ config:
       redis:
         - paperless-ngx
         - immich
+        - monica
       postgres:
         immich:
+        monica:
   service:
     value:
       tailscale:

@@ -2,6 +2,7 @@ from _service.dozzle.dozzle import dozzle
 from _service.immich.immich import immich
 from _service.jellyfin.jellyfin import jellyfin
 from _service.memos.memos import memos
+from _service.monica.monica import monica
 from _service.navidrome.navidrome import navidrome
 from _service.ntfy.ntfy import ntfy
 from _service.paperless_ngx.paperless_ngx import paperless_ngx
@@ -17,6 +18,7 @@ __all__ = [
     "immich",
     "jellyfin",
     "memos",
+    "monica",
     "navidrome",
     "ntfy",
     "paperless_ngx",
