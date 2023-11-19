@@ -73,7 +73,7 @@ config:
           tag: "v1.5.5"
         ntfy:
           name: binwiederhier/ntfy
-          tag: "v2.7.0"
+          tag: "v2.8.0"
         awscli:
           name: amazon/aws-cli
           tag: "2.13.5"
