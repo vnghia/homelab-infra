@@ -3,6 +3,8 @@ from _network.dns import hostnames
 
 _ntfy_volume = container_storage_config["ntfy"]
 
+NTFY_SMTP_PORT = 25
+
 output_config = {
     "type": "yaml",
     "name": "ntfy-server-config",
@@ -15,6 +17,8 @@ output_config = {
         "auth-file": "{}user.db".format(_ntfy_volume["data"]["volume"]),
         "auth-default-access": "deny-all",
         "auth-startup-queries": "pragma journal_mode = WAL;\npragma synchronous = normal;\npragma temp_store = memory;\npragma busy_timeout = 15000;\nvacuum;\n",
+        "smtp-server-listen": ":{}".format(NTFY_SMTP_PORT),
+        "smtp-server-domain": "example.com",
         "behind-proxy": True,
         "attachment-cache-dir": "{}attachment/".format(_ntfy_volume["cache"]["volume"]),
         "enable-signup": False,

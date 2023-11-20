@@ -8,6 +8,7 @@ from _container import DockerContainer
 from _file import Template
 from _network.traefik import traefik_proxy
 from _secret import secret
+from _service.ntfy.server import NTFY_SMTP_PORT
 from _service.resource import child_opts
 
 
@@ -62,6 +63,12 @@ class Ntfy(ComponentResource):
 
         self.env = {
             "NTFY_ENDPOINT": Output.format("http://{}:80", self.__container.name),
+            "NTFY_TOKEN": self.__access.stdout,
+        }
+
+        self.smtp_env = {
+            "NTFY_SMTP_SERVER": self.__container.name,
+            "NTFY_SMTP_PORT": NTFY_SMTP_PORT,
             "NTFY_TOKEN": self.__access.stdout,
         }
 
