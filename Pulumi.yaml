@@ -22,6 +22,7 @@ config:
           hostname: public-ntfy
           custom:
             AndroidApp1: io.heckel.ntfy
+        ntfy-write-only:
         rclone-webdav:
           hostname: public-rclone-webdav
         jellyfin:

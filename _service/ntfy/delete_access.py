@@ -8,6 +8,9 @@ def main():
     container.exec_run(
         ["ntfy", "user", "del", os.environ["NTFY_USERNAME"]],
     )
+    container.exec_run(
+        ["ntfy", "user", "del", os.environ["NTFY_WRITE_ONLY_PASSWORD"]],
+    )
 
 
 if __name__ == "__main__":

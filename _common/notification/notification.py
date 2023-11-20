@@ -19,7 +19,7 @@ def publish(
     httpx.post(
         os.environ["NTFY_ENDPOINT"],
         json=body,
-        auth=(os.environ["NTFY_USERNAME"], os.environ["NTFY_PASSWORD"]),
+        headers={"Authorization": "Bearer {}".format(os.environ["NTFY_TOKEN"])},
     ).raise_for_status()
 
 
