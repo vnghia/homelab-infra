@@ -4,7 +4,6 @@ import random
 from Crypto.Cipher import AES
 from pulumi import ResourceOptions
 
-from _command import Command
 from _common import get_logical_name, storage_config, volume_config
 from _secret import secret
 

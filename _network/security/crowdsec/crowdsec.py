@@ -2,7 +2,6 @@ from pathlib import Path
 
 from pulumi import ComponentResource, ResourceOptions
 
-from _command import Command
 from _common import get_logical_name, service_config
 from _container import DockerContainer
 from _file import Template

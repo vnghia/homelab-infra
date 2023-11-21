@@ -1,5 +1,4 @@
 import pulumi_cloudflare as cloudflare
-from pulumi import ResourceOptions
 
 from _network.security import crowdsec
 
