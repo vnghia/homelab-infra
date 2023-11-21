@@ -74,5 +74,8 @@ class Ntfy(ComponentResource):
 
         self.register_outputs({"container_id": self.container_id})
 
+    def build_to_email(self, topic: str):
+        return Output.format("{0}+{1}@example.com", topic, self.__access.stdout)
+
 
 ntfy = Ntfy()
