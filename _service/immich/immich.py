@@ -15,7 +15,7 @@ class Immich(ComponentResource):
             "immich-server",
             opts=self.__child_opts.merge(
                 ResourceOptions(
-                    depends_on=[traefik_proxy.dynamic_config["immich-server"]["file"]]
+                    depends_on=[traefik_proxy.dynamic_config["immich"]["file"]]
                 )
             ),
             command=["start.sh", "immich"],
@@ -33,15 +33,6 @@ class Immich(ComponentResource):
             opts=self.__child_opts,
             envs=envs | {"MACHINE_LEARNING_MODEL_TTL": 3600},
         )
-        self.__web_container = DockerContainer.build(
-            "immich-web",
-            opts=self.__child_opts.merge(
-                ResourceOptions(
-                    depends_on=[traefik_proxy.dynamic_config["immich-web"]["file"]]
-                )
-            ),
-            envs=envs,
-        )
         self.__typesense_container = DockerContainer.build(
             "immich-typesense", opts=self.__child_opts, envs=typesense_envs
         )
@@ -49,14 +40,12 @@ class Immich(ComponentResource):
         self.server_container_id = self.__server_container.id
         self.microservices_container_id = self.__microservices_container.id
         self.machine_learning_container_id = self.__machine_learning_container.id
-        self.web_container_id = self.__web_container.id
         self.typesense_container_id = self.__typesense_container.id
         self.register_outputs(
             {
                 "server_container_id": self.server_container_id,
                 "microservices_container_id": self.microservices_container_id,
                 "machine_learning_container_id": self.machine_learning_container_id,
-                "web_container_id": self.web_container_id,
                 "typesense_container_id": self.typesense_container_id,
             }
         )

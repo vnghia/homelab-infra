@@ -110,12 +110,9 @@ config:
           tag: "0.17.0"
         immich-server:
           name: ghcr.io/immich-app/immich-server
-          tag: &immich-version "v1.87.0"
+          tag: &immich-version "v1.88.1"
         immich-machine-learning:
           name: ghcr.io/immich-app/immich-machine-learning
-          tag: *immich-version
-        immich-web:
-          name: ghcr.io/immich-app/immich-web
           tag: *immich-version
         immich-typesense:
           name: typesense/typesense
