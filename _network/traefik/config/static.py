@@ -36,7 +36,7 @@ def build_config():
                 "acme": {
                     "caServer": _acme_server,
                     "email": _acme_email,
-                    "storage": "{}{}".format(_cert_dir, "acme-dns.json"),
+                    "storage": "{}{}".format(_cert_dir, "acme.json"),
                     "dnsChallenge": {"provider": "cloudflare"},
                 }
             },
