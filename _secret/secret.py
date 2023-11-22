@@ -64,12 +64,12 @@ class Secret:
                     )
                     username = self.__usernames[name].result
                 else:
-                    hostname = hostnames[config["hostname"]]
-                    email_hostname = ".".join(hostname.split(".")[-2:])
-                    self.__usernames[name] = self.build_string(
-                        "{}-account".format(name), opts=self.__keepass_entry_opts
-                    ).result.apply(
-                        lambda username: "{}@{}".format(username, email_hostname)
+                    self.__usernames[name] = Output.format(
+                        "{0}@{1}",
+                        self.build_string(
+                            "{}-account".format(name), opts=self.__keepass_entry_opts
+                        ).result,
+                        hostnames[config["hostname"]],
                     )
                     username = self.__usernames[name]
             config["username"] = username
