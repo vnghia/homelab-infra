@@ -47,7 +47,7 @@ class Ntfy(ComponentResource):
             opts=self.__child_opts,
             create=Path(__file__).parent / "add_access.py",
             delete=Path(__file__).parent / "delete_access.py",
-            update="",
+            update="import os;print(os.environ['PULUMI_COMMAND_STDOUT'])",
             environment={
                 "NTFY_CONTAINER_ID": self.container_id,
                 "NTFY_USERNAME": secret.accounts["ntfy"]["username"],
