@@ -29,7 +29,8 @@ class DockerContainer:
         if not ("network_mode" in kwargs or "networks_advanced" in kwargs):
             kwargs["networks_advanced"] = [
                 docker.ContainerNetworksAdvancedArgs(
-                    name=default_bridge_network.name, aliases=[name]
+                    name=default_bridge_network.name,
+                    aliases=[name] + kwargs.pop("network_aliases", []),
                 )
             ]
 
