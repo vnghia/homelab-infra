@@ -8,7 +8,7 @@ from _container import DockerContainer
 from _file import Template
 from _network.traefik import traefik_proxy
 from _secret import secret
-from _service.ntfy.server import NTFY_SMTP_PORT
+from _service.ntfy.server import NTFY_SMTP_DOMAIN, NTFY_SMTP_PORT
 from _service.resource import child_opts
 
 
@@ -75,7 +75,9 @@ class Ntfy(ComponentResource):
         self.register_outputs({"container_id": self.container_id})
 
     def build_to_email(self, topic: str):
-        return Output.format("{0}+{1}@example.com", topic, self.__access.stdout)
+        return Output.format(
+            "{0}+{1}@{2}", topic, self.__access.stdout, NTFY_SMTP_DOMAIN
+        )
 
 
 ntfy = Ntfy()
