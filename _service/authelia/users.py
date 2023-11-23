@@ -1,6 +1,7 @@
 import random
 
 from argon2 import PasswordHasher
+from pulumi import Output
 
 from _common import container_storage_config
 from _secret import secret
@@ -24,7 +25,7 @@ output_config = {
         "users": {
             v.pop("username"): {
                 "disabled": False,
-                "password": v.pop("password").apply(hash_password),
+                "password": Output.from_input(v.pop("password")).apply(hash_password),
             }
             | v
             for v in secret.authelia_accounts.values()
