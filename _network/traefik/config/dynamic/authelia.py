@@ -11,5 +11,20 @@ output_config = {
             "sec_mode": "public",
         },
         "service": {"port": 9091},
+        "middleware": {
+            "authelia-forward-auth": {
+                "name": "forwardAuth",
+                "address": "http://authelia:9091/api/authz/forward-auth",
+                "trustForwardHeader": True,
+                "authResponseHeaders": [
+                    "Authorization",
+                    "Proxy-Authorization",
+                    "Remote-User",
+                    "Remote-Groups",
+                    "Remote-Email",
+                    "Remote-Name",
+                ],
+            }
+        },
     }
 }
