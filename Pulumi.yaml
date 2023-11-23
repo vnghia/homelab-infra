@@ -132,6 +132,10 @@ config:
         linkwarden:
           name: ghcr.io/linkwarden/linkwarden
           tag: "v2.2.1"
+        mailserver:
+          name: ghcr.io/docker-mailserver/docker-mailserver
+          # TODO: Ping to specified version when this issue is fixed https://github.com/docker-mailserver/docker-mailserver/issues/3646
+          tag: "edge"
         python-alpine:
           name: python
           tag: "3.11.4-alpine3.18"
@@ -201,6 +205,11 @@ config:
           slskd-data:
           monica-data:
           linkwarden-data:
+          mailserver-data:
+          mailserver-state:
+          mailserver-log:
+          mailserver-config:
+          mailserver-cert:
         bind:
           # https://rclone.org/docker/
           rclone-config: /var/lib/docker-plugins/rclone/config
@@ -332,6 +341,21 @@ config:
         linkwarden:
           data:
             dir: /data/data/
+        mailserver:
+          data:
+            dir: /var/mail/
+          state:
+            dir: /var/mail-state/
+          log:
+            dir: /var/log/mail/
+          config:
+            dir: /tmp/docker-mailserver/
+            ro: true
+          traefik-cert:
+            volume: traefik-cert
+            dir: /etc/letsencrypt/
+          cert:
+            dir: /etc/letsencrypt/live/
       backup:
         common:
           prefix: /volume/

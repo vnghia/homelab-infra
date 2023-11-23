@@ -2,6 +2,7 @@ from _service.dozzle.dozzle import dozzle
 from _service.immich.immich import immich
 from _service.jellyfin.jellyfin import jellyfin
 from _service.linkwarden.linkwarden import linkwarden
+from _service.mailserver.mainserver import mailserver
 from _service.memos.memos import memos
 from _service.monica.monica import monica
 from _service.navidrome.navidrome import navidrome
@@ -19,6 +20,7 @@ __all__ = [
     "immich",
     "jellyfin",
     "linkwarden",
+    "mailserver",
     "memos",
     "monica",
     "navidrome",
