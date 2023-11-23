@@ -37,7 +37,16 @@ output_config = {
         "access_control": {
             "default_policy": "deny",
             "rules": [
-                {"domain_regex": [".*"], "policy": "bypass", "methods": ["OPTIONS"]}
+                {"domain_regex": [".*"], "policy": "bypass", "methods": ["OPTIONS"]},
+                {
+                    "domain": hostnames["public-password-storage"],
+                    "policy": "two_factor",
+                    "subject": [
+                        "user:{}".format(
+                            secret.authelia_accounts["password-storage"]["username"]
+                        )
+                    ],
+                },
             ],
         },
         "session": {

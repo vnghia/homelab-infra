@@ -52,6 +52,8 @@ config:
           email: true
         linkwarden:
           hostname: private-linkwarden
+        password-storage:
+          authelia: true
   docker:
     value:
       env:
@@ -370,6 +372,11 @@ config:
           config:
             dir: /config/
             ro: true
+        password-storage:
+          config:
+            volume: rclone-config
+            dir: /etc/rclone/
+            ro: true
       backup:
         common:
           prefix: /volume/
@@ -480,3 +487,5 @@ config:
           service:
             monica: private-monica
             authelia: public-authelia
+      password-storage:
+        port: 8080
