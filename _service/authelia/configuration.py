@@ -14,6 +14,7 @@ _postgres_config = postgres.db["authelia"]
 _authelia_volume = container_storage_config["authelia"]
 
 _authelia_url = hostnames["public-authelia"]
+_authelia_domain = ".".join(_authelia_url.split(".")[-2:])
 
 output_config = {
     "type": "yaml",
@@ -43,10 +44,10 @@ output_config = {
             "secret": secret.keys["authelia-session"].result,
             "cookies": [
                 {
-                    "domain": _authelia_url,
+                    "domain": _authelia_domain,
                     "authelia_url": "https://" + _authelia_url,
                     "remember_me": -1,
-                }
+                },
             ],
             "redis": {
                 "host": _redis_config["host"],
