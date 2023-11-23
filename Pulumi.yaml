@@ -461,3 +461,5 @@ config:
       ntfy:
         email-server:
           domain: private-ntfy
+          service:
+            monica: private-monica

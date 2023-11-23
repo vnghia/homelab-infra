@@ -5,6 +5,8 @@ from _network.dns.hostnames import hostnames
 from _secret import secret
 
 _monica_config = service_config["monica"]
+_ntfy_config = service_config["ntfy"]
+
 _redis_config = redis.db["monica"]
 _postgres_config = postgres.db["monica"]
 
@@ -33,4 +35,10 @@ envs = {
     "LOCATION_IQ_API_KEY": _monica_config["location-iq-api-key"],
     "MAPBOX_API_KEY": _monica_config["mapbox"]["api-key"],
     "MAPBOX_USERNAME": _monica_config["mapbox"]["username"],
+    "MAIL_MAILER": "smtp",
+    "MAIL_HOST": hostnames["private-mailserver"],
+    "MAIL_PORT": 25,
+    "MAIL_FROM_ADDRESS": "notification@{}".format(
+        hostnames[_ntfy_config["email-server"]["service"]["monica"]]
+    ),
 }
