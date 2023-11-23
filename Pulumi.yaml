@@ -13,6 +13,12 @@ config:
       key:
         navidrome-encryption:
         paperless-ngx-secret:
+        authelia-jwt:
+          length: 64
+        authelia-session:
+          length: 64
+        authelia-storage-encryption:
+          length: 64
       account:
         navidrome:
           hostname: public-navidrome
@@ -136,6 +142,9 @@ config:
           name: ghcr.io/docker-mailserver/docker-mailserver
           # TODO: Ping to specified version when this issue is fixed https://github.com/docker-mailserver/docker-mailserver/issues/3646
           tag: "edge"
+        authelia:
+          name: authelia/authelia
+          tag: "v4.38.0-beta3"
         python-alpine:
           name: python
           tag: "3.11.4-alpine3.18"
@@ -210,6 +219,7 @@ config:
           mailserver-log:
           mailserver-config:
           mailserver-cert:
+          authelia-config:
         bind:
           # https://rclone.org/docker/
           rclone-config: /var/lib/docker-plugins/rclone/config
@@ -356,6 +366,10 @@ config:
             dir: /etc/letsencrypt/
           cert:
             dir: /etc/letsencrypt/live/
+        authelia:
+          config:
+            dir: /config/
+            ro: true
       backup:
         common:
           prefix: /volume/
@@ -418,10 +432,12 @@ config:
         - paperless-ngx
         - immich
         - monica
+        - authelia
       postgres:
         immich:
         monica:
         linkwarden:
+        authelia:
   service:
     value:
       tailscale:
@@ -463,3 +479,4 @@ config:
           domain: private-ntfy
           service:
             monica: private-monica
+            authelia: public-authelia

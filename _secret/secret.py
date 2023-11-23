@@ -18,6 +18,7 @@ class Secret:
         self.__passwords = {}
         self.__keepass_entries = {}
         self.accounts = {}
+        self.authelia_accounts = {}
 
         self.__build_key()
         self.__build_keepass_group()
@@ -90,6 +91,18 @@ class Secret:
             config["tags"] = config.pop("tags", []) + [
                 "{}.{}".format(k, v) for k, v in constant.PROJECT_TAG.items()
             ]
+
+            if config.pop("authelia", False):
+                authelia_hostname = hostnames["public-authelia"]
+                config["url"] = Output.concat("https://", authelia_hostname)
+                username = config["username"]
+                self.authelia_accounts[name] = {
+                    "username": username,
+                    "displayname": config.get("displayname", username),
+                    "email": Output.format("{0}@{1}", username, authelia_hostname),
+                    "password": config["password"],
+                    "groups": config.get("groups", []),
+                }
 
             self.__keepass_entries[name] = Command.build(
                 name="{}-keepass-entry".format(name),
