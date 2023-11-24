@@ -431,6 +431,10 @@ config:
             stop:
               - linkwarden
             postgres: true
+          authelia:
+            stop:
+              - authelia
+            postgres: true
       redis:
         - paperless-ngx
         - immich
