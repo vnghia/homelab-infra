@@ -141,7 +141,7 @@ config:
           tag: "main"
         linkwarden:
           name: ghcr.io/linkwarden/linkwarden
-          tag: "v2.2.1"
+          tag: "v2.3.0"
         mailserver:
           name: ghcr.io/docker-mailserver/docker-mailserver
           # TODO: Ping to specified version when this issue is fixed https://github.com/docker-mailserver/docker-mailserver/issues/3646
