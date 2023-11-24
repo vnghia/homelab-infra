@@ -217,7 +217,6 @@ config:
           immich-typesense-data:
           slskd-data:
           monica-data:
-          linkwarden-data:
           mailserver-data:
           mailserver-state:
           mailserver-log:
@@ -350,9 +349,6 @@ config:
         monica:
           data:
             dir: /var/www/html/storage/
-        linkwarden:
-          data:
-            dir: /data/data/
         mailserver:
           data:
             dir: /var/mail/
