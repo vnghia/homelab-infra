@@ -10,12 +10,12 @@ from _service.navidrome.navidrome import navidrome
 from _service.ntfy.ntfy import ntfy
 from _service.paperless_ngx.paperless_ngx import paperless_ngx
 from _service.password_storage.password_storage import password_storage
-from _service.rclone.rclone_webdav import rclone_webdav
 from _service.script_server.script_server import script_server
 from _service.slskd.slskd import slskd
 from _service.syncthing.syncthing import syncthing
 from _service.telegram.login_code import telegram_login_code
 from _service.ttyd.ttyd import ttyd
+from _service.webdav_storage.webdav_storage import webdav_storage
 
 __all__ = [
     "authelia",
@@ -36,4 +36,5 @@ __all__ = [
     "syncthing",
     "telegram_login_code",
     "ttyd",
+    "webdav_storage",
 ]

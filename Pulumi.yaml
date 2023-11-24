@@ -29,8 +29,10 @@ config:
           custom:
             AndroidApp1: io.heckel.ntfy
         ntfy-write-only:
-        rclone-webdav:
-          hostname: public-rclone-webdav
+        webdav-storage:
+          hostname: public-webdav-storage
+          custom:
+            AndroidApp1: at.bitfire.davdroid
         jellyfin:
           hostname: private-jellyfin
           custom:
@@ -233,8 +235,6 @@ config:
         crypt:
           password: crypt/password/
           media: crypt/media/
-        combine:
-          crypt-password: password
       container:
         tailscale:
           state:
@@ -253,7 +253,7 @@ config:
           data:
             volume: navidrome-data
             dir: /data/
-        rclone-webdav:
+        webdav-storage:
           config:
             volume: rclone-config
             dir: /etc/rclone/
@@ -461,7 +461,7 @@ config:
           crowdsec:
             name: github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
             version: "v1.1.16"
-      rclone-webdav:
+      webdav-storage:
         port: 8080
       script-server:
         port: 8080
