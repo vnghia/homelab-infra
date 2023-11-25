@@ -24,6 +24,7 @@ service_config = __build_config("service")
 
 redis_config = storage_config.get("redis", [])
 postgres_config = storage_config.get("postgres", {})
+mariadb_config = storage_config.get("mariadb", {})
 
 
 def __build_volume_config():
@@ -33,6 +34,9 @@ def __build_volume_config():
     __config["local"] |= {"redis-{}-data".format(db): None for db in redis_config}
     __config["local"] |= {
         "postgres-{}-data".format(db): None for db in postgres_config.keys()
+    }
+    __config["local"] |= {
+        "mariadb-{}-data".format(db): None for db in mariadb_config.keys()
     }
     __config["local"] |= {"postgres-backup": None}
     return __config
@@ -64,6 +68,14 @@ def __build_container_storage():
             "backup": {
                 "dir": "/backup/",
                 "volume": "postgres-backup",
+            },
+        }
+    for db in mariadb_config.keys():
+        container = "maria-{}".format(db)
+        __config[container] = {
+            "data": {
+                "dir": "/var/lib/mysql/",
+                "volume": "{}-data".format(container),
             },
         }
     return __config

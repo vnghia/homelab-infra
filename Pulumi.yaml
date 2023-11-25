@@ -103,6 +103,9 @@ config:
         postgres:
           name: postgres
           tag: "16.0-bookworm"
+        mariadb:
+          name: mariadb
+          tag: "11.2.2-jammy"
         paperless-ngx:
           name: ghcr.io/paperless-ngx/paperless-ngx
           tag: "1.17.4"
