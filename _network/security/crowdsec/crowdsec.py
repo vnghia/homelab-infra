@@ -21,6 +21,9 @@ class Crowdsec(ComponentResource):
         self.__acquis_traefik = self.__template.build(
             module_path=Path(__file__).parent / "acquis" / "traefik.py"
         )
+        self.__acquis_authelia = self.__template.build(
+            module_path=Path(__file__).parent / "acquis" / "authelia.py"
+        )
 
         self.bouncer_key = secret.build_string("traefik-bouncer-key", length=32).result
 
@@ -28,7 +31,9 @@ class Crowdsec(ComponentResource):
             "crowdsec",
             opts=self.__child_opts,
             envs={
-                "COLLECTIONS": "crowdsecurity/traefik",
+                "COLLECTIONS": " ".join(
+                    ["crowdsecurity/traefik", "LePresidente/authelia"]
+                ),
                 "CUSTOM_HOSTNAME": "crowdsec",
                 "ENROLL_KEY": _crowdsec_config["console-id"],
                 "ENROLL_INSTANCE_NAME": get_logical_name(),
@@ -38,6 +43,7 @@ class Crowdsec(ComponentResource):
             volumes={"/var/run/docker.sock": {"ro": True}},
             labels={
                 "acquis-traefik-sha256": self.__acquis_traefik["sha256"],
+                "acquis-authelia-sha256": self.__acquis_authelia["sha256"],
             },
         )
         self.container_id = self.__container.id
