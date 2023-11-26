@@ -147,6 +147,9 @@ config:
         authelia:
           name: authelia/authelia
           tag: "v4.38.0-beta3"
+        meilisearch:
+          name: getmeili/meilisearch
+          tag: "v1.5.0"
         python-alpine:
           name: python
           tag: "3.11.4-alpine3.18"
@@ -221,6 +224,7 @@ config:
           mailserver-config:
           mailserver-cert:
           authelia-config:
+          meilisearch-data:
         bind:
           # https://rclone.org/docker/
           rclone-config: /var/lib/docker-plugins/rclone/config
@@ -377,6 +381,9 @@ config:
             volume: rclone-config
             dir: /etc/rclone/
             ro: true
+        meilisearch:
+          data:
+            dir: /meili_data/
       backup:
         common:
           prefix: /volume/
@@ -493,3 +500,5 @@ config:
             authelia: public-authelia
       password-storage:
         port: 8080
+      meilisearch:
+        port: 7070

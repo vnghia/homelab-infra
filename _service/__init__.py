@@ -5,6 +5,7 @@ from _service.immich.immich import immich
 from _service.jellyfin.jellyfin import jellyfin
 from _service.linkwarden.linkwarden import linkwarden
 from _service.mailserver.mainserver import mailserver
+from _service.meilisearch.meilisearch import meilisearch
 from _service.memos.memos import memos
 from _service.monica.monica import monica
 from _service.navidrome.navidrome import navidrome
@@ -25,6 +26,7 @@ __all__ = [
     "jellyfin",
     "linkwarden",
     "mailserver",
+    "meilisearch",
     "memos",
     "monica",
     "navidrome",
