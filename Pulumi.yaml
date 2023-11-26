@@ -229,11 +229,11 @@ config:
         mount:
           music: music/original/
           memos-assets: memos/
-          image: image/
         crypt:
           password: crypt/password/
           media: crypt/media/
           central: central/
+          image: image/
       container:
         tailscale:
           state:
@@ -327,7 +327,7 @@ config:
             volume: immich-upload
             dir: /usr/src/app/upload/
           image-self:
-            volume: mount-image
+            volume: crypt-image
             dir: /mnt/media/self/
             ro: true
         immich-microservices:
@@ -335,7 +335,7 @@ config:
             volume: immich-upload
             dir: /usr/src/app/upload/
           image-self:
-            volume: mount-image
+            volume: crypt-image
             dir: /mnt/media/self/
             ro: true
         immich-machine-learning:
