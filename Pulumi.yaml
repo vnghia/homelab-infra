@@ -143,8 +143,7 @@ config:
           tag: "v2.3.0"
         mailserver:
           name: ghcr.io/docker-mailserver/docker-mailserver
-          # TODO: Ping to specified version when this issue is fixed https://github.com/docker-mailserver/docker-mailserver/issues/3646
-          tag: "edge"
+          tag: "13.0.0"
         authelia:
           name: authelia/authelia
           tag: "v4.38.0-beta3"
