@@ -24,7 +24,9 @@ envs = {
     "DB_DATABASE": _postgres_config["database"],
     "APP_TRUSTED_PROXIES": "*",
     "CACHE_DRIVER": "redis",
-    "QUEUE_CONNECTION": "redis",
+    # TODO: Set to `redis` when this issue is fixed.
+    # https://github.com/monicahq/monica/issues/7039
+    "QUEUE_CONNECTION": "file",
     "SESSION_DRIVER": "redis",
     "DEFAULT_STORAGE_LIMIT": 0,
     "REDIS_HOST": _redis_config["host"],
