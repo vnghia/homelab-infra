@@ -29,10 +29,6 @@ config:
           custom:
             AndroidApp1: io.heckel.ntfy
         ntfy-write-only:
-        webdav-storage:
-          hostname: public-webdav-storage
-          custom:
-            AndroidApp1: at.bitfire.davdroid
         jellyfin:
           hostname: private-jellyfin
           custom:
@@ -237,6 +233,7 @@ config:
         crypt:
           password: crypt/password/
           media: crypt/media/
+          central: central/
       container:
         tailscale:
           state:
@@ -256,6 +253,11 @@ config:
             volume: navidrome-data
             dir: /data/
         webdav-storage:
+          config:
+            volume: rclone-config
+            dir: /etc/rclone/
+            ro: true
+        ftp-storage:
           config:
             volume: rclone-config
             dir: /etc/rclone/

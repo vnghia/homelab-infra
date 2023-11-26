@@ -10,8 +10,7 @@ output_config = {
         "type": "http",
         "router": {
             "name": "webdav-storage",
-            "rule": Output.format("Host(`{0}`)", hostnames["public-webdav-storage"]),
-            "sec_mode": "public",
+            "rule": Output.format("Host(`{0}`)", hostnames["private-webdav-storage"]),
         },
         "service": {"port": _webdav_storage_config["port"]},
     }

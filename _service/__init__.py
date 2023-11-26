@@ -1,4 +1,5 @@
 from _service.authelia.authelia import authelia
+from _service.central_storage.central_storage import central_storage
 from _service.dozzle.dozzle import dozzle
 from _service.immich.immich import immich
 from _service.jellyfin.jellyfin import jellyfin
@@ -15,10 +16,10 @@ from _service.slskd.slskd import slskd
 from _service.syncthing.syncthing import syncthing
 from _service.telegram.login_code import telegram_login_code
 from _service.ttyd.ttyd import ttyd
-from _service.webdav_storage.webdav_storage import webdav_storage
 
 __all__ = [
     "authelia",
+    "central_storage",
     "dozzle",
     "immich",
     "jellyfin",
@@ -36,5 +37,4 @@ __all__ = [
     "syncthing",
     "telegram_login_code",
     "ttyd",
-    "webdav_storage",
 ]
