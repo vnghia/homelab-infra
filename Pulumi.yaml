@@ -519,3 +519,5 @@ config:
         port: 5000
         mount-root: /volume/
         mount-secondary: misc/
+        top:
+          - slskd-data
