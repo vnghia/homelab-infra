@@ -12,6 +12,7 @@ from _service.navidrome.navidrome import navidrome
 from _service.ntfy.ntfy import ntfy
 from _service.paperless_ngx.paperless_ngx import paperless_ngx
 from _service.password_storage.password_storage import password_storage
+from _service.ryot.ryot import ryot
 from _service.script_server.script_server import script_server
 from _service.slskd.slskd import slskd
 from _service.syncthing.syncthing import syncthing
@@ -33,6 +34,7 @@ __all__ = [
     "ntfy",
     "paperless_ngx",
     "password_storage",
+    "ryot",
     "script_server",
     "slskd",
     "syncthing",

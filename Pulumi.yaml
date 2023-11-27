@@ -52,6 +52,8 @@ config:
           hostname: private-linkwarden
         password-storage:
           authelia: true
+        ryot:
+          hostname: private-ryot
   docker:
     value:
       env:
@@ -150,6 +152,9 @@ config:
         meilisearch:
           name: getmeili/meilisearch
           tag: "v1.5.0"
+        ryot:
+          name: ghcr.io/ignisda/ryot
+          tag: "v3.4.15"
         python-alpine:
           name: python
           tag: "3.11.4-alpine3.18"
@@ -446,6 +451,10 @@ config:
             stop:
               - authelia
             postgres: true
+          ryot:
+            stop:
+              - ryot
+            postgres: true
       redis:
         - paperless-ngx
         - immich
@@ -456,6 +465,7 @@ config:
         monica:
         linkwarden:
         authelia:
+        ryot:
   service:
     value:
       tailscale:
