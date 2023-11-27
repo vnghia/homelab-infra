@@ -7,6 +7,7 @@ envs = {
     "SLSKD_SHARED_DIR": _slskd_volume["music"]["dir"],
     "SLSKD_SLSK_USERNAME": secret.accounts["soulseek"]["username"],
     "SLSKD_SLSK_PASSWORD": secret.accounts["soulseek"]["password"],
+    "SLSKD_REMOTE_FILE_MANAGEMENT": True,
     "SLSKD_SLSK_CONNECTION_TIMEOUT": 10000,
     "SLSKD_SLSK_LISTEN_PORT": 50300,
     "SLSKD_NO_HTTPS": True,
