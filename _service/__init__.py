@@ -33,7 +33,6 @@ __all__ = [
     "ntfy",
     "paperless_ngx",
     "password_storage",
-    "rclone_webdav",
     "script_server",
     "slskd",
     "syncthing",
