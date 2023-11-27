@@ -155,6 +155,9 @@ config:
         ryot:
           name: ghcr.io/ignisda/ryot
           tag: "v3.4.15"
+        dufs:
+          name: sigoden/dufs
+          tag: "v0.37.1"
         python-alpine:
           name: python
           tag: "3.11.4-alpine3.18"
@@ -512,3 +515,7 @@ config:
         port: 8080
       meilisearch:
         port: 7070
+      docker-browser:
+        port: 5000
+        mount-root: /volume/
+        mount-secondary: misc/

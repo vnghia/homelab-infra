@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 import deepmerge
@@ -47,12 +48,16 @@ volume_config = __build_volume_config()
 
 def __build_container_storage():
     __config = storage_config.get("container", {})
+    __docker_browser_volumes = set()
+
     for ks, vs in __config.items():
         for kc, vc in vs.items():
             if "volume" not in vc:
                 volume = "{}-{}".format(ks, kc)
                 assert volume in volume_config.get("local", {})
                 vc["volume"] = volume
+            __docker_browser_volumes.add(vc["volume"])
+
     for db in redis_config:
         container = "redis-{}".format(db)
         __config[container] = {
@@ -78,6 +83,33 @@ def __build_container_storage():
                 "volume": "{}-data".format(container),
             },
         }
+
+    __docker_browser_config = service_config["docker-browser"]
+    __docker_browser_mount_root = Path(__docker_browser_config["mount-root"])
+    __docker_browser_mount_secondary = (
+        __docker_browser_mount_root / __docker_browser_config["mount-secondary"]
+    )
+
+    __docker_browser_mount_rw = set(__docker_browser_config.get("rw", []))
+    __docker_browser_mount_top = __docker_browser_mount_rw | set(
+        __docker_browser_config.get("top", [])
+    )
+
+    __config["docker-browser"] = {
+        v: {
+            "dir": os.fspath(
+                (
+                    __docker_browser_mount_root
+                    if v in __docker_browser_mount_top
+                    else __docker_browser_mount_secondary
+                )
+                / v
+            ),
+            "volume": v,
+            "ro": False if v in __docker_browser_mount_rw else True,
+        }
+        for v in __docker_browser_volumes
+    }
     return __config
 
 
