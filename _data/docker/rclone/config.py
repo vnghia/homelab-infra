@@ -52,7 +52,8 @@ def input_fn(opts: ResourceOptions, _):
             )
         elif type == "crypt":
             combine.append("{}=crypt-{}-{}:".format(path, bucket_name, key))
-    input_dict["combine"] = {"type": "combine", "upstreams": " ".join(combine)}
+    if combine:
+        input_dict["combine"] = {"type": "combine", "upstreams": " ".join(combine)}
     return input_dict
 
 
