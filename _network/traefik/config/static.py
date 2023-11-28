@@ -29,6 +29,14 @@ def build_config():
                     "trustedIPs": cloudflare.get_ip_ranges().cidr_blocks
                 },
             },
+            "http-private": {
+                "address": ":80",
+                "http": {
+                    "redirections": {
+                        "entryPoint": {"to": "https-private", "scheme": "https"}
+                    }
+                },
+            },
         },
         "providers": {"file": {"directory": _config_dir, "watch": True}},
         "certificatesResolvers": {
