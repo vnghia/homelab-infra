@@ -22,7 +22,10 @@ def build_config():
         "ping": {},
         "accessLog": {"fields": {"names": {"StartUTC": "drop"}}},
         "entryPoints": {
-            "https-private": {"address": ":443"},
+            "https-private": {
+                "address": ":443",
+                "forwardedHeaders": {"insecure": True},
+            },
             "https-public": {
                 "address": ":{}".format(_tailscale_config["port"]["internal"]),
                 "forwardedHeaders": {
