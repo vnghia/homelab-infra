@@ -485,6 +485,9 @@ config:
           crowdsec:
             name: github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
             version: "v1.1.16"
+          rewrite-response-headers:
+            name: github.com/XciD/traefik-plugin-rewrite-headers
+            version: "v0.0.4"
       webdav-storage:
         port: 8080
       script-server:
