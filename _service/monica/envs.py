@@ -26,7 +26,7 @@ envs = {
     "CACHE_DRIVER": "redis",
     # TODO: Set to `redis` when this issue is fixed.
     # https://github.com/monicahq/monica/issues/7039
-    "QUEUE_CONNECTION": "file",
+    "QUEUE_CONNECTION": "sync",
     "SESSION_DRIVER": "redis",
     "DEFAULT_STORAGE_LIMIT": 0,
     "REDIS_HOST": _redis_config["host"],
