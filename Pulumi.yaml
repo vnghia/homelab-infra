@@ -67,7 +67,7 @@ config:
           tag: "v3.0.0-beta4"
         dozzle:
           name: amir20/dozzle
-          tag: "v5.4.2"
+          tag: "v5.5.0"
         navidrome:
           name: ghcr.io/navidrome/navidrome
           tag: "0.50.1"
