@@ -157,7 +157,7 @@ config:
           tag: "v3.4.15"
         dufs:
           name: sigoden/dufs
-          tag: "v0.37.1"
+          tag: "v0.38.0"
         python-alpine:
           name: python
           tag: "3.11.4-alpine3.18"
