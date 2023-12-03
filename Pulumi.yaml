@@ -64,7 +64,7 @@ config:
           tag: "v1.54.0"
         traefik:
           name: traefik
-          tag: "v3.0.0-beta4"
+          tag: "v3.0.0-beta5"
         dozzle:
           name: amir20/dozzle
           tag: "v5.5.0"
