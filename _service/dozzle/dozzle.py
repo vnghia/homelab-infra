@@ -17,8 +17,9 @@ class Dozzle(ComponentResource):
             envs={
                 "DOZZLE_BASE": "/log",
                 "DOZZLE_FILTER": "label=pulumi.stack={}".format(constant.PROJECT_STACK),
+                "DOZZLE_ENABLE_ACTIONS": True,
             },
-            volumes={"/var/run/docker.sock": {"ro": True}},
+            volumes={"/var/run/docker.sock": {}},
         )
         self.container_id = self.__container.id
         self.register_outputs({"container_id": self.container_id})
