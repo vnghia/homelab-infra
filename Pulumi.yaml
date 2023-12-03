@@ -245,7 +245,7 @@ config:
           media: crypt/media/
           central: central/
           image: image/
-          note: note/
+          obsidian-self: obsidian/self/
       container:
         tailscale:
           state:
@@ -280,9 +280,9 @@ config:
           password:
             volume: crypt-password
             dir: /var/syncthing/data/password/
-          note:
-            volume: crypt-note
-            dir: /var/syncthing/data/note/
+          obsidian-self:
+            volume: crypt-obsidian-self
+            dir: /var/syncthing/data/obsidian/self/
         crowdsec:
           config:
             dir: /etc/crowdsec/
