@@ -19,6 +19,8 @@ config:
           length: 64
         authelia-storage-encryption:
           length: 64
+        note-mark-jwt:
+          length: 64
       account:
         navidrome:
           hostname: public-navidrome
@@ -50,6 +52,8 @@ config:
           authelia: true
         ryot:
           hostname: private-ryot
+        note-mark:
+          hostname: private-note-mark
   docker:
     value:
       env:
@@ -151,6 +155,12 @@ config:
         dufs:
           name: sigoden/dufs
           tag: "v0.38.0"
+        note-mark-frontend:
+          name: ghcr.io/enchant97/note-mark-frontend
+          tag: &note-mark-version "0.9.0"
+        note-mark-backend:
+          name: ghcr.io/enchant97/note-mark-backend
+          tag: *note-mark-version
         python-alpine:
           name: python
           tag: "3.11.4-alpine3.18"
@@ -225,6 +235,7 @@ config:
           mailserver-cert:
           authelia-config:
           meilisearch-data:
+          note-mark-data:
         bind:
           # https://rclone.org/docker/
           rclone-config: /var/lib/docker-plugins/rclone/config
@@ -381,6 +392,10 @@ config:
         meilisearch:
           data:
             dir: /meili_data/
+        note-mark-backend:
+          data:
+            volume: note-mark-data
+            dir: /data/
       backup:
         common:
           prefix: /volume/
@@ -440,6 +455,13 @@ config:
             stop:
               - ryot
             postgres: true
+          note-mark:
+            stop:
+              - note-mark-backend
+            volume:
+              data:
+                path:
+                  - "."
       redis:
         - paperless-ngx
         - immich
@@ -506,3 +528,5 @@ config:
         mount-secondary: misc/
         top:
           - slskd-data
+      note-mark:
+        port: 8000
