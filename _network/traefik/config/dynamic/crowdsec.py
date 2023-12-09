@@ -1,5 +1,3 @@
-import pulumi_cloudflare as cloudflare
-
 from _network.security import crowdsec
 
 output_config = {
@@ -12,7 +10,6 @@ output_config = {
                 "enabled": True,
                 "crowdsecMode": "stream",
                 "crowdseclapikey": crowdsec.bouncer_key,
-                "forwardedheaderstrustedips": cloudflare.get_ip_ranges().cidr_blocks,
             }
         },
     }

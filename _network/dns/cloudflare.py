@@ -35,7 +35,7 @@ class CloudflareDNS(ComponentResource):
     def __build_records(self):
         self.__records: dict[str, cloudflare.Record] = {}
         ip_map = {
-            "public": {"address": server_config["ip"], "proxied": True},
+            "public": {"address": server_config["ip"], "proxied": False},
             "private": {"address": tailscale_device.ipv4, "proxied": False},
         }
 

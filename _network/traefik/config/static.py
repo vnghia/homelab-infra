@@ -1,5 +1,3 @@
-import pulumi_cloudflare as cloudflare
-
 from _common import container_storage_config, service_config
 
 _tailscale_config = service_config["tailscale"]
@@ -28,9 +26,6 @@ def build_config():
             },
             "https-public": {
                 "address": ":{}".format(_tailscale_config["port"]["internal"]),
-                "forwardedHeaders": {
-                    "trustedIPs": cloudflare.get_ip_ranges().cidr_blocks
-                },
             },
             "http-private": {
                 "address": ":80",
