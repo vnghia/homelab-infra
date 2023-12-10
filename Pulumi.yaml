@@ -163,7 +163,7 @@ config:
           tag: *note-mark-version
         python-alpine:
           name: python
-          tag: "3.11.4-alpine3.18"
+          tag: "3.12.1-alpine3.19"
       build:
         backup:
           dockerfile: _data/backup/image/Dockerfile
