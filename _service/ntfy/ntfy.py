@@ -5,10 +5,9 @@ from pulumi import ComponentResource, Output, ResourceOptions
 
 from _command import Command
 from _container import DockerContainer
-from _file import Template
 from _network.traefik import traefik_proxy
 from _secret import secret
-from _service.ntfy.server import NTFY_SMTP_DOMAIN, NTFY_SMTP_PORT
+from _service.ntfy.envs import NTFY_SMTP_DOMAIN, NTFY_SMTP_PORT, envs
 from _service.resource import child_opts
 
 
@@ -19,9 +18,6 @@ class Ntfy(ComponentResource):
             parent=self, depends_on=[traefik_proxy.dynamic_config["ntfy"]["file"]]
         )
 
-        self.__ntfy_config = Template(self.__child_opts).build(
-            module_path=Path(__file__).parent / "server.py"
-        )
         self.__container = DockerContainer.build(
             "ntfy",
             opts=self.__child_opts,
@@ -36,8 +32,8 @@ class Ntfy(ComponentResource):
                 retries=60,
                 start_period="10s",
             ),
+            envs=envs,
             wait=True,
-            labels={"ntfy-server-config-sha256": self.__ntfy_config["sha256"]},
         )
 
         self.container_id = self.__container.id

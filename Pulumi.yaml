@@ -210,7 +210,6 @@ config:
           syncthing-config:
           crowdsec-config:
           crowdsec-data:
-          ntfy-config:
           ntfy-cache:
           ntfy-data:
           docker-compose:
@@ -295,9 +294,6 @@ config:
           data:
             dir: /var/lib/crowdsec/data/
         ntfy:
-          config:
-            dir: /etc/ntfy/
-            ro: true
           cache:
             dir: /var/cache/ntfy/
           data:
