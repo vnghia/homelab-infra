@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import pulumi_docker as docker
 from pulumi import ComponentResource, ResourceOptions
 
 from _common import redis_config
@@ -36,6 +37,20 @@ class Redis(ComponentResource):
                 command=["redis-server", redis_conf["config"]["path"]],
                 image="redis",
                 uploads=[redis_conf["docker"]],
+                healthcheck=docker.ContainerHealthcheckArgs(
+                    tests=[
+                        "CMD",
+                        "redis-cli",
+                        "-a",
+                        password,
+                        "--raw",
+                        "incr",
+                        "ping",
+                    ],
+                    interval="5s",
+                    timeout="5s",
+                    retries=5,
+                ),
             )
 
             self.db[db] = {
