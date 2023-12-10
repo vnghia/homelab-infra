@@ -1,3 +1,4 @@
+import pulumi_docker as docker
 from pulumi import ComponentResource, ResourceOptions
 
 from _common import postgres_config
@@ -30,6 +31,13 @@ class Postgres(ComponentResource):
                     "POSTGRES_DB": db,
                     "PGDATA": "/var/lib/postgresql/data/",
                 },
+                healthcheck=docker.ContainerHealthcheckArgs(
+                    tests=["CMD", "pg_isready", "-U", db],
+                    interval="5s",
+                    timeout="5s",
+                    retries=5,
+                ),
+                wait=True,
             )
 
             self.db[db] = {
