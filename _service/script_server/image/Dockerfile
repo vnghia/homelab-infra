@@ -13,4 +13,4 @@ RUN pip install -r requirements.txt
 RUN apk add --update --no-cache \
   docker-cli-compose
 
-CMD [ "python", "launcher.py" ]
+ENTRYPOINT [ "python", "launcher.py" ]
