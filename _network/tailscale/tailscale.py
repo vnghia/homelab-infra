@@ -80,7 +80,7 @@ class TailscaleDevice(ComponentResource):
                 "TS_AUTH_ONCE": "true",
             },
             healthcheck=docker.ContainerHealthcheckArgs(
-                tests=["CMD-SHELL", "tailscale status"],
+                tests=["CMD", "tailscale", "status"],
                 interval="1s",
                 timeout="5s",
                 retries=60,
