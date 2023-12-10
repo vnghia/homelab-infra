@@ -1,15 +1,17 @@
+import os
 from pathlib import Path
 
 from pulumi import ComponentResource, Output, ResourceOptions
 from slugify import slugify
 
-from _common import import_module, service_config
+from _common import container_storage_config, import_module, service_config
 from _container import DockerContainer
 from _file import Template
 from _network.traefik import traefik_proxy
 from _service.resource import child_opts
 
 _script_server_config = service_config["script-server"]
+_script_server_volume = container_storage_config["script-server"]
 
 
 class ScriptServer(ComponentResource):
@@ -38,19 +40,43 @@ class ScriptServer(ComponentResource):
         self.__container = DockerContainer.build(
             "script-server",
             opts=self.__child_opts,
+            command=[
+                "-f",
+                os.fspath(
+                    Path(_script_server_volume["config-only"]["dir"])
+                    / self._config["config"]["path"]
+                ),
+            ],
             volumes={"/var/run/docker.sock": {}},
-            uploads=[self._config["docker"]]
-            + [runner["docker"] for runner in self.__runners.values()]
-            + [schedule["docker"] for schedule in self.__schedules.values()]
-            + [script["docker"] for script in self.__scripts.values()],
+            labels={"config-sha256": self._config["sha256"]}
+            | {
+                "runner-{}-sha256".format(k.removeprefix("script-server-")): v["sha256"]
+                for k, v in self.__runners.items()
+            }
+            | {
+                "schedule-{}-sha256".format(k.removeprefix("script-server-")): v[
+                    "sha256"
+                ]
+                for k, v in self.__schedules.items()
+            }
+            | {
+                "script-{}-sha256".format(k.removeprefix("script-server-")): v["sha256"]
+                for k, v in self.__scripts.items()
+            },
         )
 
         self.container_id = self.__container.id
         self.register_outputs({"container_id": self.container_id})
 
     def __build_runner(self, name: str, config: dict):
-        path = "{}/{}".format(slugify(config["group"]), slugify(name))
-        output_config = {"path": "/app/conf/runners/{}.json".format(path)}
+        slugify_name = slugify(name)
+
+        path = os.fspath(Path(slugify(config["group"])) / slugify_name)
+        output_config = {
+            "name": "script-server-runner-{}".format(slugify_name),
+            "volume": _script_server_volume["runners"]["volume"],
+            "path": "{}.json".format(path),
+        }
 
         input_dict = {"name": name} | config
         script_type_map = {
@@ -79,12 +105,18 @@ class ScriptServer(ComponentResource):
             )
 
         output_config["input"] = input_dict
-        self.__runners[name] = self.__template.build(config=output_config)
+        self.__runners[slugify_name] = self.__template.build(config=output_config)
 
     def __build_schedule(
         self, name: str, path: str, schedule: dict, parameter_values: dict | None
     ):
-        output_config = {"path": "/app/conf/schedules/{}.json".format(path)}
+        slugify_name = slugify(name)
+
+        output_config = {
+            "name": "script-server-schedule-{}".format(slugify_name),
+            "volume": _script_server_volume["schedules"]["volume"],
+            "path": "{}.json".format(path),
+        }
 
         schedule["repeatable"] = schedule.pop("repeatable", True)
         schedule["executions_count"] = schedule.pop("executions_count", 0)
@@ -107,11 +139,23 @@ class ScriptServer(ComponentResource):
         }
 
         output_config["input"] = input_dict
-        self.__schedules[name] = self.__template.build(config=output_config)
+        self.__schedules[slugify_name] = self.__template.build(config=output_config)
 
     def __build_script_shell(self, name: str, path: str, scripts: list[list]):
-        full_path = "/app/conf/scripts/{}.sh".format(path)
-        output_config = {"path": full_path, "type": "raw", "executable": True}
+        slugify_name = slugify(name)
+
+        script_path = "{}.sh".format(path)
+        full_path = os.fspath(
+            Path(_script_server_volume["scripts"]["dir"]) / script_path
+        )
+
+        output_config = {
+            "name": "script-server-script-{}".format(slugify_name),
+            "volume": _script_server_volume["scripts"]["volume"],
+            "path": script_path,
+            "type": "raw",
+        }
+
         output_config["input"] = Output.from_input(scripts).apply(
             lambda scripts: "\n".join(
                 ["#!/bin/sh", "", "set -euxo pipefail", ""]
@@ -119,7 +163,7 @@ class ScriptServer(ComponentResource):
                 + [""]
             )
         )
-        self.__scripts[name] = self.__template.build(config=output_config)
+        self.__scripts[slugify_name] = self.__template.build(config=output_config)
         return full_path
 
     def __import_and_build(self):

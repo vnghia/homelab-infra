@@ -216,6 +216,10 @@ config:
           docker-compose:
           restic-cache:
           script-server-log:
+          script-server-config-only:
+          script-server-scripts:
+          script-server-schedules:
+          script-server-runners:
           telegram-session:
           jellyfin-config:
           jellyfin-cache:
@@ -299,11 +303,23 @@ config:
           data:
             dir: /var/lib/ntfy/
         script-server:
+          config-only:
+            dir: /app/conf-only/
+            ro: true
           log:
             dir: /app/logs/
           compose:
             volume: docker-compose
             dir: /app/compose/
+            ro: true
+          scripts:
+            dir: /app/conf/scripts/
+            ro: true
+          schedules:
+            dir: /app/conf/schedules/
+            ro: true
+          runners:
+            dir: /app/conf/runners/
             ro: true
         ttyd:
           compose:

@@ -1,10 +1,13 @@
-from _common import service_config
+from _common import container_storage_config, service_config
 from _network.docker import default_bridge_network
 
 _script_server_config = service_config["script-server"]
+_script_server_volume = container_storage_config["script-server"]
 
 output_config = {
-    "path": "/app/conf/conf.json",
+    "name": "script-server-config",
+    "volume": _script_server_volume["config-only"]["volume"],
+    "path": "conf.json",
     "input": {
         "port": _script_server_config["port"],
         "access": {
