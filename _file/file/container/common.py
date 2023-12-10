@@ -11,6 +11,7 @@ BUSYBOX_IMAGE_TAG = "busybox:1.35.0-uclibc"
 VOLUME_BIND_PATH = "/nmt/volume/"
 
 UPLOAD_FILE_PATH = os.environ["FILE_PATH"]
+UPLOAD_FILE_MODE = int(os.environ.get("FILE_MODE", 0o444))
 
 DOCKER_COMMON_KWARGS = {
     "image": BUSYBOX_IMAGE_TAG,
@@ -30,13 +31,23 @@ def load_upload_content():
     return base64.standard_b64decode(input())
 
 
+# TODO: Replace this when upgrading to python 3.12
+def __set_file_mode(info: tarfile.TarInfo):
+    info.mode = UPLOAD_FILE_MODE
+    return info
+
+
 def to_tar_file(content: bytes, path: str):
     tar_file = tempfile.NamedTemporaryFile()
     with tarfile.open(mode="w", fileobj=tar_file) as tar:
         with tempfile.NamedTemporaryFile() as f:
             f.write(content)
             f.flush()
-            tar.add(f.name, arcname=path)
+            tar.add(
+                f.name,
+                arcname=path,
+                filter=__set_file_mode,
+            )
     tar_file.seek(0)
     return tar_file
 

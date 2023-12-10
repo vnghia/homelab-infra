@@ -26,6 +26,7 @@ class File:
         path: Input[str],
         content: Input[str],
         volume: str | None = None,
+        executable: bool | None = None,
         docker_asset_volume: Input[str] | None = None,
     ):
         common_sha256 = hashlib.file_digest(
@@ -44,6 +45,7 @@ class File:
             create_path=Path(__file__).parent / "container" / "create.py",
             delete_path=Path(__file__).parent / "container" / "delete.py",
             update_path=Path(__file__).parent / "container" / "update.py",
+            executable=executable,
             environment={
                 "DOCKER_ASSET_VOLUME": docker_asset_volume,
                 "IMAGE_PLATFORM": "linux/{}".format(server_config["platform"]),
@@ -61,6 +63,7 @@ class File:
         create_path: Path,
         delete_path: Path,
         update_path: Path | None,
+        executable: bool | None,
         **kwargs
     ):
         # TODO: Checking for diff (the content of this file and does it still exist)
@@ -74,7 +77,11 @@ class File:
             stdin=Output.from_input(content).apply(
                 lambda content: base64.standard_b64encode(content.encode()).decode(),
             ),
-            environment={"FILE_PATH": path} | kwargs.pop("environment", {}),
+            environment={
+                "FILE_PATH": path,
+                "FILE_MODE": str(0o444 if not executable else 0o544),
+            }
+            | kwargs.pop("environment", {}),
             **kwargs
         )
         return {"file": file, "sha256": file.stdout}
@@ -136,6 +143,7 @@ class Template:
                 path=config["path"],
                 content=content,
                 volume=config.get("volume"),
+                executable=config.get("executable"),
                 docker_asset_volume=docker_asset_volume,
             )
 
