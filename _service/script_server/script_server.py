@@ -152,6 +152,7 @@ class ScriptServer(ComponentResource):
         output_config = {
             "name": "script-server-script-{}".format(slugify_name),
             "volume": _script_server_volume["scripts"]["volume"],
+            "executable": True,
             "path": script_path,
             "type": "raw",
         }
