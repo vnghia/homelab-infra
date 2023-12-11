@@ -56,6 +56,8 @@ class TraefikDynamicConfig(ComponentResource):
                     router_dict["entryPoints"] = ["https-public"]
                     router_dict["middlewares"] = router_config.pop("middlewares", [])
                     router_dict["middlewares"].append("crowdsec")
+                else:
+                    router_dict["entryPoints"] = ["https-public"]
 
             main_dict["routers"] = {
                 router_name: deepmerge.always_merger.merge(router_dict, router_config)
