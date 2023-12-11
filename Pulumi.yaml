@@ -79,9 +79,6 @@ config:
         ntfy:
           name: binwiederhier/ntfy
           tag: "v2.8.0"
-        awscli:
-          name: amazon/aws-cli
-          tag: "2.13.5"
         restic:
           name: restic/restic
           tag: "0.16.0"

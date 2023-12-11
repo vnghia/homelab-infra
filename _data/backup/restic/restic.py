@@ -3,7 +3,7 @@ from pathlib import Path
 from pulumi import ComponentResource, ResourceOptions
 
 from _command import Command
-from _common import aws, storage_config
+from _common import storage_config
 from _data.resource import child_opts
 from _image import docker_image
 from _secret import secret
@@ -24,18 +24,9 @@ class ResticRepo(ComponentResource):
         )
         self.password = self.__repo_password.result
 
-        self.__repo_cleanup = aws.build_cleanup(
-            "restic-repo-cleanup",
-            opts=self.__child_opts,
-            prefix=self.__repo_prefix,
-            triggers=[self.password],
-        )
-
         self.__repo_init = Command.build(
             "restic-repo-init",
-            opts=self.__child_opts.merge(
-                ResourceOptions(depends_on=self.__repo_cleanup)
-            ),
+            opts=self.__child_opts,
             create=Path(__file__).parent / "init.py",
             update="",
             environment={
