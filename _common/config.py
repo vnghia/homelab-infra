@@ -20,7 +20,6 @@ docker_config = __build_config("docker")
 server_config = __build_config("server")
 dns_config = __build_config("dns")
 storage_config = __build_config("storage")
-secret_config = __build_config("secret_")
 service_config = __build_config("service")
 
 redis_config = storage_config.get("redis", [])
@@ -140,6 +139,13 @@ def __build_backup():
     return __config
 
 
+def __build_secret():
+    __config = __build_config("secret_")
+    __config["key"] = __config.get("key", {})
+
+    return __config
+
+
 storage_config["aws"] = {
     "AWS_ACCESS_KEY_ID": storage_config["key-id"],
     "AWS_SECRET_ACCESS_KEY": storage_config["key-secret"],
@@ -150,3 +156,5 @@ storage_config["aws"] = {
 container_storage_config = __build_container_storage()
 
 backup_config = __build_backup()
+
+secret_config = __build_secret()
