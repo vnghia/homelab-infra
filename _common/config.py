@@ -143,6 +143,10 @@ def __build_secret():
     __config = __build_config("secret_")
     __config["key"] = __config.get("key", {})
 
+    __config["key"] |= {
+        "postgres-{}".format(db): {"special": False} for db in postgres_config.keys()
+    }
+
     return __config
 
 

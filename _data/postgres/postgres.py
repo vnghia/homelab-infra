@@ -17,9 +17,7 @@ class Postgres(ComponentResource):
 
         for db, _ in postgres_config.items():
             name = "postgres-{}".format(db)
-            password = secret.build_password(
-                name, opts=self.__child_opts, length=32, special=False
-            ).result
+            password = secret.keys["postgres-{}".format(db)].result
 
             DockerContainer.build(
                 name,
