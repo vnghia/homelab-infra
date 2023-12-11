@@ -64,7 +64,7 @@ class File:
         delete_path: Path,
         update_path: Path | None,
         executable: bool | None,
-        **kwargs
+        **kwargs,
     ):
         # TODO: Checking for diff (the content of this file and does it still exist)
         # Blocked by: https://github.com/pulumi/pulumi-command/issues/20
@@ -82,7 +82,7 @@ class File:
                 "FILE_MODE": str(0o444 if not executable else 0o544),
             }
             | kwargs.pop("environment", {}),
-            **kwargs
+            **kwargs,
         )
         return {"file": file, "sha256": file.stdout}
 

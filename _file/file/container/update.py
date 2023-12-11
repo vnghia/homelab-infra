@@ -22,7 +22,7 @@ def main():
             command=["sha256sum", UPLOAD_FILE_PATH],
             detach=True,
             remove=False,
-            **DOCKER_COMMON_KWARGS
+            **DOCKER_COMMON_KWARGS,
         ),
     )
 

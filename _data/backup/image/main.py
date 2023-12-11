@@ -145,7 +145,7 @@ def __backup_and_restore(is_backup: bool, args: BackupArgs | RestoreArgs):
         title=notification_title,
         exceptions=exceptions,
         message_failed="{} for {}".format(action, ", ".join(failed_services)),
-        **notification_config
+        **notification_config,
     )
 
 
@@ -180,7 +180,7 @@ def prune(args: PruneArgs):
         message="prune backup",
         title=notification_title,
         exceptions=exceptions,
-        **notification_config
+        **notification_config,
     )
 
 
@@ -197,7 +197,7 @@ def check(args: CheckArgs):
         message="check backup",
         title=notification_title,
         exceptions=exceptions,
-        **notification_config
+        **notification_config,
     )
 
 

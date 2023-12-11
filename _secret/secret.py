@@ -83,7 +83,7 @@ class Secret:
                 self.__passwords[name] = self.build_password(
                     "{}-account".format(name),
                     opts=self.__keepass_entry_opts,
-                    **password
+                    **password,
                 )
                 password = self.__passwords[name].result
             config["password"] = password
@@ -134,7 +134,7 @@ class Secret:
         opts: ResourceOptions | None = None,
         export: bool = False,
         protect: bool = True,
-        **kwargs
+        **kwargs,
     ):
         special = kwargs.pop("special", True)
         password = random.RandomPassword(
@@ -146,7 +146,7 @@ class Secret:
             min_special=kwargs.pop("min_special", 1 if special else 0),
             min_upper=kwargs.pop("min_upper", 1),
             special=special,
-            **kwargs
+            **kwargs,
         )
         if export:
             pulumi.export(name, password.result)
@@ -163,7 +163,7 @@ class Secret:
             min_special=kwargs.pop("min_special", 0),
             min_upper=kwargs.pop("min_upper", 1),
             special=kwargs.pop("special", False),
-            **kwargs
+            **kwargs,
         )
 
 

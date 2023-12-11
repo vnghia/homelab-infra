@@ -24,7 +24,7 @@ def main():
         entry_data.pop("title"),
         entry_data.pop("username"),
         entry_data.pop("password"),
-        **entry_data
+        **entry_data,
     )
     for k, v in custom_data.items():
         entry.set_custom_property(k, v)

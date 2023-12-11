@@ -28,7 +28,7 @@ class Command:
         delete: Path | str | None = None,
         update: Path | str | None = None,
         delete_before_replace: bool = True,
-        **kwargs
+        **kwargs,
     ):
         source_environment = kwargs.pop("environment", {})
         environment = {k.removeprefix("__"): v for k, v in source_environment.items()}

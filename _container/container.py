@@ -16,7 +16,7 @@ class DockerContainer:
         image: str | None = None,
         envs: dict[Input[str], Input[str]] | None = None,
         volumes: dict[Input[str], dict] | None = None,
-        **kwargs
+        **kwargs,
     ):
         envs = docker_config.get("env") | (envs or {})
         if len(envs):
@@ -82,5 +82,5 @@ class DockerContainer:
                 docker.ContainerLabelArgs(label=k, value=v)
                 for k, v in kwargs.pop("labels", {}).items()
             ],
-            **kwargs
+            **kwargs,
         )
