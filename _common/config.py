@@ -146,6 +146,9 @@ def __build_secret():
     __config["key"] |= {
         "postgres-{}".format(db): {"special": False} for db in postgres_config.keys()
     }
+    __config["key"] |= {
+        "redis-{}".format(db): {"special": False} for db in redis_config
+    }
 
     return __config
 

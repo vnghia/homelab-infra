@@ -24,9 +24,7 @@ class Redis(ComponentResource):
 
         for db in redis_config:
             name = "redis-{}".format(db)
-            password = secret.build_password(
-                name, opts=self.__child_opts, length=8, special=False
-            ).result
+            password = secret.keys["redis-{}".format(db)].result
             redis_conf = self.__template.build(
                 module_path=config_path,
                 input_args={"port": self.port, "password": password},
