@@ -16,9 +16,7 @@ class MariaDB(ComponentResource):
 
         for db, _ in mariadb_config.items():
             name = "mariadb-{}".format(db)
-            password = secret.build_password(
-                name, opts=self.__child_opts, length=32, special=False
-            ).result
+            password = secret.keys["mariadb-{}".format(db)].result
 
             DockerContainer.build(
                 name,
