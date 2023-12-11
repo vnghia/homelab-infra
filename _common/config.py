@@ -150,6 +150,10 @@ def __build_secret():
         "redis-{}".format(db): {"special": False} for db in redis_config
     }
 
+    crypt_list = storage_config.get("volume", {}).get("crypt", {}).keys()
+    __config["key"] |= {"crypt-{}".format(volume): None for volume in crypt_list}
+    __config["key"] |= {"crypt2-{}".format(volume): None for volume in crypt_list}
+
     return __config
 
 

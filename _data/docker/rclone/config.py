@@ -2,7 +2,6 @@ import base64
 import random
 
 from Crypto.Cipher import AES
-from pulumi import ResourceOptions
 
 from _common import get_logical_name, storage_config, volume_config
 from _secret import secret
@@ -19,7 +18,7 @@ def rclone_obscure(plaintext: str):
     return base64.urlsafe_b64encode(iv + encrypted_password).decode("utf-8").rstrip("=")
 
 
-def input_fn(opts: ResourceOptions, _):
+def input_fn(_1, _2):
     bucket_name = storage_config["bucket"]
     input_dict = {
         "bucket": {
@@ -32,16 +31,16 @@ def input_fn(opts: ResourceOptions, _):
         }
     }
     for name, prefix in volume_config.get("crypt", {}).items():
-        password = secret.build_password("crypt-{}".format(name), opts=opts, length=32)
+        password = secret.keys["crypt-{}".format(name)]
         password_obscured = password.result.apply(rclone_obscure)
-        salt = secret.build_password("crypt-{}-salt".format(name), opts=opts, length=32)
-        salt_obscured = salt.result.apply(rclone_obscure)
+        password2 = secret.keys["crypt2-{}".format(name)]
+        password2_obscured = password2.result.apply(rclone_obscure)
 
         input_dict["crypt-{}-{}".format(bucket_name, name)] = {
             "type": "crypt",
             "remote": "bucket:{}/{}".format(bucket_name, prefix),
             "password": password_obscured,
-            "password2": salt_obscured,
+            "password2": password2_obscured,
         }
     combine = []
     for name, path in volume_config.get("combine", {}).items():
