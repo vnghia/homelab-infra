@@ -11,6 +11,8 @@ config:
   secret_:
     value:
       key:
+        restic-repo:
+          export: true
         navidrome-encryption:
         paperless-ngx-secret:
         authelia-jwt:
