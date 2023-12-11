@@ -8,7 +8,7 @@ output_config = {
         "router": {
             "name": "navidrome",
             "rule": Output.format("Host(`{0}`)", hostnames["public-navidrome"]),
-            "sec_mode": "public",
+            "sec_mode": None,
         },
         "service": {"port": 4533},
     }
