@@ -132,6 +132,7 @@ class Secret:
         export: bool = False,
         **kwargs
     ):
+        special = kwargs.pop("special", True)
         password = random.RandomPassword(
             name,
             opts=(opts or child_opts).merge(
@@ -140,8 +141,9 @@ class Secret:
             length=kwargs.pop("length", 32),
             min_lower=kwargs.pop("min_lower", 1),
             min_numeric=kwargs.pop("min_numeric", 1),
-            min_special=kwargs.pop("min_special", 1),
+            min_special=kwargs.pop("min_special", 1 if special else 0),
             min_upper=kwargs.pop("min_upper", 1),
+            special=special,
             **kwargs
         )
         if export:
