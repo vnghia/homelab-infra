@@ -25,9 +25,12 @@ class Secret:
         self.__build_keepass_entry()
 
     def __build_key(self):
-        for name, config in secret_config.pop("key", {}).items():
+        for full_name, config in secret_config.pop("key", {}).items():
+            name = full_name.removeprefix("__")
             self.keys[name] = self.build_password(
-                "{}-key".format(name), **({"length": 64} | (config or {}))
+                "{}-key".format(name),
+                protect=not full_name.startswith("__"),
+                **({"length": 64} | (config or {})),
             )
 
     def __build_keepass_group(self):
@@ -130,14 +133,13 @@ class Secret:
         name: str,
         opts: ResourceOptions | None = None,
         export: bool = False,
+        protect: bool = True,
         **kwargs
     ):
         special = kwargs.pop("special", True)
         password = random.RandomPassword(
             name,
-            opts=(opts or child_opts).merge(
-                ResourceOptions(protect=constant.PROJECT_STACK != "dev")
-            ),
+            opts=(opts or child_opts).merge(ResourceOptions(protect=protect)),
             length=kwargs.pop("length", 32),
             min_lower=kwargs.pop("min_lower", 1),
             min_numeric=kwargs.pop("min_numeric", 1),

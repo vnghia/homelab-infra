@@ -14,11 +14,11 @@ config:
         restic-repo:
           export: true
         navidrome-encryption:
-        paperless-ngx-secret:
+        __paperless-ngx-secret:
         authelia-jwt:
         authelia-session:
         authelia-storage-encryption:
-        note-mark-jwt:
+        __note-mark-jwt:
       account:
         navidrome:
           hostname: public-navidrome
