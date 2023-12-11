@@ -27,7 +27,7 @@ class Secret:
     def __build_key(self):
         for name, config in secret_config.pop("key", {}).items():
             self.keys[name] = self.build_password(
-                "{}-key".format(name), **(config or {})
+                "{}-key".format(name), **({"length": 64} | (config or {}))
             )
 
     def __build_keepass_group(self):

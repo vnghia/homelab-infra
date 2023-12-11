@@ -14,13 +14,9 @@ config:
         navidrome-encryption:
         paperless-ngx-secret:
         authelia-jwt:
-          length: 64
         authelia-session:
-          length: 64
         authelia-storage-encryption:
-          length: 64
         note-mark-jwt:
-          length: 64
       account:
         navidrome:
           hostname: public-navidrome
