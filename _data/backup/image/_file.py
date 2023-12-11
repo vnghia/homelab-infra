@@ -1,3 +1,4 @@
+import os
 import subprocess
 import tempfile
 from pathlib import Path
@@ -23,7 +24,7 @@ def backup(
         restic_command += ["--exclude-file", exclude_file.name]
 
     for path in paths:
-        restic_command.append(Path(root_dir_path / path).resolve(True))
+        restic_command.append(os.fspath(Path(root_dir_path / path).resolve(True)))
 
     print("\n\n{}\n\n".format(" ".join(restic_command)), flush=True)
     subprocess.check_call(restic_command, cwd=root_dir)
