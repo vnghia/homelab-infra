@@ -31,8 +31,7 @@ def backup(
 
 def restore(snapshot: str, host: str, tags: list[str]):
     restic_command = ["restic", "restore", snapshot, "--host", host, "--target", "/"]
-    for tag in tags:
-        restic_command += ["--tag", tag]
+    restic_command += ["--tag", ",".join(tags)]
 
     print("\n\n{}\n\n".format(" ".join(restic_command)), flush=True)
     subprocess.check_call(restic_command)
