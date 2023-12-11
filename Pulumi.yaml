@@ -142,9 +142,6 @@ config:
         authelia:
           name: authelia/authelia
           tag: "v4.38.0-beta3"
-        meilisearch:
-          name: getmeili/meilisearch
-          tag: "v1.5.0"
         ryot:
           name: ghcr.io/ignisda/ryot
           tag: "v3.4.15"
@@ -233,7 +230,6 @@ config:
           mailserver-config:
           mailserver-cert:
           authelia-config:
-          meilisearch-data:
           note-mark-data:
         bind:
           # https://rclone.org/docker/
@@ -397,9 +393,6 @@ config:
             volume: rclone-config
             dir: /etc/rclone/
             ro: true
-        meilisearch:
-          data:
-            dir: /meili_data/
         note-mark-backend:
           data:
             volume: note-mark-data
@@ -528,8 +521,6 @@ config:
             authelia: public-authelia
       password-storage:
         port: 8080
-      meilisearch:
-        port: 7070
       docker-browser:
         port: 5000
         mount-root: /volume/
