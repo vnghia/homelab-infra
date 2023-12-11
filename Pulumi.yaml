@@ -239,9 +239,9 @@ config:
           music: music/original/
         crypt:
           password: crypt/password/
-          media: crypt/media/
+          media-orange: media/orange/
           central: central/
-          image: image/
+          media-self: media/self/
           obsidian-self: obsidian/self/
       container:
         tailscale:
@@ -326,9 +326,9 @@ config:
             dir: /config/cache/
           data:
             dir: /config/data/
-          media:
-            volume: crypt-media
-            dir: /media/
+          media-orange:
+            volume: crypt-media-orange
+            dir: /media/orange/
             ro: true
         paperless-ngx:
           data:
@@ -341,16 +341,16 @@ config:
           upload:
             volume: immich-upload
             dir: /usr/src/app/upload/
-          image-self:
-            volume: crypt-image
+          media-self:
+            volume: crypt-media-self
             dir: /mnt/media/self/
             ro: true
         immich-microservices:
           upload:
             volume: immich-upload
             dir: /usr/src/app/upload/
-          image-self:
-            volume: crypt-image
+          media-self:
+            volume: crypt-media-self
             dir: /mnt/media/self/
             ro: true
         immich-machine-learning:
