@@ -25,6 +25,7 @@ def backup(
     for path in paths:
         restic_command.append(Path(root_dir_path / path).resolve(True))
 
+    print("\n\n{}\n\n".format(" ".join(restic_command)), flush=True)
     subprocess.check_call(restic_command, cwd=root_dir)
 
 
@@ -33,4 +34,5 @@ def restore(snapshot: str, host: str, tags: list[str]):
     for tag in tags:
         restic_command += ["--tag", tag]
 
+    print("\n\n{}\n\n".format(" ".join(restic_command)), flush=True)
     subprocess.check_call(restic_command)

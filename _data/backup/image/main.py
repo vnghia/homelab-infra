@@ -92,6 +92,7 @@ def __backup_and_restore(is_backup: bool, args: BackupArgs | RestoreArgs):
                             flush=True,
                         )
                         for cmd in script_data["pre"]:
+                            print("\n{}\n".format(cmd), flush=True)
                             subprocess.check_call(cmd)
                         print(
                             "**** finish pre-{} for {} ****\n".format(
@@ -123,6 +124,7 @@ def __backup_and_restore(is_backup: bool, args: BackupArgs | RestoreArgs):
                             flush=True,
                         )
                         for cmd in script_data["post"]:
+                            print("\n{}\n".format(cmd), flush=True)
                             subprocess.check_call(cmd)
                         print(
                             "**** finish post-{} for {} ****\n".format(
