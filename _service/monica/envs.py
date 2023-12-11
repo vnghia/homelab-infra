@@ -13,7 +13,7 @@ _postgres_config = postgres.db["monica"]
 envs = {
     "APP_NAME": "Libra",
     "APP_ENV": "production",
-    "APP_KEY": secret.build_string("monica-app-key", length=32).result,
+    "APP_KEY": secret.keys["monica-app"].result,
     "APP_DEBUG": False,
     "APP_URL": hostnames["private-monica"],
     "DB_CONNECTION": "pgsql",

@@ -19,6 +19,7 @@ config:
         authelia-session:
         authelia-storage-encryption:
         __note-mark-jwt:
+        __monica-app:
       account:
         navidrome:
           hostname: public-navidrome
