@@ -1,4 +1,4 @@
-from _network.security import crowdsec
+from _secret import secret
 
 output_config = {
     "input": {
@@ -9,7 +9,7 @@ output_config = {
                 "plugin": True,
                 "enabled": True,
                 "crowdsecMode": "stream",
-                "crowdseclapikey": crowdsec.bouncer_key,
+                "crowdseclapikey": secret.keys["crowdsec-traefik-bouncer"].result,
             }
         },
     }

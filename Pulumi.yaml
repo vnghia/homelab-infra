@@ -20,6 +20,8 @@ config:
         authelia-storage-encryption:
         __note-mark-jwt:
         __monica-app:
+        __crowdsec-traefik-bouncer:
+          special: false
       account:
         navidrome:
           hostname: public-navidrome

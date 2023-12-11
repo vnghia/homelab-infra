@@ -25,8 +25,6 @@ class Crowdsec(ComponentResource):
             module_path=Path(__file__).parent / "acquis" / "authelia.py"
         )
 
-        self.bouncer_key = secret.build_string("traefik-bouncer-key", length=32).result
-
         self.__container = DockerContainer.build(
             "crowdsec",
             opts=self.__child_opts,
@@ -38,7 +36,7 @@ class Crowdsec(ComponentResource):
                 "ENROLL_KEY": _crowdsec_config["console-id"],
                 "ENROLL_INSTANCE_NAME": get_logical_name(),
                 "USE_WAL": "true",
-                "BOUNCER_KEY_TRAEFIK": self.bouncer_key,
+                "BOUNCER_KEY_TRAEFIK": secret.keys["crowdsec-traefik-bouncer"].result,
             },
             volumes={"/var/run/docker.sock": {"ro": True}},
             labels={
