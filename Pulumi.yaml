@@ -22,6 +22,7 @@ config:
         __monica-app:
         __crowdsec-traefik-bouncer:
           special: false
+        dendrite-registration-secret:
       account:
         navidrome:
           hostname: public-navidrome
@@ -55,6 +56,10 @@ config:
           hostname: private-ryot
         note-mark:
           hostname: private-note-mark
+        matrix:
+          hostname: public-dendrite
+          custom:
+            AndroidApp1: io.element.android.x
   docker:
     value:
       env:
@@ -156,6 +161,9 @@ config:
         note-mark-backend:
           name: ghcr.io/enchant97/note-mark-backend
           tag: *note-mark-version
+        dendrite:
+          name: matrixdotorg/dendrite-monolith
+          tag: "v0.13.4"
         python-alpine:
           name: python
           tag: "3.12.1-alpine3.19"
@@ -233,6 +241,9 @@ config:
           mailserver-cert:
           authelia-config:
           note-mark-data:
+          dendrite-config:
+          dendrite-jetstream:
+          dendrite-searchindex:
         bind:
           # https://rclone.org/docker/
           rclone-config: /var/lib/docker-plugins/rclone/config
@@ -245,6 +256,7 @@ config:
           central: central/
           media-self: media/self/
           obsidian-self: obsidian/self/
+          media-matrix: media/matrix/
       container:
         tailscale:
           state:
@@ -399,6 +411,17 @@ config:
           data:
             volume: note-mark-data
             dir: /data/
+        dendrite:
+          config:
+            dir: /etc/dendrite/
+            ro: true
+          jetstream:
+            dir: /var/dendrite/jetstream/
+          searchindex:
+            dir: /var/dendrite/searchindex/
+          media:
+            volume: crypt-media-matrix
+            dir: /var/dendrite/media/
       backup:
         common:
           prefix: /volume/
@@ -476,6 +499,7 @@ config:
         linkwarden:
         authelia:
         ryot:
+        dendrite:
   service:
     value:
       tailscale:
