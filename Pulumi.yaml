@@ -165,7 +165,7 @@ config:
           tag: *note-mark-version
         dendrite:
           name: matrixdotorg/dendrite-monolith
-          tag: "v0.13.4"
+          tag: "v0.13.5"
         sliding-sync:
           name: ghcr.io/matrix-org/sliding-sync
           tag: "v0.99.13"
