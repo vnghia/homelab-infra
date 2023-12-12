@@ -42,7 +42,7 @@ output_config = {
             "well_known_sliding_sync_proxy": "https://{}".format(
                 hostnames["public-sliding-sync"]
             ),
-            "disable_federation": False,
+            "disable_federation": True,
             "presence": {"enable_inbound": False, "enable_outbound": False},
         },
         "client_api": {
