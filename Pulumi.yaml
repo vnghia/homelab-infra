@@ -23,6 +23,7 @@ config:
         __crowdsec-traefik-bouncer:
           special: false
         dendrite-registration-secret:
+        sliding-sync-encryption:
       account:
         navidrome:
           hostname: public-navidrome
@@ -164,6 +165,9 @@ config:
         dendrite:
           name: matrixdotorg/dendrite-monolith
           tag: "v0.13.4"
+        sliding-sync:
+          name: ghcr.io/matrix-org/sliding-sync
+          tag: "v0.99.13"
         python-alpine:
           name: python
           tag: "3.12.1-alpine3.19"
@@ -500,6 +504,7 @@ config:
         authelia:
         ryot:
         dendrite:
+        sliding-sync:
   service:
     value:
       tailscale:

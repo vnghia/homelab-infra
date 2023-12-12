@@ -39,6 +39,9 @@ output_config = {
             },
             "well_known_server_name": "{}:443".format(_dendrite_url),
             "well_known_client_name": "https://{}".format(_dendrite_url),
+            "well_known_sliding_sync_proxy": "https://{}".format(
+                hostnames["public-sliding-sync"]
+            ),
             "disable_federation": False,
             "presence": {"enable_inbound": False, "enable_outbound": False},
         },
