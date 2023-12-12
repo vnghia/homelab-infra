@@ -20,6 +20,7 @@ config:
         authelia-storage-encryption:
         __note-mark-jwt:
         __monica-app:
+          length: 32
         __crowdsec-traefik-bouncer:
           special: false
         dendrite-registration-secret:
