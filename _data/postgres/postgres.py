@@ -15,14 +15,16 @@ class Postgres(ComponentResource):
         self.db: dict = {}
         self.port = 5432
 
-        for db, _ in postgres_config.items():
+        for db, config in postgres_config.items():
             name = "postgres-{}".format(db)
             password = secret.keys["postgres-{}".format(db)].result
+
+            config = config or {}
 
             DockerContainer.build(
                 name,
                 opts=self.__child_opts,
-                image="postgres",
+                image=config.pop("image", "postgres"),
                 envs={
                     "POSTGRES_PASSWORD": password,
                     "POSTGRES_USER": db,
