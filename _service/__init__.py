@@ -8,7 +8,6 @@ from _service.mailserver.mailserver import mailserver
 from _service.matrix import matrix
 from _service.monica.monica import monica
 from _service.navidrome.navidrome import navidrome
-from _service.note_mark.note_mark import note_mark
 from _service.ntfy.ntfy import ntfy
 from _service.paperless_ngx.paperless_ngx import paperless_ngx
 from _service.password_storage.password_storage import password_storage
@@ -30,7 +29,6 @@ __all__ = [
     "matrix",
     "monica",
     "navidrome",
-    "note_mark",
     "ntfy",
     "paperless_ngx",
     "password_storage",
