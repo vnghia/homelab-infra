@@ -9,7 +9,7 @@ envs = {
     "ND_DATAFOLDER": _navidrome_volume["data"]["dir"],
     "ND_LOGLEVEL": "info",
     "ND_PASSWORDENCRYPTIONKEY": secret.keys["navidrome-encryption"].result,
-    "ND_SCANSCHEDULE": "@every 24h",
+    "ND_SCANSCHEDULE": "0",
     "ND_SPOTIFY_ID": _navidrome_config["spotify"]["id"],
     "ND_SPOTIFY_SECRET": _navidrome_config["spotify"]["secret"],
     "ND_SUBSONICARTISTPARTICIPATIONS": True,
