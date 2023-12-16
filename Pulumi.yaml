@@ -126,13 +126,10 @@ config:
           tag: "2023.10.0"
         immich-server:
           name: ghcr.io/immich-app/immich-server
-          tag: &immich-version "v1.89.0"
+          tag: &immich-version "v1.91.0"
         immich-machine-learning:
           name: ghcr.io/immich-app/immich-machine-learning
           tag: *immich-version
-        immich-typesense:
-          name: typesense/typesense
-          tag: "0.25.1"
         slskd:
           name: ghcr.io/slskd/slskd
           tag: "0.19.1"
@@ -239,7 +236,6 @@ config:
           paperless-ngx-export:
           immich-upload:
           immich-machine-learning-model-cache:
-          immich-typesense-data:
           slskd-data:
           monica-data:
           mailserver-data:
@@ -378,9 +374,6 @@ config:
         immich-machine-learning:
           model-cache:
             dir: /cache/
-        immich-typesense:
-          data:
-            dir: /data/
         slskd:
           music:
             volume: mount-music
@@ -503,6 +496,7 @@ config:
         - authelia
       postgres:
         immich:
+          image: postgres-vector
         monica:
         linkwarden:
         authelia:
