@@ -12,6 +12,8 @@ envs = {
     "ND_SCANSCHEDULE": "0",
     "ND_SPOTIFY_ID": _navidrome_config["spotify"]["id"],
     "ND_SPOTIFY_SECRET": _navidrome_config["spotify"]["secret"],
+    "ND_LASTFM_APIKEY": _navidrome_config["lastfm"]["api-key"],
+    "ND_LASTFM_SECRET": _navidrome_config["lastfm"]["secret"],
     "ND_SUBSONICARTISTPARTICIPATIONS": True,
     "ND_TRANSCODINGCACHESIZE": "1GB",
     "ND_ENABLESHARING": True,
