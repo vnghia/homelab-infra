@@ -40,6 +40,10 @@ config:
             AndroidApp1: org.jellyfin.mobile
         paperless-ngx:
           hostname: private-paperless-ngx
+        memos:
+          hostname: private-memos
+          custom:
+            AndroidApp1: me.mudkip.moememos
         immich:
           hostname: private-immich
           email: true
@@ -121,6 +125,9 @@ config:
         cloudflared:
           name: cloudflare/cloudflared
           tag: "2023.10.0"
+        memos:
+          name: ghcr.io/usememos/memos
+          tag: "0.18.1"
         immich-server:
           name: ghcr.io/immich-app/immich-server
           tag: &immich-version "v1.91.0"
@@ -225,6 +232,7 @@ config:
           paperless-ngx-data:
           paperless-ngx-media:
           paperless-ngx-export:
+          memos-data:
           immich-upload:
           immich-machine-learning-model-cache:
           slskd-data:
@@ -251,6 +259,7 @@ config:
           media-self: media/self/
           obsidian-self: obsidian/self/
           media-matrix: media/matrix/
+          media-memos: media/memos/
       container:
         tailscale:
           state:
@@ -345,6 +354,12 @@ config:
             dir: /usr/src/paperless/media/
           export:
             dir: /usr/src/paperless/export/
+        memos:
+          data:
+            dir: /var/opt/memos/
+          assets:
+            volume: crypt-media-memos
+            dir: /var/opt/memos/assets/
         immich-server:
           upload:
             volume: immich-upload
@@ -447,6 +462,13 @@ config:
                 path:
                   - "."
                 script_path: _data/backup/script/paperless_ngx.py
+          memos:
+            stop:
+              - memos
+            volume:
+              data:
+                path:
+                  - memos_prod.db
           immich:
             stop:
               - immich-server
