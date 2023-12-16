@@ -96,7 +96,7 @@ config:
           tag: "0.16.2"
         socat:
           name: alpine/socat
-          tag: "1.7.4.4"
+          tag: "1.8.0.0"
         jellyfin:
           name: linuxserver/jellyfin
           tag: "10.8.12"
