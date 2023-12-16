@@ -99,7 +99,7 @@ config:
           tag: "1.8.0.0"
         jellyfin:
           name: linuxserver/jellyfin
-          tag: "10.8.12"
+          tag: "10.8.13"
         redis:
           name: redis
           tag: "7.2.2-alpine3.18"
