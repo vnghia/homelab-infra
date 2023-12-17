@@ -29,7 +29,7 @@ async def send_login_code(event):
         message=event.pattern_match.group(1),
         title="Login code",
         icon=notification_icon,
-        tags=["login-code"],
+        tags=["key", "login-code"],
     )
 
 
