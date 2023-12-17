@@ -130,7 +130,7 @@ config:
           tag: "0.18.1"
         immich-server:
           name: ghcr.io/immich-app/immich-server
-          tag: &immich-version "v1.91.0"
+          tag: &immich-version "v1.91.2"
         immich-machine-learning:
           name: ghcr.io/immich-app/immich-machine-learning
           tag: *immich-version
