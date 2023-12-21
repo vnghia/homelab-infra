@@ -1,6 +1,6 @@
 from pulumi import Output
 
-from _common import docker_config
+from _common import server_config
 from _data.redis import redis
 from _network.dns import hostnames
 from _secret import secret
@@ -24,5 +24,5 @@ envs = {
     "PAPERLESS_FILENAME_FORMAT": "{document_type}/{correspondent}/{created_year}/{tag_list}/{title}",
     "PAPERLESS_FILENAME_FORMAT_REMOVE_NONE": "True",
     "PAPERLESS_CONSUMER_POLLING": "0",
-    "PAPERLESS_TIME_ZONE": docker_config["env"]["TZ"],
+    "PAPERLESS_TIME_ZONE": server_config["tz"],
 }

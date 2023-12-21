@@ -8,6 +8,7 @@ config:
   server:
     value:
       platform: amd64
+      tz: Etc/UTC
   secret_:
     value:
       key:
@@ -65,8 +66,6 @@ config:
             AndroidApp1: io.element.android.x
   docker:
     value:
-      env:
-        TZ: Etc/UTC
       image:
         tailscale:
           name: tailscale/tailscale

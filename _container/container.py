@@ -1,7 +1,13 @@
 import pulumi_docker as docker
 from pulumi import Input, Output, ResourceOptions
 
-from _common import constant, container_storage_config, docker_config, get_logical_name
+from _common import (
+    constant,
+    container_storage_config,
+    docker_config,
+    get_logical_name,
+    server_config,
+)
 from _data.docker import volume_map
 from _image import docker_image
 from _network.docker import default_bridge_network
@@ -18,7 +24,7 @@ class DockerContainer:
         volumes: dict[Input[str], dict] | None = None,
         **kwargs,
     ):
-        envs = docker_config.get("env") | (envs or {})
+        envs = {"TZ": server_config["tz"]} | docker_config.get("env", {}) | (envs or {})
         if len(envs):
             kwargs["envs"] = []
             for k, v in envs.items():
