@@ -8,7 +8,6 @@ from _network.resource import child_opts
 from _network.security.crowdsec.envs import envs
 
 
-# TODO: Connection Central API does not work in bridge network.
 class Crowdsec(ComponentResource):
     def __init__(self) -> None:
         super().__init__("network:security:Crowdsec", "crowdsec", None, child_opts)
