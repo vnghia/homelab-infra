@@ -25,7 +25,7 @@ script_config = {
         "script_path": docker_compose_script + ["backup"],
         "scheduling": {
             "schedule": {
-                "start_datetime": datetime.fromtimestamp(0).replace(hour=0),
+                "start_datetime": datetime.fromtimestamp(0).replace(hour=4),
                 "repeat_unit": "days",
                 "repeat_period": 1,
             },
