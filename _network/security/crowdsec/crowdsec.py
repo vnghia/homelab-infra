@@ -2,13 +2,10 @@ from pathlib import Path
 
 from pulumi import ComponentResource, ResourceOptions
 
-from _common import get_logical_name, service_config
 from _container import DockerContainer
 from _file import Template
 from _network.resource import child_opts
-from _secret import secret
-
-_crowdsec_config = service_config["crowdsec"]
+from _network.security.crowdsec.envs import envs
 
 
 # TODO: Connection Central API does not work in bridge network.
@@ -28,16 +25,7 @@ class Crowdsec(ComponentResource):
         self.__container = DockerContainer.build(
             "crowdsec",
             opts=self.__child_opts,
-            envs={
-                "COLLECTIONS": " ".join(
-                    ["crowdsecurity/traefik", "LePresidente/authelia"]
-                ),
-                "CUSTOM_HOSTNAME": "crowdsec",
-                "ENROLL_KEY": _crowdsec_config["console-id"],
-                "ENROLL_INSTANCE_NAME": get_logical_name(),
-                "USE_WAL": "true",
-                "BOUNCER_KEY_TRAEFIK": secret.keys["crowdsec-traefik-bouncer"].result,
-            },
+            envs=envs,
             volumes={"/var/run/docker.sock": {"ro": True}},
             labels={
                 "acquis-traefik-sha256": self.__acquis_traefik["sha256"],
