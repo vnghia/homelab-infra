@@ -1,10 +1,17 @@
 import os
+from datetime import timezone
 from pathlib import Path
 
 from pulumi import ComponentResource, Output, ResourceOptions
 from slugify import slugify
+from zoneinfo import ZoneInfo
 
-from _common import container_storage_config, import_module, service_config
+from _common import (
+    container_storage_config,
+    import_module,
+    server_config,
+    service_config,
+)
 from _container import DockerContainer
 from _file import Template
 from _network.traefik import traefik_proxy
@@ -120,8 +127,11 @@ class ScriptServer(ComponentResource):
 
         schedule["repeatable"] = schedule.pop("repeatable", True)
         schedule["executions_count"] = schedule.pop("executions_count", 0)
-        schedule["start_datetime"] = schedule["start_datetime"].strftime(
-            "%Y-%m-%dT%H:%M:%S.%fZ"
+        schedule["start_datetime"] = (
+            schedule["start_datetime"]
+            .replace(tzinfo=ZoneInfo(server_config["tz"]))
+            .astimezone(timezone.utc)
+            .strftime("%Y-%m-%dT%H:%M:%S.%fZ")
         )
 
         parameter_values = parameter_values or {}
