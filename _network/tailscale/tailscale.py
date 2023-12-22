@@ -21,6 +21,7 @@ class TailscaleDevice(ComponentResource):
         self.__child_opts = ResourceOptions(parent=self)
 
         self.__hostname = get_logical_name()
+        self.__state_volume_name = volume_map[_tailscale_volume["state"]["volume"]]
         self.__build_authkey()
         self.__build_cleanup()
         self.__build_container()
@@ -34,11 +35,10 @@ class TailscaleDevice(ComponentResource):
         )
 
     def __build_authkey(self):
-        # Manually replace authkey by calling
-        # `pulumi up --replace 'urn:pulumi:dev::asky-observer::network:resource:root$network:device:Tailscale$tailscale:index/tailnetKey:TailnetKey::tailscale' -y`
         self.__authkey = tailscale.TailnetKey(
             "tailscale",
             opts=self.__child_opts,
+            description=self.__state_volume_name,
             ephemeral=False,
             expiry=5 * 60,
             preauthorized=True,
@@ -52,7 +52,7 @@ class TailscaleDevice(ComponentResource):
             update="",
             delete=Path(__file__).parent / "tailscale_cleanup_device.py",
             environment={"TAILSCALE_DEVICE_HOSTNAME": self.__hostname},
-            triggers=[volume_map[_tailscale_volume["state"]["volume"]]],
+            triggers=[self.__state_volume_name],
         )
 
     def __build_container(self):
