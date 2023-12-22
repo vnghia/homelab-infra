@@ -9,6 +9,7 @@ default_bridge_network = docker.Network(
     opts=child_opts.merge(ResourceOptions(delete_before_replace=True)),
     name=get_logical_name("bridge"),
     driver="bridge",
+    ipv6=True,
     labels=[
         docker.NetworkLabelArgs(label=k, value=v)
         for k, v in constant.PROJECT_TAG.items()
