@@ -1,7 +1,6 @@
 from pathlib import Path
 
 import pulumi_docker as docker
-import pulumi_random as random
 import pulumi_tailscale as tailscale
 from pulumi import ComponentResource, Output, ResourceOptions
 
@@ -20,8 +19,9 @@ class TailscaleDevice(ComponentResource):
         super().__init__("network:device:Tailscale", "tailscale", None, child_opts)
 
         self.__child_opts = ResourceOptions(parent=self)
+
+        self.__hostname = get_logical_name()
         self.__build_authkey()
-        self.__build_hostname()
         self.__build_cleanup()
         self.__build_container()
 
@@ -45,19 +45,6 @@ class TailscaleDevice(ComponentResource):
             reusable=False,
         )
 
-    def __build_hostname(self):
-        self.__hostname_suffix = random.RandomString(
-            "tailscale-suffix",
-            opts=self.__child_opts,
-            length=7,
-            special=False,
-            upper=False,
-            keepers={"volume_name": volume_map[_tailscale_volume["state"]["volume"]]},
-        )
-        self.__hostname = Output.concat(
-            get_logical_name(), "-", self.__hostname_suffix.result
-        )
-
     def __build_cleanup(self):
         self.__cleanup = Command.build(
             "tailscale-cleanup-device",
@@ -65,6 +52,7 @@ class TailscaleDevice(ComponentResource):
             update="",
             delete=Path(__file__).parent / "tailscale_cleanup_device.py",
             environment={"TAILSCALE_DEVICE_HOSTNAME": self.__hostname},
+            triggers=[volume_map[_tailscale_volume["state"]["volume"]]],
         )
 
     def __build_container(self):
