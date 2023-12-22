@@ -33,36 +33,53 @@ class CloudflareDNS(ComponentResource):
         }
 
     def __build_records(self):
-        self.__records: dict[str, cloudflare.Record] = {}
         ip_map = {
-            "public": {"address": server_config["ip"], "proxied": False},
-            "private": {"address": tailscale_device.ipv4, "proxied": False},
+            "public": {
+                "addresses": {"v4": server_config["ipv4"], "v6": server_config["ipv6"]},
+                "proxied": False,
+            },
+            "private": {
+                "addresses": {"v4": tailscale_device.ipv4, "v6": tailscale_device.ipv6},
+                "proxied": False,
+            },
+        }
+        ip_child_opts = {
+            k: ResourceOptions(
+                parent=ComponentResource(
+                    "network:dns:IP", k, None, opts=self.__child_opts
+                )
+            )
+            for k in ip_map.keys()
         }
 
         for key, record in records.items():
             zone_id = self.__zone_id_map[record["zone"]]
 
             ip_config = ip_map[record["type"]]
-            record_value = ip_config["address"]
-            record_type = Output.from_input(record_value).apply(
-                lambda address: "A"
-                if ipaddress.ip_address(address).version == 4
-                else "AAAA"
-            )
+            record_values = ip_config["addresses"]
 
-            self.__records[key] = cloudflare.Record(
-                key,
-                opts=self.__child_opts,
-                name=record["name"],
-                proxied=ip_config["proxied"],
-                type=record_type,
-                value=record_value,
-                zone_id=zone_id,
-            )
+            hostnames = []
+            for record_value_key, record_value in record_values.items():
+                record_type = Output.from_input(record_value).apply(
+                    lambda address: "A"
+                    if ipaddress.ip_address(address).version == 4
+                    else "AAAA"
+                )
+                result = cloudflare.Record(
+                    key + "-" + record_value_key,
+                    opts=ip_child_opts[record["type"]],
+                    name=record["name"],
+                    proxied=ip_config["proxied"],
+                    type=record_type,
+                    value=record_value,
+                    zone_id=zone_id,
+                )
+                hostnames.append(result.hostname)
 
-            Output.all(
-                local=record["hostname"], server=self.__records[key].hostname
-            ).apply(self.__compare_hostname)
+            for hostname in hostnames:
+                Output.all(local=record["hostname"], server=hostname).apply(
+                    self.__compare_hostname
+                )
 
     def __compare_hostname(self, args):
         if args["local"] != args["server"]:
