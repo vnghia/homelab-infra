@@ -508,6 +508,7 @@ config:
       tailscale:
         ports:
           https: 444
+          http: 81
         socket: /var/run/tailscale/tailscaled.sock
       traefik:
         # TODO: Upgrade to v3

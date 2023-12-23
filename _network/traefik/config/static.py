@@ -13,6 +13,7 @@ _acme_server = _traefik_config["acme"].get(
 _acme_email = _traefik_config["acme"]["email"]
 
 _tailscale_https_port = _tailscale_config["ports"]["https"]
+_tailscale_http_port = _tailscale_config["ports"]["http"]
 
 
 def build_config():
@@ -31,6 +32,12 @@ def build_config():
             },
             "http-private": {
                 "address": ":80",
+                "http": {
+                    "redirections": {"entryPoint": {"to": ":443", "scheme": "https"}}
+                },
+            },
+            "http-public": {
+                "address": ":{}".format(_tailscale_http_port),
                 "http": {
                     "redirections": {"entryPoint": {"to": ":443", "scheme": "https"}}
                 },

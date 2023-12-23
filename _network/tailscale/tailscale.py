@@ -81,7 +81,11 @@ class TailscaleDevice(ComponentResource):
                 docker.ContainerPortArgs(
                     internal=_tailscale_config["ports"]["https"],
                     external=443,
-                )
+                ),
+                docker.ContainerPortArgs(
+                    internal=_tailscale_config["ports"]["http"],
+                    external=80,
+                ),
             ],
             wait=True,
         )
