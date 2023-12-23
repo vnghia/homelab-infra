@@ -32,9 +32,7 @@ def build_config():
             "http-private": {
                 "address": ":80",
                 "http": {
-                    "redirections": {
-                        "entryPoint": {"to": "https-private", "scheme": "https"}
-                    }
+                    "redirections": {"entryPoint": {"to": ":443", "scheme": "https"}}
                 },
             },
         },
