@@ -12,6 +12,8 @@ _acme_server = _traefik_config["acme"].get(
 )
 _acme_email = _traefik_config["acme"]["email"]
 
+_tailscale_https_port = _tailscale_config["ports"]["https"]
+
 
 def build_config():
     input_dict = {
@@ -25,7 +27,7 @@ def build_config():
                 "forwardedHeaders": {"insecure": True},
             },
             "https-public": {
-                "address": ":{}".format(_tailscale_config["port"]["internal"]),
+                "address": ":{}".format(_tailscale_https_port),
             },
             "http-private": {
                 "address": ":80",
