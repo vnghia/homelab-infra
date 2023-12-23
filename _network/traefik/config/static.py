@@ -24,20 +24,20 @@ def build_config():
         "accessLog": {"fields": {"names": {"StartUTC": "drop"}}},
         "entryPoints": {
             "https-private": {
-                "address": ":443",
+                "address": "[::]:443",
                 "forwardedHeaders": {"insecure": True},
             },
             "https-public": {
-                "address": ":{}".format(_tailscale_https_port),
+                "address": "[::]:{}".format(_tailscale_https_port),
             },
             "http-private": {
-                "address": ":80",
+                "address": "[::]:80",
                 "http": {
                     "redirections": {"entryPoint": {"to": ":443", "scheme": "https"}}
                 },
             },
             "http-public": {
-                "address": ":{}".format(_tailscale_http_port),
+                "address": "[::]:{}".format(_tailscale_http_port),
                 "http": {
                     "redirections": {"entryPoint": {"to": ":443", "scheme": "https"}}
                 },
