@@ -5,6 +5,8 @@ _script_server_volume = container_storage_config["script-server"]
 
 docker_compose_dir = _script_server_volume["compose"]["dir"]
 
+DOCKER_SCRIPT_SERVER_LABEL = "launcher=script-server"
+
 
 def build_compose_script(file: str, *args, name: str | None = None):
     return (
@@ -21,7 +23,7 @@ def build_compose_script(file: str, *args, name: str | None = None):
     )
 
 
-docker_label = []
+docker_label = ["-l", DOCKER_SCRIPT_SERVER_LABEL]
 for k, v in constant.PROJECT_TAG.items():
     docker_label += ["-l", "{}={}".format(k, v)]
 
@@ -32,6 +34,7 @@ def __build_run_net(name: str | None = None, network: str | None = None):
             "docker",
             "run",
             "--rm",
+            "--detach",
             "--network",
             network or default_bridge_network.name,
         ]
