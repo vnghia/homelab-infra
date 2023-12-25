@@ -11,12 +11,6 @@ common_config = {
     "script_type": "shell",
 }
 
-browser_image_list = {
-    v["image_name"]: k.removeprefix("neko-")
-    for k, v in docker_image.image_map.items()
-    if k.startswith("neko-")
-}
-
 script_config = {
     "Private port forwarding": {
         "script_path": [
@@ -61,41 +55,6 @@ script_config = {
                 "name": "dest_port",
                 "required": True,
                 "type": "int",
-            },
-        ],
-    },
-    "Private browser": {
-        "script_path": [
-            build_run_net_tailscale("neko-browser")
-            + [
-                "--shm-size",
-                "2G",
-                "-e",
-                "NEKO_SCREEN=1920x1080@60",
-                "-e",
-                "NEKO_BIND=:9090",
-                "-e",
-                "NEKO_ICELITE=1",
-                "-e",
-                "NEKO_IMPLICIT_CONTROL=1",
-                "-e",
-                "NEKO_HWENC=none",
-                "-e",
-                "NEKO_PATH_PREFIX=/digitalsea",
-                "-e",
-                tailscale_device.ipv4.apply(
-                    lambda ipv4: "NEKO_NAT1TO1={}".format(ipv4)
-                ),
-                "$PARAM_BROWSER_IMAGE",
-            ]
-        ],
-        "parameters": [
-            {
-                "name": "browser_image",
-                "required": True,
-                "type": "list",
-                "values": list(browser_image_list.keys()),
-                "values_ui_mapping": browser_image_list,
             },
         ],
     },
