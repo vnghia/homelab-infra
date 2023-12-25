@@ -59,6 +59,7 @@ class TraefikProxy(ComponentResource):
             volumes={
                 "/etc/localtime": {"ro": True},
                 "/usr/share/zoneinfo": {"ro": True},
+                "/var/run/docker.sock": {"ro": True},
             },
             labels={"static-config-sha256": self.__static_config["sha256"]},
         )

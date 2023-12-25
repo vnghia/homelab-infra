@@ -43,7 +43,10 @@ def build_config():
                 },
             },
         },
-        "providers": {"file": {"directory": _config_dir, "watch": True}},
+        "providers": {
+            "file": {"directory": _config_dir, "watch": True},
+            "docker": {"exposedByDefault": False},
+        },
         "certificatesResolvers": {
             "leresolver_dns": {
                 "acme": {
