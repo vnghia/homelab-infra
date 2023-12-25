@@ -51,3 +51,27 @@ def build_run_net_tailscale(name: str | None = None):
 
 def build_run_net_bridge(name: str | None = None):
     return __build_run_net(name)
+
+
+def build_traefik_label(name: str, rule: str, port: str | int, sec_mode: str | None):
+    labels = [
+        "traefik.enable=true",
+        '"traefik.http.routers.{}.rule={}"'.format(name, rule),
+        "traefik.http.routers.{}.tls.certresolver=leresolver_dns".format(name),
+        "traefik.http.services.{}.loadbalancer.server.port={}".format(name, port),
+    ]
+
+    if sec_mode == "private":
+        labels += ["traefik.http.routers.{}.entrypoints=https-private".format(name)]
+    elif sec_mode == "public":
+        labels += [
+            "traefik.http.routers.{}.entrypoints=https-public".format(name),
+            "traefik.http.routers.{}.middlewares=crowdsec@file".format(name),
+        ]
+    else:
+        labels += ["traefik.http.routers.{}.entrypoints=https-public".format(name)]
+
+    docker_labels = []
+    for label in labels:
+        docker_labels += ["-l", label]
+    return docker_labels
