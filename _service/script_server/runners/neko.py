@@ -2,8 +2,13 @@ from pulumi import Output
 
 from _common import server_config
 from _image import docker_image
+from _network.dns.hostnames import hostnames
 from _network.tailscale import tailscale_device
-from _service.script_server.docker import build_run_net_bridge, build_run_net_tailscale
+from _service.script_server.docker import (
+    build_run_net_bridge,
+    build_run_net_tailscale,
+    build_traefik_label,
+)
 
 common_config = {
     "group": "Neko",
@@ -43,7 +48,14 @@ def build_script_config():
             if k == "public"
             else build_run_net_tailscale("$PARAM_NAME")
         )
+        + build_traefik_label(
+            name="$PARAM_NAME",
+            rule="Host(\\`$PARAM_HOST\\`) && PathPrefix(\\`${PARAM_PATH_PREFIX%?}\\`)",
+            port="$PARAM_PORT",
+            sec_mode=k,
+        )
         + [
+            "--no-healthcheck",
             "--shm-size",
             "$PARAM_SHM",
             "-e=NEKO_BIND=:$PARAM_PORT",
@@ -63,6 +75,8 @@ def build_script_config():
         }
         for k in modes
     }
+
+    prefixes = {"public": "/", "private": "/digitalsea/"}
 
     nat1to1s = {
         k: (
@@ -86,6 +100,13 @@ def build_script_config():
                     "pass_as": "env_variable",
                 },
                 {
+                    "name": "host",
+                    "required": True,
+                    "type": "text",
+                    "pass_as": "env_variable",
+                }
+                | ({} if k == "public" else {"default": hostnames["private-infra"]}),
+                {
                     "name": "port",
                     "required": True,
                     "type": "int",
@@ -93,12 +114,15 @@ def build_script_config():
                     "pass_as": "env_variable",
                 },
                 build_neko_param("icelite", no_value=True, constant=True, default=True),
+                build_neko_param("proxy", no_value=True, constant=True, default=True),
                 build_neko_param(
                     "nat1to1",
                     constant=True,
                     default=nat1to1s[k],
                 ),
                 build_neko_param("hwenc", constant=True, default="none"),
+                build_neko_param("screen", constant=True, default="1920x1080@30"),
+                build_neko_param("path_prefix", default=prefixes[k]),
                 build_neko_param("password"),
                 build_neko_param("password_admin"),
                 build_neko_param("epr", default="52000-52100"),
