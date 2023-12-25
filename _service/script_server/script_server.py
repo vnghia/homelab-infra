@@ -1,10 +1,10 @@
 import os
 from datetime import timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from pulumi import ComponentResource, Output, ResourceOptions
 from slugify import slugify
-from zoneinfo import ZoneInfo
 
 from _common import (
     container_storage_config,
@@ -65,10 +65,6 @@ class ScriptServer(ComponentResource):
                     "sha256"
                 ]
                 for k, v in self.__schedules.items()
-            }
-            | {
-                "script-{}-sha256".format(k.removeprefix("script-server-")): v["sha256"]
-                for k, v in self.__scripts.items()
             },
         )
 
