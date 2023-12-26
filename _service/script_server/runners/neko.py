@@ -43,25 +43,32 @@ def build_script_config():
     modes = ["public", "private"]
 
     script_paths = {
-        k: (
-            build_run_net_bridge("$PARAM_NAME")
-            + ["-p", "{0}:{0}/udp".format("$PARAM_EPR")]
-            if k == "public"
-            else build_run_net_tailscale("$PARAM_NAME")
-        )
-        + build_traefik_label(
-            name="$PARAM_NAME",
-            rule="Host(\\`$PARAM_HOST\\`) && PathPrefix(\\`${PARAM_PATH_PREFIX%?}\\`)",
-            port="$PARAM_PORT",
-            sec_mode=k,
-        )
-        + [
-            "--no-healthcheck",
-            "--shm-size",
-            "$PARAM_SHM",
-            "-e=NEKO_BIND=:$PARAM_PORT",
-            '"$@"',
-            "$PARAM_IMAGE",
+        k: [
+            ["echo", "$PARAM_PASSWORD_ADMIN"],
+            ["echo", "$PARAM_PASSWORD"],
+            ["PATH_PREFIX=${PARAM_PATH_PREFIX%?}"],
+            ["if [ -z $PATH_PREFIX ]; then"],
+            ['RULE="Host(\\`$PARAM_HOST\\`)"'],
+            ["else"],
+            ['RULE="Host(\\`$PARAM_HOST\\`) && PathPrefix(\\`$PATH_PREFIX\\`)"'],
+            ["fi"],
+            (
+                build_run_net_bridge("$PARAM_NAME")
+                + ["-p", "{0}:{0}/udp".format("$PARAM_EPR")]
+                if k == "public"
+                else build_run_net_tailscale("$PARAM_NAME")
+            )
+            + build_traefik_label(
+                name="$PARAM_NAME", rule="$RULE", port="$PARAM_PORT", sec_mode=k
+            )
+            + [
+                "--no-healthcheck",
+                "--shm-size",
+                "$PARAM_SHM",
+                "-e=NEKO_BIND=:$PARAM_PORT",
+                '"$@"',
+                "$PARAM_IMAGE",
+            ],
         ]
         for k in modes
     }
@@ -99,11 +106,7 @@ def build_script_config():
 
     return {
         "{} neko".format(k.capitalize()): {
-            "script_path": [
-                ["echo", "$PARAM_PASSWORD_ADMIN"],
-                ["echo", "$PARAM_PASSWORD"],
-                script_paths[k],
-            ],
+            "script_path": script_paths[k],
             "parameters": [
                 {
                     "name": "image",
