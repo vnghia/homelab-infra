@@ -20,6 +20,9 @@ class Crowdsec(ComponentResource):
         self.__acquis_authelia = self.__template.build(
             module_path=Path(__file__).parent / "acquis" / "authelia.py"
         )
+        self.__whitelist_traefik = self.__template.build(
+            module_path=Path(__file__).parent / "whitelist" / "traefik.py"
+        )
 
         self.__container = DockerContainer.build(
             "crowdsec",
@@ -29,6 +32,7 @@ class Crowdsec(ComponentResource):
             labels={
                 "acquis-traefik-sha256": self.__acquis_traefik["sha256"],
                 "acquis-authelia-sha256": self.__acquis_authelia["sha256"],
+                "whitelist-traefik-sha256": self.__whitelist_traefik["sha256"],
             },
         )
         self.container_id = self.__container.id
