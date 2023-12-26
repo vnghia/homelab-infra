@@ -4,6 +4,7 @@ from _common import server_config
 from _image import docker_image
 from _network.dns.hostnames import hostnames
 from _network.tailscale import tailscale_device
+from _secret import secret
 from _service.script_server.docker import (
     build_run_net_bridge,
     build_run_net_tailscale,
@@ -87,9 +88,22 @@ def build_script_config():
         for k in modes
     }
 
+    random_password = {
+        "script": "cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1",
+        "shell": True,
+    }
+    password_admins = {
+        "public": random_password,
+        "private": secret.accounts["private-neko"]["password"],
+    }
+
     return {
         "{} neko".format(k.capitalize()): {
-            "script_path": [script_paths[k]],
+            "script_path": [
+                ["echo", "$PARAM_PASSWORD_ADMIN"],
+                ["echo", "$PARAM_PASSWORD"],
+                script_paths[k],
+            ],
             "parameters": [
                 {
                     "name": "image",
@@ -123,8 +137,10 @@ def build_script_config():
                 build_neko_param("hwenc", constant=True, default="none"),
                 build_neko_param("screen", constant=True, default="1920x1080@30"),
                 build_neko_param("path_prefix", default=prefixes[k]),
-                build_neko_param("password"),
-                build_neko_param("password_admin"),
+                build_neko_param("password", secure=True, default=random_password),
+                build_neko_param(
+                    "password_admin", secure=True, default=password_admins[k]
+                ),
                 build_neko_param("epr", default="52000-52100"),
                 {
                     "name": "shm",

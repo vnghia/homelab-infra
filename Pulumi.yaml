@@ -64,6 +64,9 @@ config:
           hostname: public-dendrite
           custom:
             AndroidApp1: io.element.android.x
+        private-neko:
+          hostname: private-infra
+          username: admin
   docker:
     value:
       image:
