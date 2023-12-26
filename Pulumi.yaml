@@ -528,6 +528,9 @@ config:
           rewrite-response-headers:
             name: github.com/XciD/traefik-plugin-rewrite-headers
             version: "v0.0.4"
+        whitelist:
+          router:
+            - navidrome@file
       webdav-storage:
         port: 8080
       script-server:
