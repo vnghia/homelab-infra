@@ -176,6 +176,9 @@ config:
         gluetun:
           name: qmcgaw/gluetun
           tag: "v3.36.0"
+        qbittorrent:
+          name: ghcr.io/qbittorrent/docker-qbittorrent-nox
+          tag: "4.6.2-2"
         python-alpine:
           name: python
           tag: "3.12.1-alpine3.19"
@@ -255,6 +258,8 @@ config:
           dendrite-config:
           dendrite-jetstream:
           dendrite-searchindex:
+          qbittorrent-config:
+          qbittorrent-download:
         bind:
           # https://rclone.org/docker/
           rclone-config: /var/lib/docker-plugins/rclone/config
@@ -433,6 +438,11 @@ config:
           media:
             volume: crypt-media-matrix
             dir: /var/dendrite/media/
+        qbittorrent:
+          config:
+            dir: /config/
+          download:
+            dir: /downloads/
       backup:
         common:
           prefix: /volume/
@@ -569,3 +579,5 @@ config:
         mount-secondary: misc/
         top:
           - slskd-data
+      qbittorrent:
+        port: 8080
