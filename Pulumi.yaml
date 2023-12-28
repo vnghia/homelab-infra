@@ -25,6 +25,7 @@ config:
           special: false
         dendrite-registration-secret:
         sliding-sync-encryption:
+        __linkwarden-secret:
       account:
         navidrome:
           hostname: public-navidrome

@@ -8,7 +8,7 @@ from _secret import secret
 _postgres_config = postgres.db["linkwarden"]
 
 envs = {
-    "NEXTAUTH_SECRET": secret.build_string("linkwarden-secret", length=32).result,
+    "NEXTAUTH_SECRET": secret.keys["linkwarden-secret"].result,
     "DATABASE_URL": Output.format(
         "postgresql://{0}:{1}@{2}:{3}/{4}",
         _postgres_config["username"],
