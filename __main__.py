@@ -8,5 +8,6 @@ import _network.cloudflared  # noqa: F401
 import _network.docker  # noqa: F401
 import _network.security  # noqa: F401
 import _network.traefik  # noqa: F401
+import _network.vpn  # noqa: F401
 import _secret  # noqa: F401
 import _service  # noqa: F401

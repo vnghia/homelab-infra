@@ -21,6 +21,7 @@ server_config = __build_config("server")
 dns_config = __build_config("dns")
 storage_config = __build_config("storage")
 service_config = __build_config("service")
+vpn_config = __build_config("vpn")
 
 redis_config = storage_config.get("redis", [])
 postgres_config = storage_config.get("postgres", {})

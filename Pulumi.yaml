@@ -173,6 +173,9 @@ config:
         sliding-sync:
           name: ghcr.io/matrix-org/sliding-sync
           tag: "v0.99.13"
+        gluetun:
+          name: qmcgaw/gluetun
+          tag: "v3.36.0"
         python-alpine:
           name: python
           tag: "3.12.1-alpine3.19"
