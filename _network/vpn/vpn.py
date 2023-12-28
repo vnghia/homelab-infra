@@ -34,7 +34,10 @@ class VPN(ComponentResource):
                 envs=envs,
             )
 
-            self.networks[name] = Output.concat("container:", container.id)
+            self.networks[name] = {
+                "network": Output.concat("container:", container.id),
+                "host": container.name,
+            }
 
         self.register_outputs({})
 
