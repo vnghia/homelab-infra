@@ -23,6 +23,12 @@ script_config = {
                     lambda ipv4: "http://{}:${{PARAM_SCR_PORT}}".format(ipv4)
                 ),
             ],
+            [
+                "echo",
+                tailscale_device.ipv6.apply(
+                    lambda ipv4: "http://[{}]:${{PARAM_SCR_PORT}}".format(ipv4)
+                ),
+            ],
             build_run_net_tailscale()
             + [
                 "--name",
