@@ -97,6 +97,11 @@ class TailscaleDevice(ComponentResource):
                     ip="::",
                 ),
             ],
+            sysctls={
+                "net.ipv6.conf.all.disable_ipv6": 0,
+                "net.ipv6.conf.all.forwarding": 1,
+                "net.ipv6.conf.all.proxy_ndp": 1,
+            },
             wait=True,
         )
 
