@@ -3,6 +3,8 @@ import configparser
 import hashlib
 import io
 import json
+import random
+import string
 from pathlib import Path
 from typing import Callable
 
@@ -15,6 +17,10 @@ from pulumi import Input, Output, ResourceOptions
 
 from _command import Command
 from _common import import_module, server_config
+
+CONF_NO_SECTION_HEADER = "".join(
+    random.choices(string.ascii_uppercase + string.digits, k=32)
+)
 
 
 class File:
@@ -168,6 +174,12 @@ class Template:
         input, _ = self.__build_apply(config_str)
 
         parser = configparser.ConfigParser()
+
+        if CONF_NO_SECTION_HEADER in input:
+            parser.add_section(CONF_NO_SECTION_HEADER)
+            for k, v in input.pop(CONF_NO_SECTION_HEADER).items():
+                parser.set(CONF_NO_SECTION_HEADER, k, v)
+
         for remote_name, remote in input.items():
             parser.add_section(remote_name)
             for k, v in remote.items():
@@ -176,7 +188,10 @@ class Template:
         parser.write(config_content)
         config_content.seek(0)
 
-        return config_content.read()
+        content = config_content.read()
+        if content.startswith("[{}]".format(CONF_NO_SECTION_HEADER)):
+            content = content.split("\n", maxsplit=1)[1]
+        return content
 
     def __build_json_apply(self, config_str: str):
         input, _ = self.__build_apply(config_str)
