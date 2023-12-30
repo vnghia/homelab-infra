@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import pulumi_docker as docker
-from pulumi import ComponentResource, ResourceOptions
+from pulumi import ComponentResource, Output, ResourceOptions
 
 from _common import redis_config
 from _container import DockerContainer
@@ -56,6 +56,9 @@ class Redis(ComponentResource):
                 "port": self.port,
                 "username": "default",
                 "password": password,
+                "url": Output.format(
+                    "redis://default:{0}@{1}:{2}/0", password, name, self.port
+                ),
             }
 
         self.register_outputs({})
