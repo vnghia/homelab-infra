@@ -1,4 +1,4 @@
-from pulumi import ComponentResource, ResourceOptions
+from pulumi import ComponentResource, Output, ResourceOptions
 
 from _common import mariadb_config
 from _container import DockerContainer
@@ -34,6 +34,9 @@ class MariaDB(ComponentResource):
                 "username": "root",
                 "password": password,
                 "database": db,
+                "url": Output.format(
+                    "mysql://root:{0}@{1}:{2}/{3}", password, name, self.port, db
+                ),
             }
 
         self.register_outputs({})
