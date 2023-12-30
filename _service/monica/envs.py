@@ -16,12 +16,7 @@ envs = {
     "APP_KEY": secret.keys["monica-app"].result,
     "APP_DEBUG": False,
     "APP_URL": hostnames["private-monica"],
-    "DB_CONNECTION": "pgsql",
-    "DB_HOST": _postgres_config["host"],
-    "DB_PORT": _postgres_config["port"],
-    "DB_USERNAME": _postgres_config["username"],
-    "DB_PASSWORD": _postgres_config["password"],
-    "DB_DATABASE": _postgres_config["database"],
+    "DATABASE_URL": _postgres_config["url-pgsql"],
     "APP_TRUSTED_PROXIES": "*",
     "CACHE_DRIVER": "redis",
     # TODO: Set to `redis` when this issue is fixed.
