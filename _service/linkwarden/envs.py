@@ -1,5 +1,3 @@
-from pulumi import Output
-
 from _common import storage_config
 from _data.postgres import postgres
 from _network.dns.hostnames import hostnames
@@ -9,14 +7,7 @@ _postgres_config = postgres.db["linkwarden"]
 
 envs = {
     "NEXTAUTH_SECRET": secret.keys["linkwarden-secret"].result,
-    "DATABASE_URL": Output.format(
-        "postgresql://{0}:{1}@{2}:{3}/{4}",
-        _postgres_config["username"],
-        _postgres_config["password"],
-        _postgres_config["host"],
-        _postgres_config["port"],
-        _postgres_config["database"],
-    ),
+    "DATABASE_URL": _postgres_config["url"],
     "NEXTAUTH_URL": "https://{}".format(hostnames["private-linkwarden"]),
     "NEXT_PUBLIC_DISABLE_REGISTRATION": True,
     "SPACES_KEY": storage_config["key-id"],
