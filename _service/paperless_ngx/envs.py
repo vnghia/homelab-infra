@@ -1,5 +1,3 @@
-from pulumi import Output
-
 from _common import server_config
 from _data.redis import redis
 from _network.dns import hostnames
@@ -9,13 +7,7 @@ _redis_config = redis.db["paperless-ngx"]
 _account_config = secret.accounts["paperless-ngx"]
 
 envs = {
-    "PAPERLESS_REDIS": Output.format(
-        "redis://{0}:{1}@{2}:{3}",
-        _redis_config["username"],
-        _redis_config["password"],
-        _redis_config["host"],
-        _redis_config["port"],
-    ),
+    "PAPERLESS_REDIS": _redis_config["url"],
     "PAPERLESS_SECRET_KEY": secret.keys["paperless-ngx-secret"].result,
     "PAPERLESS_URL": "https://{}".format(hostnames["private-paperless-ngx"]),
     "PAPERLESS_AUTO_LOGIN_USERNAME": _account_config["username"],
