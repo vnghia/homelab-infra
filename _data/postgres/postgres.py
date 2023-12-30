@@ -1,5 +1,5 @@
 import pulumi_docker as docker
-from pulumi import ComponentResource, ResourceOptions
+from pulumi import ComponentResource, Output, ResourceOptions
 
 from _common import postgres_config
 from _container import DockerContainer
@@ -46,6 +46,22 @@ class Postgres(ComponentResource):
                 "username": db,
                 "password": password,
                 "database": db,
+                "url": Output.format(
+                    "postgresql://{0}:{1}@{2}:{3}/{4}?sslmode=disable",
+                    db,
+                    password,
+                    name,
+                    self.port,
+                    db,
+                ),
+                "url-pgsql": Output.format(
+                    "pgsql://{0}:{1}@{2}:{3}/{4}?sslmode=disable",
+                    db,
+                    password,
+                    name,
+                    self.port,
+                    db,
+                ),
             }
 
         self.register_outputs({})
