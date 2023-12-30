@@ -1,8 +1,6 @@
 import os
 from pathlib import Path
 
-from pulumi import Output
-
 from _common import container_storage_config, service_config
 from _data.postgres import postgres
 from _network.dns.hostnames import hostnames
@@ -27,16 +25,7 @@ output_config = {
             "private_key": os.fspath(
                 Path(_dendrite_volume["config"]["dir"]) / _key_config["path"]
             ),
-            "database": {
-                "connection_string": Output.format(
-                    "postgresql://{0}:{1}@{2}:{3}/{4}?sslmode=disable",
-                    _postgres_config["username"],
-                    _postgres_config["password"],
-                    _postgres_config["host"],
-                    _postgres_config["port"],
-                    _postgres_config["database"],
-                ),
-            },
+            "database": {"connection_string": _postgres_config["url"]},
             "well_known_server_name": "{}:443".format(_dendrite_url),
             "well_known_client_name": "https://{}".format(_dendrite_url),
             "well_known_sliding_sync_proxy": "https://{}".format(
