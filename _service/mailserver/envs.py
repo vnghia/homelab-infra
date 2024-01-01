@@ -9,6 +9,7 @@ envs = {
     "ACCOUNT_PROVISIONER": "FILE",
     "ENABLE_UPDATE_CHECK": 0,
     "PERMIT_DOCKER": "network",
+    "POSTFIX_INET_PROTOCOLS": "ipv4",
     "SPOOF_PROTECTION": 0,
     "ENABLE_SRS": 0,
     "ENABLE_OPENDKIM": 0,
