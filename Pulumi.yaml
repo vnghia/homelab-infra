@@ -157,7 +157,7 @@ config:
           tag: "v2.4.9"
         mailserver:
           name: ghcr.io/docker-mailserver/docker-mailserver
-          tag: "13.0.0"
+          tag: "13.3.0"
         authelia:
           name: authelia/authelia
           tag: "v4.38.0-beta3"
