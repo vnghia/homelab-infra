@@ -175,7 +175,7 @@ config:
           tag: "v0.99.13"
         gluetun:
           name: qmcgaw/gluetun
-          tag: "v3.36.0"
+          tag: "v3.37.0"
         qbittorrent:
           name: ghcr.io/qbittorrent/docker-qbittorrent-nox
           tag: "4.6.3-1"
