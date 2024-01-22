@@ -82,7 +82,7 @@ config:
           tag: "v6.1.0"
         navidrome:
           name: ghcr.io/navidrome/navidrome
-          tag: "0.50.2"
+          tag: "0.51.0"
         syncthing:
           name: syncthing/syncthing
           tag: "1.27.1"
