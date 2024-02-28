@@ -73,7 +73,7 @@ config:
       image:
         tailscale:
           name: tailscale/tailscale
-          tag: "v1.56.0"
+          tag: "v1.60.0"
         traefik:
           name: traefik
           tag: "v3.0.0-beta5"
