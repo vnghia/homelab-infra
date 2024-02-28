@@ -169,7 +169,7 @@ config:
           tag: "v0.40.0"
         dendrite:
           name: matrixdotorg/dendrite-monolith
-          tag: "v0.13.5"
+          tag: "v0.13.6"
         sliding-sync:
           name: ghcr.io/matrix-org/sliding-sync
           tag: "v0.99.13"
