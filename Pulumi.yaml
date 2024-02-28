@@ -115,7 +115,7 @@ config:
           tag: "pg16-v0.2.1-alpha.2"
         mariadb:
           name: mariadb
-          tag: "11.2.2-jammy"
+          tag: "11.3.2-jammy"
         paperless-ngx:
           name: ghcr.io/paperless-ngx/paperless-ngx
           tag: "2.4.0"
