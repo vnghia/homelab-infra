@@ -85,7 +85,7 @@ config:
           tag: "0.51.1"
         syncthing:
           name: syncthing/syncthing
-          tag: "1.27.1"
+          tag: "1.27.3"
         rclone:
           name: rclone/rclone
           tag: "1.65.0"
