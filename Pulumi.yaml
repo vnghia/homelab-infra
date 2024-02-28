@@ -106,7 +106,7 @@ config:
           tag: "10.8.13"
         redis:
           name: redis
-          tag: "7.2.2-alpine3.18"
+          tag: "7.2.4-alpine3.19"
         postgres:
           name: postgres
           tag: "16.0-bookworm"
