@@ -212,7 +212,7 @@ config:
       plugin:
         rclone:
           name: rclone/docker-volume-rclone
-          version: "'{}-1.65.0'.format(platform)"
+          version: "'{}-1.66.0'.format(platform)"
       compose:
         volume: docker-compose
   storage:
