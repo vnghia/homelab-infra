@@ -118,7 +118,7 @@ config:
           tag: "11.3.2-jammy"
         paperless-ngx:
           name: ghcr.io/paperless-ngx/paperless-ngx
-          tag: "2.5.4"
+          tag: "2.6.3"
         neko-firefox:
           name: "'ghcr.io/m1k1o/neko/{}-firefox'.format('intel' if platform == 'amd64' else 'arm')"
           tag: &neko-browser-version "2.8.11"
