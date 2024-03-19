@@ -94,7 +94,7 @@ config:
           tag: "v1.6.0-1"
         ntfy:
           name: binwiederhier/ntfy
-          tag: "v2.8.0"
+          tag: "v2.9.0"
         restic:
           name: restic/restic
           tag: "0.16.4"
