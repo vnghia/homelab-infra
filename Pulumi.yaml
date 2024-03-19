@@ -79,7 +79,7 @@ config:
           tag: "v3.0.0-rc1"
         dozzle:
           name: amir20/dozzle
-          tag: "v6.2.5"
+          tag: "v6.3.1"
         navidrome:
           name: ghcr.io/navidrome/navidrome
           tag: "0.51.1"
