@@ -160,7 +160,7 @@ config:
           tag: "13.3.0"
         authelia:
           name: authelia/authelia
-          tag: "v4.38.0-beta3"
+          tag: "4.38.4"
         ryot:
           name: ghcr.io/ignisda/ryot
           tag: "v3.4.15"
