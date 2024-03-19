@@ -88,7 +88,7 @@ config:
           tag: "1.27.3"
         rclone:
           name: rclone/rclone
-          tag: "1.65.2"
+          tag: "1.66.0"
         crowdsec:
           name: crowdsecurity/crowdsec
           tag: "v1.6.0-1"
