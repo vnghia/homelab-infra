@@ -26,6 +26,9 @@ config:
         dendrite-registration-secret:
         sliding-sync-encryption:
         __linkwarden-secret:
+        nghe-encryption:
+          length: 16
+          special: false
       account:
         navidrome:
           hostname: public-navidrome
@@ -179,6 +182,9 @@ config:
         qbittorrent:
           name: ghcr.io/qbittorrent/docker-qbittorrent-nox
           tag: "4.6.3-1"
+        nghe:
+          name: ghcr.io/vnghia/nghe-gnu
+          tag: "develop"
         python-alpine:
           name: python
           tag: "3.12.1-alpine3.19"
@@ -443,6 +449,11 @@ config:
             dir: /config/
           download:
             dir: /downloads/
+        nghe:
+          music-self:
+            volume: mount-music
+            dir: /music/self/
+            ro: true
       backup:
         common:
           prefix: /volume/
@@ -523,6 +534,7 @@ config:
         ryot:
         dendrite:
         sliding-sync:
+        nghe:
   service:
     value:
       tailscale:
@@ -545,6 +557,7 @@ config:
         whitelist:
           router:
             - navidrome@file
+            - nghe@file
       webdav-storage:
         port: 8080
       script-server:
