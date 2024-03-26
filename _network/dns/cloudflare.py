@@ -39,7 +39,7 @@ class CloudflareDNS(ComponentResource):
                 "proxied": False,
             },
             "private": {
-                "addresses": {"v6": tailscale_device.ipv6},
+                "addresses": {"v4": tailscale_device.ipv4, "v6": tailscale_device.ipv6},
                 "proxied": False,
             },
         }
