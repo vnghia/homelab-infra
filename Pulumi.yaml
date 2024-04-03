@@ -266,6 +266,7 @@ config:
           dendrite-searchindex:
           qbittorrent-config:
           qbittorrent-download:
+          nghe-data:
         bind:
           # https://rclone.org/docker/
           rclone-config: /var/lib/docker-plugins/rclone/config
@@ -454,6 +455,8 @@ config:
             volume: mount-music
             dir: /music/self/
             ro: true
+          data:
+            dir: /tmp/nghe/
       backup:
         common:
           prefix: /volume/
@@ -558,6 +561,7 @@ config:
           router:
             - navidrome@file
             - nghe@file
+            - nghe-version@file
       webdav-storage:
         port: 8080
       script-server:

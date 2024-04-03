@@ -17,6 +17,5 @@ envs = {
     "NGHE_FOLDER__TOP_PATHS": str([_nghe_volume["music-self"]["dir"]]).replace(
         "'", '"'
     ),
-    "NGHE_SCAN__CHANNEL_SIZE": 1000,
-    "RUST_LOG": "nghe=trace,tower_http=trace",
+    "RUST_LOG": "nghe=debug,tower_http=debug",
 }
