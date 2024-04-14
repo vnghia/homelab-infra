@@ -183,8 +183,8 @@ config:
           name: ghcr.io/qbittorrent/docker-qbittorrent-nox
           tag: "4.6.3-1"
         nghe:
-          name: ghcr.io/vnghia/nghe-gnu
-          tag: "develop"
+          name: ghcr.io/vnghia/nghe-musl
+          tag: "0.2.0"
         python-alpine:
           name: python
           tag: "3.12.1-alpine3.19"
@@ -561,7 +561,6 @@ config:
           router:
             - navidrome@file
             - nghe@file
-            - nghe-version@file
       webdav-storage:
         port: 8080
       script-server:
