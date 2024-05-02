@@ -3,7 +3,9 @@ import binascii
 from _common import container_storage_config, service_config
 from _data.postgres import postgres
 from _secret import secret
+from _common import storage_config
 
+_aws_env = storage_config["aws"]
 _nghe_config = service_config["nghe"]
 _nghe_volume = container_storage_config["nghe"]
 _postgres_config = postgres.db["nghe"]
@@ -17,4 +19,9 @@ envs = {
     "NGHE_LASTFM__KEY": _nghe_config["lastfm"]["key"],
     "NGHE_SPOTIFY__ID": _nghe_config["spotify"]["id"],
     "NGHE_SPOTIFY__SECRET": _nghe_config["spotify"]["secret"],
-}
+    "NGHE_SCAN__CHANNEL_SIZE": 50,
+    "NGHE_SCAN__POOL_SIZE": 50,
+    "NGHE_S3__ENABLE": "true",
+    "AWS_REGION": "auto",
+    "AWS_ENDPOINT_URL": _aws_env["S3_ENDPOINT"],
+} | _aws_env
