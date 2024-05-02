@@ -133,7 +133,7 @@ config:
           tag: *neko-browser-version
         cloudflared:
           name: cloudflare/cloudflared
-          tag: "2024.2.1"
+          tag: "2024.4.1"
         memos:
           name: ghcr.io/usememos/memos
           tag: "0.20.0"
