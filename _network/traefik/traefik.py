@@ -1,6 +1,7 @@
 import hashlib
 from pathlib import Path
 
+import pulumi_docker as docker
 from pulumi import ComponentResource, Output, ResourceOptions
 
 from _common import container_storage_config
@@ -35,7 +36,6 @@ class TraefikProxy(ComponentResource):
         )
 
     def __build_container(self):
-        # TODO: Re-enable healthcheck after https://github.com/traefik/traefik/issues/6861
         self.__container = DockerContainer.build(
             name="traefik",
             opts=self.__child_opts,
@@ -55,12 +55,19 @@ class TraefikProxy(ComponentResource):
                     ).encode()
                 ).hexdigest(),
             },
+            healthcheck=docker.ContainerHealthcheckArgs(
+                tests=["CMD-SHELL", "traefik healthcheck --ping"],
+                interval="1s",
+                timeout="5s",
+                retries=60,
+            ),
             network_mode=Output.concat("container:", tailscale_device.container_id),
             volumes={
                 "/etc/localtime": {"ro": True},
                 "/usr/share/zoneinfo": {"ro": True},
                 "/var/run/docker.sock": {"ro": True},
             },
+            wait=True,
             labels={"static-config-sha256": self.__static_config["sha256"]},
         )
 
