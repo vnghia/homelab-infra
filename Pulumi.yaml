@@ -265,6 +265,8 @@ config:
           # https://rclone.org/docker/
           rclone-config: /var/lib/docker-plugins/rclone/config
           rclone-cache: /var/lib/docker-plugins/rclone/cache
+        mount:
+          music: music/original/
         crypt:
           password: crypt/password/
           media-orange: media/orange/
@@ -435,10 +437,6 @@ config:
           download:
             dir: /downloads/
         nghe:
-          music-self:
-            volume: mount-music
-            dir: /music/self/
-            ro: true
           data:
             dir: /tmp/nghe/
       backup:
