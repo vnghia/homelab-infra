@@ -48,7 +48,7 @@ class DockerContainer:
                     docker.ContainerVolumeArgs(
                         container_path=volume["dir"],
                         read_only=volume.get("ro", False),
-                        volume_name=volume_map.get(volume["volume"]),
+                        volume_name=volume_map[volume["volume"]],
                     )
                 )
         if volumes:
