@@ -1,13 +1,12 @@
 import binascii
 
-from _common import container_storage_config, service_config
+from _common import service_config
 from _data.postgres import postgres
 from _secret import secret
 from _common import storage_config
 
 _aws_env = storage_config["aws"]
 _nghe_config = service_config["nghe"]
-_nghe_volume = container_storage_config["nghe"]
 _postgres_config = postgres.db["nghe"]
 
 envs = {

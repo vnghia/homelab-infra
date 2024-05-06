@@ -14,7 +14,6 @@ config:
       key:
         restic-repo:
           export: true
-        navidrome-encryption:
         __paperless-ngx-secret:
         authelia-jwt:
         authelia-session:
@@ -30,10 +29,11 @@ config:
           length: 16
           special: false
       account:
-        navidrome:
-          hostname: public-navidrome
+        nghe:
+          hostname: public-nghe
           custom:
             AndroidApp1: app.symfonik.music.player
+            KP2A_URL_1: https://airsonic.netlify.app
         ntfy:
           hostname: public-ntfy
           custom:
@@ -83,9 +83,6 @@ config:
         dozzle:
           name: amir20/dozzle
           tag: "v6.5.2"
-        navidrome:
-          name: ghcr.io/navidrome/navidrome
-          tag: "0.51.1"
         syncthing:
           name: syncthing/syncthing
           tag: "1.27.3"
@@ -184,7 +181,7 @@ config:
           tag: "4.6.3-1"
         nghe:
           name: ghcr.io/vnghia/nghe-musl
-          tag: "0.9.2"
+          tag: "0.9.3"
         python-alpine:
           name: python
           tag: "3.12.1-alpine3.19"
@@ -228,9 +225,6 @@ config:
           tailscale-state:
           traefik-config:
           traefik-cert:
-          navidrome-data:
-            key:
-              - navidrome-encryption
           syncthing-config:
           crowdsec-config:
           crowdsec-data:
@@ -271,8 +265,6 @@ config:
           # https://rclone.org/docker/
           rclone-config: /var/lib/docker-plugins/rclone/config
           rclone-cache: /var/lib/docker-plugins/rclone/cache
-        mount:
-          music: music/original/
         crypt:
           password: crypt/password/
           media-orange: media/orange/
@@ -291,14 +283,6 @@ config:
             ro: true
           cert:
             dir: /etc/traefik/cert/
-        navidrome:
-          music:
-            volume: mount-music
-            dir: /music/
-            ro: true
-          data:
-            volume: navidrome-data
-            dir: /data/
         webdav-storage:
           config:
             volume: rclone-config
@@ -468,13 +452,6 @@ config:
           volume: restic-cache
           dir: /var/cache/restic/
         service:
-          navidrome:
-            stop:
-              - navidrome
-            volume:
-              data:
-                path:
-                  - navidrome.db
           syncthing:
             stop:
               - syncthing
@@ -559,7 +536,6 @@ config:
             version: "v0.0.4"
         whitelist:
           router:
-            - navidrome@file
             - nghe@file
       webdav-storage:
         port: 8080
