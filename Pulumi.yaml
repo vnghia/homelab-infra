@@ -275,6 +275,7 @@ config:
           obsidian-self: obsidian/self/
           media-matrix: media/matrix/
           media-memos: media/memos/
+          game-citra: game/citra/
       container:
         tailscale:
           state:
@@ -304,6 +305,9 @@ config:
           obsidian-self:
             volume: crypt-obsidian-self
             dir: /var/syncthing/data/obsidian/self/
+          game-citra:
+            volume: crypt-game-citra
+            dir: /var/syncthing/data/game/citra/
         crowdsec:
           config:
             dir: /etc/crowdsec/
