@@ -6,8 +6,8 @@ from docker.errors import ContainerError
 
 def main():
     restic_repo = "s3:{}/{}/{}".format(
-        os.environ["S3_ENDPOINT"],
-        os.environ["S3_BUCKET"],
+        os.environ["AWS_ENDPOINT_URL"],
+        os.environ["AWS_BUCKET"],
         os.environ["RESTIC_REPO_PREFIX"],
     )
 

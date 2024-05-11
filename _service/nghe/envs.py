@@ -22,5 +22,4 @@ envs = {
     "NGHE_SCAN__POOL_SIZE": 50,
     "NGHE_S3__ENABLE": "true",
     "AWS_REGION": "auto",
-    "AWS_ENDPOINT_URL": _aws_env["S3_ENDPOINT"],
 } | _aws_env

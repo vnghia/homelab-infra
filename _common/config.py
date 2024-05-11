@@ -164,8 +164,8 @@ def __build_secret():
 storage_config["aws"] = {
     "AWS_ACCESS_KEY_ID": storage_config["key-id"],
     "AWS_SECRET_ACCESS_KEY": storage_config["key-secret"],
-    "S3_ENDPOINT": storage_config["endpoint"],
-    "S3_BUCKET": storage_config["bucket"],
+    "AWS_ENDPOINT_URL": storage_config["endpoint"],
+    "AWS_BUCKET": storage_config["bucket"],
 }
 
 container_storage_config = __build_container_storage()
