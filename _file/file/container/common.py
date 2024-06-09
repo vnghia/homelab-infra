@@ -31,10 +31,8 @@ def load_upload_content():
     return base64.standard_b64decode(input())
 
 
-# TODO: Replace this when upgrading to python 3.12
 def __set_file_mode(info: tarfile.TarInfo):
-    info.mode = UPLOAD_FILE_MODE
-    return info
+    info.replace(mode=UPLOAD_FILE_MODE)
 
 
 def to_tar_file(content: bytes, path: str):
