@@ -154,7 +154,7 @@ config:
           tag: "main"
         linkwarden:
           name: ghcr.io/linkwarden/linkwarden
-          tag: "v2.5.1"
+          tag: "v2.5.3"
         mailserver:
           name: ghcr.io/docker-mailserver/docker-mailserver
           tag: "13.3.0"
