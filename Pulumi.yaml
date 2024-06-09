@@ -145,7 +145,7 @@ config:
           tag: "0.21.0"
         ttyd:
           name: tsl0922/ttyd
-          tag: "1.7.4-alpine"
+          tag: "1.7.7-alpine"
         script-server:
           name: bugy/script-server
           tag: "1.18.0"
