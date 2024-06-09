@@ -2,7 +2,7 @@ name: homelab-infra
 runtime:
   name: python
   options:
-    virtualenv: venv
+    virtualenv: .venv
 description: Infra for hosting service
 config:
   server:
