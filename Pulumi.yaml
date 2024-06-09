@@ -532,7 +532,7 @@ config:
         plugin:
           crowdsec:
             name: github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
-            version: "v1.1.16"
+            version: "v1.3.2"
           rewrite-response-headers:
             name: github.com/XciD/traefik-plugin-rewrite-headers
             version: "v0.0.4"
