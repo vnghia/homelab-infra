@@ -142,7 +142,7 @@ config:
           tag: *immich-version
         slskd:
           name: ghcr.io/slskd/slskd
-          tag: "0.20.1"
+          tag: "0.21.0"
         ttyd:
           name: tsl0922/ttyd
           tag: "1.7.4-alpine"
