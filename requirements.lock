@@ -74,11 +74,11 @@ pulumi==3.119.0
     # via pulumi-docker
     # via pulumi-random
     # via pulumi-tailscale
-pulumi-cloudflare==5.16.0
-pulumi-command==0.10.0
-pulumi-docker==4.5.3
-pulumi-random==4.14.0
-pulumi-tailscale==0.13.3
+pulumi-cloudflare==5.30.0
+pulumi-command==0.11.1
+pulumi-docker==4.5.4
+pulumi-random==4.16.2
+pulumi-tailscale==0.16.0
 pycparser==2.22
     # via cffi
 pycryptodome==3.20.0
@@ -105,7 +105,6 @@ semver==2.13.0
     # via pulumi-docker
     # via pulumi-random
     # via pulumi-tailscale
-setuptools==70.0.0
 six==1.16.0
     # via pulumi
 sniffio==1.3.1
