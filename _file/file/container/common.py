@@ -32,7 +32,7 @@ def load_upload_content():
 
 
 def __set_file_mode(info: tarfile.TarInfo):
-    info.replace(mode=UPLOAD_FILE_MODE)
+    return info.replace(mode=UPLOAD_FILE_MODE, deep=False)
 
 
 def to_tar_file(content: bytes, path: str):
