@@ -181,7 +181,7 @@ config:
           tag: "4.6.5-1"
         nghe:
           name: ghcr.io/vnghia/nghe-musl
-          tag: "0.9.8"
+          tag: "0.9.9"
         python-alpine:
           name: python
           tag: "3.12.1-alpine3.19"
