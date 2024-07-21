@@ -88,7 +88,7 @@ config:
           tag: "1.27.8"
         rclone:
           name: rclone/rclone
-          tag: "1.66.0"
+          tag: "1.67.0"
         crowdsec:
           name: crowdsecurity/crowdsec
           tag: "v1.6.2"
@@ -215,7 +215,7 @@ config:
       plugin:
         rclone:
           name: rclone/docker-volume-rclone
-          version: "'{}-1.66.0'.format(platform)"
+          version: "'{}-1.67.0'.format(platform)"
       compose:
         volume: docker-compose
   storage:
