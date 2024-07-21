@@ -79,7 +79,7 @@ config:
           tag: "v1.66.4"
         traefik:
           name: traefik
-          tag: "v3.0.1"
+          tag: "v3.1.0"
         dozzle:
           name: amir20/dozzle
           tag: "v7.0.5"
