@@ -8,7 +8,7 @@ output_config = {
         "router": {
             "name": "nghe",
             "rule": Output.format("Host(`{0}`)", hostnames["public-nghe"]),
-            "sec_mode": "public",
+            "sec_mode": None,
         },
         "service": {"port": 3000},
     }
