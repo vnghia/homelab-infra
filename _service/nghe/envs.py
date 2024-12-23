@@ -15,11 +15,9 @@ envs = {
         lambda x: binascii.hexlify(x.encode()).decode("ascii")
     ),
     "NGHE_DATABASE__URL": _postgres_config["url"],
-    "NGHE_LASTFM__KEY": _nghe_config["lastfm"]["key"],
-    "NGHE_SPOTIFY__ID": _nghe_config["spotify"]["id"],
-    "NGHE_SPOTIFY__SECRET": _nghe_config["spotify"]["secret"],
-    "NGHE_SCAN__CHANNEL_SIZE": 50,
-    "NGHE_SCAN__POOL_SIZE": 50,
+    "NGHE_INTEGRATION__LASTFM__KEY": _nghe_config["lastfm"]["key"],
+    "NGHE_INTEGRATION__SPOTIFY__ID": _nghe_config["spotify"]["id"],
+    "NGHE_INTEGRATION__SPOTIFY__SECRET": _nghe_config["spotify"]["secret"],
     "NGHE_S3__ENABLE": "true",
     "AWS_REGION": "auto",
 } | _aws_env
