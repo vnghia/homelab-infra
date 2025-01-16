@@ -82,7 +82,7 @@ config:
           tag: "v3.3.2"
         dozzle:
           name: amir20/dozzle
-          tag: "v8.0.6"
+          tag: "v8.10.4"
         syncthing:
           name: syncthing/syncthing
           tag: "1.27.8"
