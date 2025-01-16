@@ -97,7 +97,7 @@ config:
           tag: "v2.11.0"
         restic:
           name: restic/restic
-          tag: "0.16.4"
+          tag: "0.17.3"
         socat:
           name: alpine/socat
           tag: "1.8.0.0"
