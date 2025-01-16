@@ -18,14 +18,6 @@ class Immich(ComponentResource):
                     depends_on=[traefik_proxy.dynamic_config["immich"]["file"]]
                 )
             ),
-            command=["start.sh", "immich"],
-            envs=envs,
-        )
-        self.__microservices_container = DockerContainer.build(
-            "immich-microservices",
-            opts=self.__child_opts,
-            image="immich-server",
-            command=["start.sh", "microservices"],
             envs=envs,
         )
         self.__machine_learning_container = DockerContainer.build(
@@ -35,12 +27,10 @@ class Immich(ComponentResource):
         )
 
         self.server_container_id = self.__server_container.id
-        self.microservices_container_id = self.__microservices_container.id
         self.machine_learning_container_id = self.__machine_learning_container.id
         self.register_outputs(
             {
                 "server_container_id": self.server_container_id,
-                "microservices_container_id": self.microservices_container_id,
                 "machine_learning_container_id": self.machine_learning_container_id,
             }
         )

@@ -9,6 +9,6 @@ output_config = {
             "name": "immich-server",
             "rule": Output.format("Host(`{0}`)", hostnames["private-immich"]),
         },
-        "service": {"port": 3001},
+        "service": {"port": 2283},
     }
 }
