@@ -166,7 +166,7 @@ config:
           tag: "v3.4.15"
         dufs:
           name: sigoden/dufs
-          tag: "v0.41.0"
+          tag: "v0.43.0"
         dendrite:
           name: matrixdotorg/dendrite-monolith
           tag: "v0.13.6"
